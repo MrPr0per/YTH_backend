@@ -1,0 +1,6 @@
+@YTH_backend_HostAddress = http://localhost:5100
+
+GET {{YTH_backend_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
