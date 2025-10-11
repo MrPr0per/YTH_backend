@@ -1,0 +1,27 @@
+using System.ComponentModel.DataAnnotations;
+using YTH_backend.Enums;
+
+namespace YTH_backend.Models.User;
+
+public class User
+{
+    [Key]
+    public Guid Id { get; set; }
+    
+    [Required, MaxLength(256)]
+    public string UserName { get; set; } = null!;
+    
+    [Required, MaxLength(256)]
+    public string Email { get; set; } = null!;
+    
+    [Required]
+    public Roles Role { get; set; }
+    
+    public string MoodleLogin { get; set; } = null!;
+    
+    public string MoodlePassword { get; set; } = null!;
+    
+    public string MoodlePasswordSalt { get; set; } = null!;
+    
+    public ICollection<Event.Event> Events { get; set; } = new List<Event.Event>();
+}
