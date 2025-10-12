@@ -22,6 +22,8 @@ public class Course
     
     public string Description { get; set; } = null!;
     
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+    
     [MaxLength(256)]
     public string Link { get; set; } = null!;
     
