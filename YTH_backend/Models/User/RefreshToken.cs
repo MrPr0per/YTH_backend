@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace YTH_backend.Models;
+namespace YTH_backend.Models.User;
 
 public class RefreshToken
 {
@@ -12,12 +12,12 @@ public class RefreshToken
     public Guid UserId { get; set; }
     
     [ForeignKey("UserId")]
-    public User.User User { get; set; } = null!;
+    public Models.User.User User { get; set; } = null!;
     
     [Required]
     public string TokenHash { get; set; } = null!;
     
-    public DateTime CreatedAt { get; set; } =  DateTime.UtcNow;
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     
     [Required]
     public DateTime ExpiresAt { get; set; }

@@ -15,20 +15,21 @@ public class Event
     [ForeignKey("CategoryId")]
     public EventCategory Category { get; set; } = null!;
     
-    [Required, MaxLength(256)]
+    [Required, MaxLength(512)]
     public string Name { get; set; } = null!;
     
-    public DateTime Date { get; set; } = DateTime.UtcNow;
+    [Required]
+    public DateTime Date { get; set; }
     
     public string? Description { get; set; } = null!;
     
-    [MaxLength(256)]
+    [MaxLength(512)]
     public string? ShortDescription { get; set; }
     
     [Required]
     public EventTypes Type { get; set; }
     
-    [MaxLength(256)]
+    [MaxLength(512)]
     public string? Address { get; set; } = null!;
 
     public ICollection<User.User> Users { get; set; } = new List<User.User>();

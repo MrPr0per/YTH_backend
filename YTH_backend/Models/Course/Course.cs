@@ -14,10 +14,10 @@ public class Course
     [ForeignKey("CategoryId")] 
     public CourseCategory Category { get; set; } = null!;
     
-    [Required,  MaxLength(256)]
+    [Required,  MaxLength(512)]
     public string Name { get; set; } = null!;
     
-    [MaxLength(256)]
+    [MaxLength(512)]
     public string ShortDescription { get; set; } = null!;
     
     public string Description { get; set; } = null!;
@@ -28,4 +28,6 @@ public class Course
     public string Link { get; set; } = null!;
     
     public ICollection<CourseTag> CourseTags { get; set; } = new List<CourseTag>();
+    
+    public ICollection<User.User> Users { get; set; } = new List<User.User>();
 }

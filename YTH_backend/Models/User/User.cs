@@ -11,7 +11,7 @@ public class User
     [Required, MaxLength(256)]
     public string UserName { get; set; } = null!;
     
-    [Required, MaxLength(256)]
+    [Required, MaxLength(256), EmailAddress]
     public string Email { get; set; } = null!;
     
     [Required, MaxLength(256)]
@@ -36,5 +36,15 @@ public class User
     
     public ICollection<Event.Event> Events { get; set; } = new List<Event.Event>();
     
+    public ICollection<Course.Course> Courses { get; set; } = new List<Course.Course>();
+    
     public ICollection<RefreshToken> RefreshTokens { get; set; } = new List<RefreshToken>();
+    
+    public ICollection<AdminAppointments> AppointmentsMade { get; set; } = new List<AdminAppointments>();
+    
+    public ICollection<AdminAppointments> AppointmentsReceived { get; set; } = new List<AdminAppointments>();
+    
+    public ICollection<AdminAppointments>? AppointmentsRevoked { get; set; } = new List<AdminAppointments>();
+    
+    public ICollection<Post.Post> Posts { get; set; } = new List<Post.Post>();
 }
