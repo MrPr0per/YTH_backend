@@ -24,7 +24,7 @@ public class Course
     
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     
-    [MaxLength(256)]
+    [MaxLength(512)]
     public string Link { get; set; } = null!;
     
     public ICollection<CourseTag> CourseTags { get; set; } = new List<CourseTag>();

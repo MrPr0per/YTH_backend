@@ -48,8 +48,8 @@ public class CourseConfiguration : IEntityTypeConfiguration<Course>
         
         builder
             .Property(x => x.Link)
-            .HasMaxLength(256)
-            .HasColumnType("varchar(256)")
+            .HasMaxLength(512)
+            .HasColumnType("varchar(512)")
             .HasColumnName("link");
         
         builder
