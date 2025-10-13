@@ -5,7 +5,7 @@ namespace YTH_backend.Models.Event;
 public class EventTag
 {
     [Key]
-    public int Id { get; set; }
+    public Guid Id { get; set; }
     
     [Required, MaxLength(256)]
     public string Name { get; set; } = null!;

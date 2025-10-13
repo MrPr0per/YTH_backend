@@ -6,7 +6,7 @@ namespace YTH_backend.Models.Course;
 public class Course
 {
     [Key]
-    public int Id { get; set; }
+    public Guid Id { get; set; }
     
     [Required]
     public Guid CategoryId { get; set; }
@@ -18,14 +18,15 @@ public class Course
     public string Name { get; set; } = null!;
     
     [MaxLength(512)]
-    public string ShortDescription { get; set; } = null!;
+    public string? ShortDescription { get; set; }
     
-    public string Description { get; set; } = null!;
+    public string? Description { get; set; }
     
+    [Required]
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     
     [MaxLength(512)]
-    public string Link { get; set; } = null!;
+    public string? Link { get; set; }
     
     public ICollection<CourseTag> CourseTags { get; set; } = new List<CourseTag>();
     

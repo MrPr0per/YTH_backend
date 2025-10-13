@@ -6,10 +6,8 @@ using YTH_backend.Models.User;
 
 namespace YTH_backend.Data;
 
-public class AppDbContext : DbContext
+public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(options)
 {
-    public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
-    
     public DbSet<Course> Courses => Set<Course>();
     public DbSet<CourseCategory> CourseCategories => Set<CourseCategory>();
     public DbSet<CourseTag> CourseTags => Set<CourseTag>();
@@ -19,7 +17,7 @@ public class AppDbContext : DbContext
     public DbSet<Post>  Posts => Set<Post>();
     public DbSet<PostCategory> PostCategories => Set<PostCategory>();
     public DbSet<PostTag> PostTags => Set<PostTag>();
-    public DbSet<AdminAppointments> AdminAppointments => Set<AdminAppointments>();
+    public DbSet<AdminAppointment> AdminAppointments => Set<AdminAppointment>();
     public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
     public DbSet<User> Users => Set<User>();
     

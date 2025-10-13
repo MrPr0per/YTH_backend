@@ -4,9 +4,9 @@ using YTH_backend.Models.User;
 
 namespace YTH_backend.Data.Configurations.UserConfiguration;
 
-public class AdminAppointmentsConfiguration : IEntityTypeConfiguration<AdminAppointments>
+public class AdminAppointmentsConfiguration : IEntityTypeConfiguration<AdminAppointment>
 {
-    public void Configure(EntityTypeBuilder<AdminAppointments> builder)
+    public void Configure(EntityTypeBuilder<AdminAppointment> builder)
     {
         builder
             .ToTable("admin_appointments");

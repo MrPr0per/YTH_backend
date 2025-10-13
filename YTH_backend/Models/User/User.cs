@@ -40,11 +40,11 @@ public class User
     
     public ICollection<RefreshToken> RefreshTokens { get; set; } = new List<RefreshToken>();
     
-    public ICollection<AdminAppointments> AppointmentsMade { get; set; } = new List<AdminAppointments>();
+    public ICollection<AdminAppointment> AppointmentsMade { get; set; } = new List<AdminAppointment>();
     
-    public ICollection<AdminAppointments> AppointmentsReceived { get; set; } = new List<AdminAppointments>();
+    public ICollection<AdminAppointment> AppointmentsReceived { get; set; } = new List<AdminAppointment>();
     
-    public ICollection<AdminAppointments>? AppointmentsRevoked { get; set; } = new List<AdminAppointments>();
+    public ICollection<AdminAppointment>? AppointmentsRevoked { get; set; } = new List<AdminAppointment>();
     
     public ICollection<Post.Post> Posts { get; set; } = new List<Post.Post>();
 }

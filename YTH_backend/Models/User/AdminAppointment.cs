@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace YTH_backend.Models.User;
 
-public class AdminAppointments
+public class AdminAppointment
 {
     [Key]
     public Guid Id { get; set; }
