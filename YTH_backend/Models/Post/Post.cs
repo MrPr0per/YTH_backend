@@ -15,11 +15,11 @@ public class Post
     [ForeignKey("AuthorId")]
     public User.User User { get; set; } = null!;
     
-    [Required]
-    public Guid CategoryId { get; set; }
-    
-    [ForeignKey("CategoryId")]
-    public PostCategory Category { get; set; } =  null!;
+    // [Required]
+    // public Guid CategoryId { get; set; }
+    //
+    // [ForeignKey("CategoryId")]
+    // public PostCategory Category { get; set; } =  null!;
     
     [Required, MaxLength(512)]
     public string Title { get; set; } = null!;
@@ -34,5 +34,5 @@ public class Post
     
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     
-    public ICollection<PostTag> Tags { get; set; } = new List<PostTag>();
+    // public ICollection<PostTag> Tags { get; set; } = new List<PostTag>();
 }

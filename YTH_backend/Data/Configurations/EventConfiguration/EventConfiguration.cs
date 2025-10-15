@@ -14,12 +14,12 @@ public class EventConfiguration : IEntityTypeConfiguration<Event>
         builder
             .HasKey(e => e.Id);
         
-        builder
-            .HasOne(x => x.Category)
-            .WithMany(x => x.Events)
-            .HasForeignKey(x => x.CategoryId)
-            .HasConstraintName("fk_events_categories")
-            .OnDelete(DeleteBehavior.Restrict);
+        // builder
+        //     .HasOne(x => x.Category)
+        //     .WithMany(x => x.Events)
+        //     .HasForeignKey(x => x.CategoryId)
+        //     .HasConstraintName("fk_events_categories")
+        //     .OnDelete(DeleteBehavior.Restrict);
         
         builder
             .Property(e => e.Id)
@@ -38,9 +38,9 @@ public class EventConfiguration : IEntityTypeConfiguration<Event>
             .HasColumnType("text")
             .HasColumnName("description");
         
-        builder
-            .Property(e => e.CategoryId)
-            .HasColumnName("category_id");
+        // builder
+        //     .Property(e => e.CategoryId)
+        //     .HasColumnName("category_id");
         
         builder
             .Property(x => x.ShortDescription)
@@ -68,10 +68,10 @@ public class EventConfiguration : IEntityTypeConfiguration<Event>
             .HasColumnType("timestamp with time zone")
             .HasColumnName("date");
         
-        builder
-            .HasMany(x => x.Tags)
-            .WithMany(x => x.Events)
-            .UsingEntity(j => j.ToTable("events_tags"));
+        // builder
+        //     .HasMany(x => x.Tags)
+        //     .WithMany(x => x.Events)
+        //     .UsingEntity(j => j.ToTable("events_tags"));
         
         builder
             .HasMany(x => x.Users)
@@ -82,9 +82,9 @@ public class EventConfiguration : IEntityTypeConfiguration<Event>
             .HasIndex(x => x.Date)
             .HasDatabaseName("IX_date");
         
-        builder
-            .HasIndex(x => x.CategoryId)
-            .HasDatabaseName("IX_category_id");
+        // builder
+        //     .HasIndex(x => x.CategoryId)
+        //     .HasDatabaseName("IX_category_id");
         
         builder
             .HasIndex(x => x.Name)

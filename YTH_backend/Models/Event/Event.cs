@@ -9,11 +9,11 @@ public class Event
     [Key]
     public Guid Id { get; set; }
     
-    [Required]
-    public Guid CategoryId { get; set; }
-    
-    [ForeignKey("CategoryId")]
-    public EventCategory Category { get; set; } = null!;
+    // [Required]
+    // public Guid CategoryId { get; set; }
+    //
+    // [ForeignKey("CategoryId")]
+    // public EventCategory Category { get; set; } = null!;
     
     [Required, MaxLength(512)]
     public string Name { get; set; } = null!;
@@ -34,5 +34,5 @@ public class Event
 
     public ICollection<User.User> Users { get; set; } = new List<User.User>();
     
-    public ICollection<EventTag> Tags { get; set; } = new List<EventTag>();
+    // public ICollection<EventTag> Tags { get; set; } = new List<EventTag>();
 }

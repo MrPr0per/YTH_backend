@@ -18,15 +18,15 @@ public class CourseConfiguration : IEntityTypeConfiguration<Course>
             .ValueGeneratedOnAdd()
             .HasColumnName("id");
         
-        builder
-            .HasIndex(x => x.CategoryId);
-        
-        builder
-            .HasOne(x => x.Category)
-            .WithMany(x => x.Courses)
-            .HasForeignKey(x => x.CategoryId)
-            .HasConstraintName("fk_courses_categories")
-            .OnDelete(DeleteBehavior.Restrict);
+        // builder
+        //     .HasIndex(x => x.CategoryId);
+        //
+        // builder
+        //     .HasOne(x => x.Category)
+        //     .WithMany(x => x.Courses)
+        //     .HasForeignKey(x => x.CategoryId)
+        //     .HasConstraintName("fk_courses_categories")
+        //     .OnDelete(DeleteBehavior.Restrict);
 
         builder
             .Property(x => x.Name)
@@ -52,9 +52,9 @@ public class CourseConfiguration : IEntityTypeConfiguration<Course>
             .HasColumnType("varchar(512)")
             .HasColumnName("link");
         
-        builder
-            .Property(x => x.CategoryId)
-            .HasColumnName("category_id");
+        // builder
+        //     .Property(x => x.CategoryId)
+        //     .HasColumnName("category_id");
         
         builder
             .Property(x => x.CreatedAt)
@@ -63,19 +63,19 @@ public class CourseConfiguration : IEntityTypeConfiguration<Course>
             .HasDefaultValueSql("now()")
             .HasColumnName("created_at");
 
-        builder
-            .HasMany(c => c.CourseTags)
-            .WithMany(t => t.Courses)
-            .UsingEntity(j => j.ToTable("courses_tags"));
+        // builder
+        //     .HasMany(c => c.CourseTags)
+        //     .WithMany(t => t.Courses)
+        //     .UsingEntity(j => j.ToTable("courses_tags"));
         
         builder
             .HasMany(x => x.Users)
             .WithMany(x => x.Courses)
             .UsingEntity(j => j.ToTable("courses_users"));
         
-        builder
-            .HasIndex(x => x.CategoryId)
-            .HasDatabaseName("IX_category_id");
+        // builder
+        //     .HasIndex(x => x.CategoryId)
+        //     .HasDatabaseName("IX_category_id");
         
         builder
             .HasIndex(x => x.Name)

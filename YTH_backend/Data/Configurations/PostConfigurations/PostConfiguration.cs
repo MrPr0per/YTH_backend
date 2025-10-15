@@ -56,16 +56,16 @@ public class PostConfiguration : IEntityTypeConfiguration<Post>
             .Property(x => x.AuthorId)
             .HasColumnName("author_id");
         
-        builder
-            .Property(x => x.CategoryId)
-            .HasColumnName("category_id");
-        
-        builder
-            .HasOne(x => x.Category)
-            .WithMany(x => x.Posts)
-            .HasForeignKey(x => x.CategoryId)
-            .HasConstraintName("fk_posts_categories")
-            .OnDelete(DeleteBehavior.Restrict);
+        // builder
+        //     .Property(x => x.CategoryId)
+        //     .HasColumnName("category_id");
+        //
+        // builder
+        //     .HasOne(x => x.Category)
+        //     .WithMany(x => x.Posts)
+        //     .HasForeignKey(x => x.CategoryId)
+        //     .HasConstraintName("fk_posts_categories")
+        //     .OnDelete(DeleteBehavior.Restrict);
         
         builder
             .HasOne(x => x.User)
@@ -74,14 +74,14 @@ public class PostConfiguration : IEntityTypeConfiguration<Post>
             .HasConstraintName("fk_posts_users")
             .OnDelete(DeleteBehavior.Restrict);
         
-        builder
-            .HasMany(x => x.Tags)
-            .WithMany(x => x.Posts)
-            .UsingEntity(j => j.ToTable("posts_tags"));
-        
-        builder
-            .HasIndex(x => x.CategoryId)
-            .HasDatabaseName("IX_category_id");
+        // builder
+        //     .HasMany(x => x.Tags)
+        //     .WithMany(x => x.Posts)
+        //     .UsingEntity(j => j.ToTable("posts_tags"));
+        //
+        // builder
+        //     .HasIndex(x => x.CategoryId)
+        //     .HasDatabaseName("IX_category_id");
         
         builder
             .HasIndex(x => x.Title)

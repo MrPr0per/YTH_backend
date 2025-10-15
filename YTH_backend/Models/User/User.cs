@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using YTH_backend.Data.Configurations.UserConfiguration;
 using YTH_backend.Enums;
 
 namespace YTH_backend.Models.User;
@@ -19,9 +20,6 @@ public class User
     
     [Required]
     public string PasswordSalt { get; set; } = null!;
-
-    [Required] 
-    public bool IsEmailConfirmed { get; set; } = false;
     
     [Required]
     public Roles Role { get; set; }
@@ -33,6 +31,10 @@ public class User
     public string MoodlePassword { get; set; } = null!;
     
     public string MoodlePasswordSalt { get; set; } = null!;
+    
+    public ICollection<Notification> Notifications { get; set; } = new List<Notification>();
+    
+    public ICollection<Request> Requests { get; set; } = new List<Request>();
     
     public ICollection<Event.Event> Events { get; set; } = new List<Event.Event>();
     

@@ -81,13 +81,6 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
             .HasColumnName("moodle_password_salt");
         
         builder
-            .Property(x => x.IsEmailConfirmed)
-            .IsRequired()
-            .HasDefaultValue(false)
-            .HasColumnType("boolean")
-            .HasColumnName("is_email_confirmed");
-        
-        builder
             .HasMany(x => x.Events)
             .WithMany(x => x.Users)
             .UsingEntity(j => j.ToTable("users_events"));
