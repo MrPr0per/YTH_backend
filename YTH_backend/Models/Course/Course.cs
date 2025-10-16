@@ -17,8 +17,8 @@ public class Course
     [Required,  MaxLength(512)]
     public string Name { get; set; } = null!;
     
-    [MaxLength(512)]
-    public string? ShortDescription { get; set; }
+    // [MaxLength(512)]
+    // public string? ShortDescription { get; set; }
     
     public string? Description { get; set; }
     

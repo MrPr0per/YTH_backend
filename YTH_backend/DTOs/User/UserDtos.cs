@@ -2,7 +2,7 @@ using YTH_backend.Enums;
 
 namespace YTH_backend.DTOs.User;
 
-public record CreateUserRequest(string UserName, string Password);
+public record CreateUserRequestDto(string UserName, string Password);
 
 //TODO разобраться с этим
 
@@ -10,7 +10,7 @@ public record CreateUserRequest(string UserName, string Password);
 
 //public record PatchUser()
 
-public record AuthUserDtoRequest(string Login, string Password);
+public record AuthUserDtoRequestDto(string Login, string Password);
 
 public record SendVerificationEmailDtoRequest(string Email);
 

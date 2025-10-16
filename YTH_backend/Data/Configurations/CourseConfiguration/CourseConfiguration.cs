@@ -35,11 +35,11 @@ public class CourseConfiguration : IEntityTypeConfiguration<Course>
             .HasColumnType("varchar(512)")
             .HasColumnName("name");
         
-        builder
-            .Property(x => x.ShortDescription)
-            .HasMaxLength(512)
-            .HasColumnType("varchar(512)")
-            .HasColumnName("short_description");
+        // builder
+        //     .Property(x => x.ShortDescription)
+        //     .HasMaxLength(512)
+        //     .HasColumnType("varchar(512)")
+        //     .HasColumnName("short_description");
         
         builder
             .Property(x => x.Description)
