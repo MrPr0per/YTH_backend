@@ -16,12 +16,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Features\AdminAppointments\Handlers\" />
       <Folder Include="Features\AdminAppointments\Queries\" />
-      <Folder Include="Features\Courses\Handlers\" />
-      <Folder Include="Features\Events\Handlers\" />
-      <Folder Include="Features\Posts\Handlers\" />
-      <Folder Include="Features\Users\Handlers\" />
       <Folder Include="Features\Users\Queries\" />
     </ItemGroup>
 

@@ -14,6 +14,6 @@ public record AuthUserDtoRequestDto(string Login, string Password);
 
 public record SendVerificationEmailDtoRequest(string Email);
 
-public record UserChangePasswordDtoRequest(string OldPassword, string NewPassword);
+public record ChangePasswordDtoRequest(string OldPassword, string NewPassword);
 
-public record UserResetPasswordDtoRequest(string NewPassword);
+public record ResetPasswordDtoRequest(string NewPassword);
