@@ -14,10 +14,9 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     public DbSet<Event> Events => Set<Event>();
     public DbSet<EventCategory> EventCategories => Set<EventCategory>();
     public DbSet<EventTag> EventTags => Set<EventTag>();
-    public DbSet<Post>  Posts => Set<Post>();
+    public DbSet<Post> Posts => Set<Post>();
     public DbSet<PostCategory> PostCategories => Set<PostCategory>();
     public DbSet<PostTag> PostTags => Set<PostTag>();
-    public DbSet<AdminAppointment> AdminAppointments => Set<AdminAppointment>();
     public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
     public DbSet<User> Users => Set<User>();
     

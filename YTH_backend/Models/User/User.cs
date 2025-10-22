@@ -24,13 +24,13 @@ public class User
     [Required]
     public Roles Role { get; set; }
     
-    [MaxLength(256)]
-    public string MoodleLogin { get; set; } = null!;
-    
-    [MaxLength(256)]
-    public string MoodlePassword { get; set; } = null!;
-    
-    public string MoodlePasswordSalt { get; set; } = null!;
+    // [MaxLength(256)]
+    // public string MoodleLogin { get; set; } = null!;
+    //
+    // [MaxLength(256)]
+    // public string MoodlePassword { get; set; } = null!;
+    //
+    // public string MoodlePasswordSalt { get; set; } = null!;
     
     public ICollection<Notification> Notifications { get; set; } = new List<Notification>();
     
@@ -41,12 +41,6 @@ public class User
     public ICollection<Course.Course> Courses { get; set; } = new List<Course.Course>();
     
     public ICollection<RefreshToken> RefreshTokens { get; set; } = new List<RefreshToken>();
-    
-    public ICollection<AdminAppointment> AppointmentsMade { get; set; } = new List<AdminAppointment>();
-    
-    public ICollection<AdminAppointment> AppointmentsReceived { get; set; } = new List<AdminAppointment>();
-    
-    public ICollection<AdminAppointment>? AppointmentsRevoked { get; set; } = new List<AdminAppointment>();
     
     public ICollection<Post.Post> Posts { get; set; } = new List<Post.Post>();
 }

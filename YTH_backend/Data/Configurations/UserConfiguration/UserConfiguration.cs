@@ -63,22 +63,22 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
             .HasColumnType("varchar(50)")
             .HasColumnName("role");
         
-        builder
-            .Property(x => x.MoodleLogin)
-            .HasMaxLength(256)
-            .HasColumnType("varchar(256)")
-            .HasColumnName("moodle_login");
-        
-        builder
-            .Property(x => x.MoodlePassword)
-            .HasMaxLength(256)
-            .HasColumnType("varchar(256)")
-            .HasColumnName("moodle_password");
-        
-        builder
-            .Property(x => x.MoodlePasswordSalt)
-            .HasColumnType("text")
-            .HasColumnName("moodle_password_salt");
+        // builder
+        //     .Property(x => x.MoodleLogin)
+        //     .HasMaxLength(256)
+        //     .HasColumnType("varchar(256)")
+        //     .HasColumnName("moodle_login");
+        //
+        // builder
+        //     .Property(x => x.MoodlePassword)
+        //     .HasMaxLength(256)
+        //     .HasColumnType("varchar(256)")
+        //     .HasColumnName("moodle_password");
+        //
+        // builder
+        //     .Property(x => x.MoodlePasswordSalt)
+        //     .HasColumnType("text")
+        //     .HasColumnName("moodle_password_salt");
         
         builder
             .HasMany(x => x.Events)
