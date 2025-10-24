@@ -5,4 +5,4 @@ using YTH_backend.Models;
 
 namespace YTH_backend.Features.Events.Queries;
 
-public record GetAllEventsQuery(int From, int Take, OrderType OrderType) : IRequest<PagedResult<GetEventResponseDto>>;
+public record GetUserEventsQuery(Guid UserId, int From, int Take, OrderType OrderType) : IRequest<PagedResult<GetEventResponseDto>>;

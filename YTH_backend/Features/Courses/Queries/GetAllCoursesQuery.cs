@@ -6,4 +6,4 @@ using YTH_backend.Models.Course;
 
 namespace YTH_backend.Features.Courses.Queries;
 
-public record GetAllCoursesQuery(int From, int Take, OrderType OrderType) : IRequest<PagedResult<GetCoursesResponseDto>>;
+public record GetAllCoursesQuery(int From, int Take, OrderType OrderType) : IRequest<PagedResult<GetCourseResponseDto>>;

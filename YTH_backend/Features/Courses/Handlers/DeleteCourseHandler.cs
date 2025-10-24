@@ -1,14 +1,15 @@
 using MediatR;
 using YTH_backend.Data;
 using YTH_backend.Features.Courses.Commands;
+using YTH_backend.Features.Events.Commands;
 
 namespace YTH_backend.Features.Courses.Handlers;
 
-public class DeleteCourseFromUSerHandler(AppDbContext context) : IRequestHandler<DeleteCourseFromUserCommand>
+public class DeleteCourseHandler(AppDbContext context) : IRequestHandler<DeleteCourseCommand>
 {
     private readonly AppDbContext dbContext = context;
     
-    public async Task Handle(DeleteCourseFromUserCommand request, CancellationToken cancellationToken)
+    public Task Handle(DeleteCourseCommand request, CancellationToken cancellationToken)
     {
         throw new NotImplementedException();
     }

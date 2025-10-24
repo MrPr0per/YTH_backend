@@ -6,11 +6,11 @@ using YTH_backend.Models;
 
 namespace YTH_backend.Features.Courses.Handlers;
 
-public class GetAllCoursesHandler(AppDbContext context) : IRequestHandler<GetAllCoursesQuery, PagedResult<GetCourseResponseDto>>
+public class GetUserCoursesHandler(AppDbContext context) : IRequestHandler<GetUserCoursesQuery, PagedResult<GetCourseResponseDto>>
 {
     private readonly AppDbContext dbContext = context;
     
-    public async Task<PagedResult<GetCourseResponseDto>> Handle(GetAllCoursesQuery request, CancellationToken cancellationToken)
+    public Task<PagedResult<GetCourseResponseDto>> Handle(GetUserCoursesQuery request, CancellationToken cancellationToken)
     {
         throw new NotImplementedException();
     }

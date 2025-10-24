@@ -5,11 +5,11 @@ using YTH_backend.Features.Posts.Queries;
 
 namespace YTH_backend.Features.Posts.Handlers;
 
-public class GetPostHandler(AppDbContext context) : IRequestHandler<GetPostQuery, GetPostResponseDto>
+public class GetPostHandler(AppDbContext context) : IRequestHandler<GetPostByIdQuery, GetPostResponseDto>
 {
     private readonly AppDbContext dbContext = context;
     
-    public async Task<GetPostResponseDto> Handle(GetPostQuery request, CancellationToken cancellationToken)
+    public async Task<GetPostResponseDto> Handle(GetPostByIdQuery request, CancellationToken cancellationToken)
     {
         throw new NotImplementedException();
     }

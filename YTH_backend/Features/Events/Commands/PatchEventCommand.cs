@@ -5,4 +5,4 @@ using YTH_backend.DTOs.Event;
 
 namespace YTH_backend.Features.Events.Commands;
 
-public record PatchEventCommand(Guid CourseId, JsonPatchDocument<PatchEventsRequestDto> Patch) : IRequest;
+public record PatchEventCommand(Guid EventId, JsonPatchDocument<PatchEventRequestDto> Patch) : IRequest;

@@ -6,11 +6,11 @@ using YTH_backend.Models;
 
 namespace YTH_backend.Features.Events.Handlers;
 
-public class GetAllEventsHandler(AppDbContext context) : IRequestHandler<GetAllEventsQuery, PagedResult<GetEventsResponseDto>>
+public class GetAllEventsHandler(AppDbContext context) : IRequestHandler<GetAllEventsQuery, PagedResult<GetEventResponseDto>>
 {
     private readonly AppDbContext dbContext = context;
     
-    public async Task<PagedResult<GetEventsResponseDto>> Handle(GetAllEventsQuery request, CancellationToken cancellationToken)
+    public async Task<PagedResult<GetEventResponseDto>> Handle(GetAllEventsQuery request, CancellationToken cancellationToken)
     {
         throw new NotImplementedException();
     }
