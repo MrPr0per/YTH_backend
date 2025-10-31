@@ -15,6 +15,10 @@ public class RequestConfiguration : IEntityTypeConfiguration<Request>
             .HasKey(x => x.Id);
 
         builder
+            .HasIndex(x => x.UserId)
+            .HasDatabaseName("IX_requests_user_id");
+        
+        builder
             .Property(x => x.Id)
             .ValueGeneratedOnAdd()
             .HasColumnName("id");

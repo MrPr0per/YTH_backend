@@ -76,9 +76,5 @@ public class CourseConfiguration : IEntityTypeConfiguration<Course>
         // builder
         //     .HasIndex(x => x.CategoryId)
         //     .HasDatabaseName("IX_category_id");
-        
-        builder
-            .HasIndex(x => x.Name)
-            .HasDatabaseName("IX_name");
     }
 }

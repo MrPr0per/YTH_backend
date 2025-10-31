@@ -13,6 +13,10 @@ public class NotificationConfiguration : IEntityTypeConfiguration<Notification>
         
         builder
             .HasKey(x => x.Id);
+        
+        builder
+            .HasIndex(x => x.UserId)
+            .HasDatabaseName("IX_notifications_user_id");
 
         builder
             .Property(x => x.Id)

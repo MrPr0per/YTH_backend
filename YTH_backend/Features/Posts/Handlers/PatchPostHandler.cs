@@ -11,6 +11,27 @@ public class PatchPostHandler(AppDbContext context) : IRequestHandler<PatchPostC
     
     public async Task Handle(PatchPostCommand request, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        var id = request.PostId;
+        var post = await dbContext.Posts.FindAsync(id, cancellationToken);
+        
+        if (post == null)
+            throw new KeyNotFoundException($"Post with id:{id} not found");
+        
+        var dto = new PatchPostRequestDto(post.Title, post.ShortDescription, post.Description, post.Status, post.CreatedAt);
+        
+        request.Patch.ApplyTo(dto);
+        
+        if (dto.Title is not null)
+            post.Title = dto.Title;
+        if (dto.ShortDescription is not null)
+            post.ShortDescription = dto.ShortDescription;
+        if (dto.Description is not null)
+            post.Description = dto.Description;
+        if (dto.Status is not null)
+            post.Status = dto.Status.Value;
+        if (dto.CreatedAt is not null)
+            post.CreatedAt = dto.CreatedAt.Value;
+        
+        await dbContext.SaveChangesAsync(cancellationToken);
     }
 }

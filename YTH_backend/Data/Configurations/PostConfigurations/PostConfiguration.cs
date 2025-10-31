@@ -82,9 +82,5 @@ public class PostConfiguration : IEntityTypeConfiguration<Post>
         // builder
         //     .HasIndex(x => x.CategoryId)
         //     .HasDatabaseName("IX_category_id");
-        
-        builder
-            .HasIndex(x => x.Title)
-            .HasDatabaseName("IX_title");
     }
 }

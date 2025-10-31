@@ -1,6 +1,7 @@
 using MediatR;
 using YTH_backend.Data;
 using YTH_backend.Features.Posts.Commands;
+using YTH_backend.Models.Post;
 
 namespace YTH_backend.Features.Posts.Handlers;
 
@@ -10,6 +11,16 @@ public class CreatePostHandler(AppDbContext context): IRequestHandler<CreatePost
     
     public async Task Handle(CreatePostCommand request, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        var newPost = new Post
+        {
+            Title = request.Title,
+            Description = request.Description,
+            ShortDescription = request.ShortDescription,
+            AuthorId = request.AuthorId,
+            Status = request.Status,
+        };
+        
+        await dbContext.Posts.AddAsync(newPost, cancellationToken);
+        await dbContext.SaveChangesAsync(cancellationToken);
     }
 }

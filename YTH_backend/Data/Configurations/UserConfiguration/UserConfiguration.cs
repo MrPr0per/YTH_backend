@@ -29,10 +29,11 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
         builder
             .HasIndex(x => x.Email)
             .IsUnique()
-            .HasDatabaseName("UX_users_email");
+            .HasDatabaseName("IX_users_email");
         
         builder
             .HasIndex(x => x.UserName)
+            .IsUnique()
             .HasDatabaseName("IX_users_username");
         
         builder

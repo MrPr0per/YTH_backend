@@ -14,6 +14,10 @@ public class EventConfiguration : IEntityTypeConfiguration<Event>
         builder
             .HasKey(e => e.Id);
         
+        builder
+            .HasIndex(e => e.Date)
+            .HasDatabaseName("IX_notifications_date");
+        
         // builder
         //     .HasOne(x => x.Category)
         //     .WithMany(x => x.Events)
@@ -77,17 +81,9 @@ public class EventConfiguration : IEntityTypeConfiguration<Event>
             .HasMany(x => x.Users)
             .WithMany(x => x.Events)
             .UsingEntity(j => j.ToTable("events_users"));
-
-        builder
-            .HasIndex(x => x.Date)
-            .HasDatabaseName("IX_date");
         
         // builder
         //     .HasIndex(x => x.CategoryId)
         //     .HasDatabaseName("IX_category_id");
-        
-        builder
-            .HasIndex(x => x.Name)
-            .HasDatabaseName("IX_name");
     }
 }

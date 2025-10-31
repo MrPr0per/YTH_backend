@@ -15,6 +15,10 @@ public class RefreshTokenConfiguration : IEntityTypeConfiguration<RefreshToken>
             .HasKey(x => x.Id);
 
         builder
+            .HasIndex(x => x.UserId)
+            .HasDatabaseName("IX_refresh_tokens_users_id");
+
+        builder
             .Property(x => x.Id)
             .ValueGeneratedOnAdd()
             .HasColumnName("id");

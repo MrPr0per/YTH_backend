@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
@@ -34,7 +35,13 @@ public class PostsController(IMediator mediator) : ControllerBase
     [Authorize(Roles = "Admin")]
     public async Task<IActionResult> CreatePostController([FromBody] CreatePostRequestDto createPostRequestDto)
     {
-        var command = new CreatePostCommand(createPostRequestDto.Title, createPostRequestDto.Description, createPostRequestDto.Status, createPostRequestDto.CreatedAt);
+        var userIdClaim = User.FindFirst("sub")?.Value
+                          ?? User.FindFirst(ClaimTypes.NameIdentifier)?.Value
+                          ?? throw new UnauthorizedAccessException("User ID not found in token");
+
+        var userId = Guid.Parse(userIdClaim);
+        
+        var command = new CreatePostCommand(userId, createPostRequestDto.Title, createPostRequestDto.ShortDescription, createPostRequestDto.Description, createPostRequestDto.Status);
         throw new NotImplementedException();
     }
 

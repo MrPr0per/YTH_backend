@@ -10,6 +10,14 @@ public class DeletePostHandler(AppDbContext context) : IRequestHandler<DeletePos
     
     public async Task Handle(DeletePostCommand request, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        var post = await dbContext.Posts.FindAsync(request.PostId, cancellationToken);
+        
+        if (post != null)
+        { 
+            dbContext.Posts.Remove(post);
+            await dbContext.SaveChangesAsync(cancellationToken);
+        }
+
+        throw new KeyNotFoundException($"Post with id:{request.PostId} not found");
     }
 }
