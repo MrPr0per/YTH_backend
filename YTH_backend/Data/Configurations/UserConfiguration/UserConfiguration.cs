@@ -44,7 +44,7 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
             .HasColumnName("email");
         
         builder
-            .Property(x => x.Password)
+            .Property(x => x.PasswordHash)
             .IsRequired()
             .HasMaxLength(256)
             .HasColumnType("varchar(256)")

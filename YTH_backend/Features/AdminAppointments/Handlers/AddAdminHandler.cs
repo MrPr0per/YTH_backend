@@ -1,5 +1,6 @@
 using MediatR;
 using YTH_backend.Data;
+using YTH_backend.Enums;
 using YTH_backend.Features.AdminAppointments.Commands;
 using YTH_backend.Models.User;
 
@@ -11,6 +12,13 @@ public class AddAdminHandler(AppDbContext context) : IRequestHandler<AddAdminCom
     
     public async Task Handle(AddAdminCommand request, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        var user = await dbContext.Users.FindAsync(request.UserId, cancellationToken);
+        
+        if (user == null)
+            throw new KeyNotFoundException($"User with id {request.UserId} not found");
+
+        user.Role = Roles.Admin;
+        
+        await dbContext.SaveChangesAsync(cancellationToken);
     }
 }

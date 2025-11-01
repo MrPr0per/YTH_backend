@@ -2,9 +2,11 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using YTH_backend.Data;
 using YTH_backend.Features.Users.Commands;
+using YTH_backend.Infrastructure;
 using YTH_backend.Models.User;
 
 namespace YTH_backend.Features.Users.Handlers;
@@ -15,9 +17,23 @@ public class LoginUserHandler(AppDbContext context) : IRequestHandler<LoginUserC
     
     public async Task Handle(LoginUserCommand request, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
-    }
+        var user = await dbContext.Users.FirstOrDefaultAsync(u => u.UserName == request.Login, cancellationToken);
+        
+        if (user == null)
+            throw new KeyNotFoundException($"User {request.Login} not found");
 
+        var passwordHash = PasswordHasher.HashPassword(request.Password, user.PasswordSalt);
+        
+        if (passwordHash != user.PasswordHash)
+            throw new UnauthorizedAccessException("Password doesn't match");
+        
+        throw new NotImplementedException();
+
+    }
+    //TODO надо написать реализацию генерации JWT
+    
+    
+    
     // private string GenerateToken(User user)
     // {
     //     var claims = new List<Claim>
