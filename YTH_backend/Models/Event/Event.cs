@@ -21,7 +21,7 @@ public class Event
     [Required]
     public DateTime Date { get; set; }
     
-    public string? Description { get; set; } = null!;
+    public string? Description { get; set; }
     
     [MaxLength(512)]
     public string? ShortDescription { get; set; }

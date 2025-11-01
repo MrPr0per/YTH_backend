@@ -16,7 +16,6 @@ public class GetPostHandler(AppDbContext context) : IRequestHandler<GetPostByIdQ
         if (post != null)
             return new GetPostResponseDto(post.AuthorId, post.Title, post.ShortDescription, post.Description, post.Status, post.CreatedAt);
         
-
         throw new KeyNotFoundException($"Post with id:{request.PostId} not found");
     }
 }

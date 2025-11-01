@@ -11,6 +11,17 @@ public class GetEventHandler(AppDbContext context) : IRequestHandler<GetEventQue
     
     public async Task<GetEventResponseDto> Handle(GetEventQuery request, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        var ev = await dbContext.Events.FindAsync(request.EventId, cancellationToken);
+        
+        if (ev == null)
+            throw new KeyNotFoundException($"Event with id {request.EventId} not found");
+
+        return new GetEventResponseDto(
+            ev.Name,
+            ev.Description,
+            ev.ShortDescription,
+            ev.Type,
+            ev.Date,
+            ev.Address);
     }
 }

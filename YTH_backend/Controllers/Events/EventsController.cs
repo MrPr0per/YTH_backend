@@ -33,7 +33,7 @@ public class EventsController(IMediator mediator) : ControllerBase
     [Authorize(Roles = "Admin")]
     public async Task<IActionResult> AddEventController([FromBody] AddEventRequestDto addEventRequestDto)
     {
-        var command = new AddEventCommand(addEventRequestDto.Name, addEventRequestDto.Description, addEventRequestDto.Type, addEventRequestDto.Date, addEventRequestDto.Address);
+        var command = new AddEventCommand(addEventRequestDto.Name, addEventRequestDto.Description, addEventRequestDto.ShortDescription, addEventRequestDto.Type, addEventRequestDto.Date, addEventRequestDto.Address);
         throw new NotImplementedException();
     }
 
