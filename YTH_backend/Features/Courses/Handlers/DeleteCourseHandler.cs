@@ -9,8 +9,14 @@ public class DeleteCourseHandler(AppDbContext context) : IRequestHandler<DeleteC
 {
     private readonly AppDbContext dbContext = context;
     
-    public Task Handle(DeleteCourseCommand request, CancellationToken cancellationToken)
+    public async Task Handle(DeleteCourseCommand request, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        var course = await dbContext.Courses.FindAsync(request.CourseId, cancellationToken);
+        
+        if (course == null)
+            throw new KeyNotFoundException($"Course with id {request.CourseId} not found");
+        
+        dbContext.Courses.Remove(course);
+        await dbContext.SaveChangesAsync(cancellationToken);
     }
 }

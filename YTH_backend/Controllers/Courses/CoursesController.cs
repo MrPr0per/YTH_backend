@@ -33,7 +33,7 @@ public class CoursesController(IMediator mediator) : ControllerBase
     [Authorize(Roles = "Admin")]
     public async Task<IActionResult> AddCourseController([FromBody] AddCourseRequestDto addCourseRequestDto)
     {
-        var command = new AddCourseCommand(addCourseRequestDto.Name, addCourseRequestDto.Description, addCourseRequestDto.Link, addCourseRequestDto.CreatedAt);
+        var command = new AddCourseCommand(addCourseRequestDto.Name, addCourseRequestDto.Description, addCourseRequestDto.Link);
         throw new NotImplementedException();
     }
 
