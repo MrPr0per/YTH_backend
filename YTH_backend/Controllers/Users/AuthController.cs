@@ -18,8 +18,15 @@ public class AuthController(IMediator mediator) : ControllerBase
         var command = new LoginUserCommand(loginUserRequestDto.Login, loginUserRequestDto.Password);
         throw new NotImplementedException();
     }
+    
+    [HttpPost("register")]
+    public async Task<IActionResult> CreateUserController([FromBody] CreateUserRequestDto createUserRequestDto)
+    {
+        //var command = new CreateUserCommand(createUserRequestDto.UserName, createUserRequestDto.Password, createUserRequestDto.Email);
+        throw new NotImplementedException();
+    }
 
-    [HttpPost("sendVerificationEmail")]
+    [HttpPost("sendVerificationEmailForRegistration")]
     public async Task<IActionResult> SendVerificationEmailController(
         [FromBody] SendVerificationEmailRequestDto sendVerificationEmailRequestDto)
     {

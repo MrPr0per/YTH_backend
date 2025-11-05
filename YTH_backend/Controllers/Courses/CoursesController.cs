@@ -22,14 +22,14 @@ public class CoursesController(IMediator mediator) : ControllerBase
         throw new NotImplementedException();
     }
     
-    [HttpGet()]
+    [HttpGet]
     public async Task<IActionResult> GetAllCoursesController([FromQuery] int from = 0, [FromQuery] int take = 10, [FromQuery] OrderType orderType = OrderType.Asc)
     {
         var query = new GetAllCoursesQuery(from, take, orderType);
         throw new NotImplementedException();
     }
 
-    [HttpPost()]
+    [HttpPost]
     [Authorize(Roles = "Admin")]
     public async Task<IActionResult> AddCourseController([FromBody] AddCourseRequestDto addCourseRequestDto)
     {

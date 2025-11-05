@@ -1,6 +1,8 @@
 using System.ComponentModel.DataAnnotations;
 using YTH_backend.Data.Configurations.UserConfiguration;
 using YTH_backend.Enums;
+using YTH_backend.Models.Course;
+using YTH_backend.Models.Event;
 
 namespace YTH_backend.Models.User;
 

@@ -2,6 +2,7 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using YTH_backend.Data;
 using YTH_backend.Features.Courses.Commands;
+using YTH_backend.Models.Course;
 using YTH_backend.Models.User;
 
 namespace YTH_backend.Features.Courses.Handlers;

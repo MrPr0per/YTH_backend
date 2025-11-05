@@ -1,8 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using YTH_backend.Enums;
 
-namespace YTH_backend.Models.User;
+namespace YTH_backend.Models.Course;
 
 public class UserCourseRegistration
 {
@@ -16,11 +15,11 @@ public class UserCourseRegistration
     public Guid UserId { get; set; }
     
     [ForeignKey(nameof(UserId))]
-    public User User { get; set; } = null!;
+    public User.User User { get; set; } = null!;
     
     [Required]
     public Guid CourseId { get; set; }
     
     [ForeignKey(nameof(CourseId))]
-    public Course.Course Course { get; set; } = null!;
+    public Models.Course.Course Course { get; set; } = null!;
 }

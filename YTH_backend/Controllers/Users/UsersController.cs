@@ -10,6 +10,7 @@ using YTH_backend.Features.Courses.Queries;
 using YTH_backend.Features.Events.Commands;
 using YTH_backend.Features.Events.Queries;
 using YTH_backend.Features.Users.Commands;
+using YTH_backend.Features.Users.Queries;
 using YTH_backend.Models;
 
 namespace YTH_backend.Controllers.Users;
@@ -20,10 +21,17 @@ public class UsersController(IMediator mediator) : ControllerBase
 {
     private readonly IMediator mediator = mediator;
 
-    [HttpPost]
-    public async Task<IActionResult> CreateUserController([FromBody] CreateUserRequestDto createUserRequestDto)
+    [HttpGet]
+    public async Task<IActionResult> GetPersonalDataController()
     {
-        var command = new CreateUserCommand(createUserRequestDto.UserName, createUserRequestDto.Password, createUserRequestDto.Email);
+        var query = new GetPersonalDataQuery();
+        throw new NotImplementedException();
+    }
+
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetUserController(Guid id)
+    {
+        var query = new GetUserQuery(id);
         throw new NotImplementedException();
     }
 
@@ -33,18 +41,11 @@ public class UsersController(IMediator mediator) : ControllerBase
         var query = new GetUserEventsQuery(id, from, take, orderType);
         throw new NotImplementedException();
     }
-    
-    [HttpGet("{id}/courses")]
-    public async Task<IActionResult> GetUserCoursesController(Guid id, [FromQuery] int from = 0, [FromQuery] int take = 10, [FromQuery] OrderType orderType = OrderType.Asc)
-    {
-        var query = new GetUserCoursesQuery(id, from, take, orderType);
-        throw new NotImplementedException();
-    }
 
-    [HttpPost("{id}/courses/{courseId}")]
-    public async Task<IActionResult> AddCourseToUserController(Guid id, Guid courseId)
+    [HttpPost("{id}/anonymize")]
+    public async Task<IActionResult> AnonimyzeUserController(Guid id)
     {
-        var command = new AddCourseToUserCommand(id, courseId);
+        var command = new AnonymizeUserCommand(id);
         throw new NotImplementedException();
     }
     
@@ -66,6 +67,13 @@ public class UsersController(IMediator mediator) : ControllerBase
     public async Task<IActionResult> DeleteCourseFromUserController(Guid id, Guid eventId)
     {
         var command = new DeleteCourseFromUserCommand(id, eventId);
+        throw new NotImplementedException();
+    }
+    
+    [HttpPatch("{id}")]
+    public async Task<IActionResult> PatchUserController(Guid id,
+        [FromBody] JsonPatchDocument<PatchUserRequestDto> patchUserRequestDto)
+    {
         throw new NotImplementedException();
     }
 }

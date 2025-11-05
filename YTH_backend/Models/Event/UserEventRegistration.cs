@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace YTH_backend.Models.User;
+namespace YTH_backend.Models.Event;
 
 public class UserEventRegistration
 {
@@ -15,11 +15,11 @@ public class UserEventRegistration
     public Guid UserId { get; set; }
     
     [ForeignKey(nameof(UserId))]
-    public User User { get; set; } = null!;
+    public User.User User { get; set; } = null!;
     
     [Required]
     public Guid EventId { get; set; }
     
     [ForeignKey(nameof(EventId))]
-    public Event.Event Event { get; set; } = null!;
+    public Models.Event.Event Event { get; set; } = null!;
 }

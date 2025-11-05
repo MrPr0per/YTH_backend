@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using YTH_backend.Models.Event;
 using YTH_backend.Models.User;
 
 namespace YTH_backend.Data.Configurations.UserConfiguration;
