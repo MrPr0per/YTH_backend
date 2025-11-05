@@ -34,11 +34,13 @@ public class User
     
     public ICollection<Notification> Notifications { get; set; } = new List<Notification>();
     
-    public ICollection<Request> Requests { get; set; } = new List<Request>();
+    public ICollection<ExpertApplication> ExpertApplications { get; set; } = new List<ExpertApplication>();
     
-    public ICollection<Event.Event> Events { get; set; } = new List<Event.Event>();
+    public ICollection<ExpertApplicationResolution> ExpertApplicationResolutions { get; set; } = new List<ExpertApplicationResolution>();
     
-    public ICollection<Course.Course> Courses { get; set; } = new List<Course.Course>();
+    public ICollection<UserEventRegistration> UserEventRegistration { get; set; } = new List<UserEventRegistration>();
+    
+    public ICollection<UserCourseRegistration> UserCourseRegistration { get; set; } = new List<UserCourseRegistration>();
     
     public ICollection<RefreshToken> RefreshTokens { get; set; } = new List<RefreshToken>();
     

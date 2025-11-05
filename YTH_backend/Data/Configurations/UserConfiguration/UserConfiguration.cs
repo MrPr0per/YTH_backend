@@ -82,13 +82,16 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
         //     .HasColumnName("moodle_password_salt");
         
         builder
-            .HasMany(x => x.Events)
-            .WithMany(x => x.Users)
-            .UsingEntity(j => j.ToTable("users_events"));
+            .HasMany(x => x.UserCourseRegistration)
+            .WithOne(x => x.User)
+            .HasForeignKey(x => x.UserId)
+            .HasConstraintName("fk_users_user_course_registration")
+            .OnDelete(DeleteBehavior.Cascade);
         
         builder
-            .HasMany(x => x.Courses)
-            .WithMany(x => x.Users)
-            .UsingEntity(j => j.ToTable("users_courses"));
+            .HasMany(x => x.UserEventRegistration)
+            .WithOne(x => x.User)
+            .HasConstraintName("fk_users_user_event_registration")
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

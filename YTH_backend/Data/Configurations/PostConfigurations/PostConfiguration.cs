@@ -26,14 +26,15 @@ public class PostConfiguration : IEntityTypeConfiguration<Post>
             .HasColumnType("varchar(512)")
             .HasColumnName("title");
         
-        builder
-            .Property(c => c.ShortDescription)
-            .HasMaxLength(512)
-            .HasColumnType("varchar(512)")
-            .HasColumnName("short_description");
+        // builder
+        //     .Property(c => c.ShortDescription)
+        //     .HasMaxLength(512)
+        //     .HasColumnType("varchar(512)")
+        //     .HasColumnName("short_description");
         
         builder
             .Property(x => x.Description)
+            .IsRequired()
             .HasColumnType("text")
             .HasColumnName("description");
         

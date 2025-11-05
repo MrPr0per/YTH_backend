@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using YTH_backend.Models.User;
 
 namespace YTH_backend.Models.Course;
 
@@ -20,7 +21,8 @@ public class Course
     // [MaxLength(512)]
     // public string? ShortDescription { get; set; }
     
-    public string? Description { get; set; }
+    [Required]
+    public string Description { get; set; }
     
     [Required]
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
@@ -30,5 +32,5 @@ public class Course
     
     // public ICollection<CourseTag> CourseTags { get; set; } = new List<CourseTag>();
     
-    public ICollection<User.User> Users { get; set; } = new List<User.User>();
+    public ICollection<UserCourseRegistration> UserCourseRegistration { get; set; } = new List<UserCourseRegistration>();
 }

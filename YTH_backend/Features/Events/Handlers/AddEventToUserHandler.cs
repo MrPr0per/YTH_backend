@@ -2,6 +2,7 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using YTH_backend.Data;
 using YTH_backend.Features.Events.Commands;
+using YTH_backend.Models.User;
 
 namespace YTH_backend.Features.Events.Handlers;
 
@@ -11,23 +12,31 @@ public class AddEventToUserHandler(AppDbContext context) : IRequestHandler<AddEv
     
     public async Task Handle(AddEventToUserCommand request, CancellationToken cancellationToken)
     {
-        var user = await dbContext.Users
-            .Include(u => u.Events) 
-            .FirstOrDefaultAsync(u => u.Id == request.UserId, cancellationToken);
+        var userExists = await dbContext.Users
+            .AnyAsync(u => u.Id == request.UserId, cancellationToken);
 
-        if (user == null) 
+        if (!userExists)
             throw new KeyNotFoundException($"User with id: {request.UserId} not found");
 
-        var ev = await dbContext.Events
-            .Include(e => e.Users) 
-            .FirstOrDefaultAsync(e => e.Id == request.EventId, cancellationToken);
+        var eventExists = await dbContext.Events
+            .AnyAsync(e => e.Id == request.EventId, cancellationToken);
 
-        if (ev == null)
+        if (eventExists)
             throw new KeyNotFoundException($"Event with id: {request.EventId} not found");
 
-        if (!user.Events.Any(e => e.Id == ev.Id))
+        var alreadyRegistered = await dbContext.UserEventRegistrations
+            .AnyAsync(r => r.UserId == request.UserId && r.EventId == request.EventId, cancellationToken);
+        
+        if (!alreadyRegistered)
         {
-            user.Events.Add(ev);
+            var registration = new UserEventRegistration
+            {
+                Id = Guid.NewGuid(),
+                UserId = request.UserId,
+                EventId = request.EventId,
+            };
+            
+            dbContext.UserEventRegistrations.Add(registration);
             await dbContext.SaveChangesAsync(cancellationToken);
         }
     }

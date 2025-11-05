@@ -11,7 +11,7 @@ public class RefreshToken
     [Required]
     public Guid UserId { get; set; }
     
-    [ForeignKey("UserId")]
+    [ForeignKey(nameof(UserId))]
     public Models.User.User User { get; set; } = null!;
     
     [Required]

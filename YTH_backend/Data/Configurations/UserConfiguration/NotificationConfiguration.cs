@@ -22,6 +22,20 @@ public class NotificationConfiguration : IEntityTypeConfiguration<Notification>
             .Property(x => x.Id)
             .ValueGeneratedOnAdd()
             .HasColumnName("id");
+
+        builder
+            .Property(x => x.CreatedAt)
+            .IsRequired()
+            .HasColumnType("timestamp with time zone")
+            .HasDefaultValueSql("now()")
+            .HasColumnName("created_at");
+        
+        builder
+            .Property(x => x.Title)
+            .IsRequired()
+            .HasMaxLength(256)
+            .HasColumnType("varchar(256)")
+            .HasColumnName("title");
         
         builder
             .Property(x => x.UserId)
@@ -29,10 +43,17 @@ public class NotificationConfiguration : IEntityTypeConfiguration<Notification>
             .HasColumnName("user_id");
         
         builder
-            .Property(x => x.Message)
+            .Property(x => x.NotificationText)
             .IsRequired()
-            .HasMaxLength(256)
-            .HasColumnName("message");
+            .HasColumnType("text")
+            .HasColumnName("notification_text");
+        
+        builder
+            .Property(x => x.IsRead)
+            .IsRequired()
+            .HasDefaultValue("false")
+            .HasColumnType("boolean")
+            .HasColumnName("is_read");
         
         builder
             .HasOne(x => x.User)

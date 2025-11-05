@@ -14,24 +14,30 @@ public class GetUserEventsHandler(AppDbContext context) : IRequestHandler<GetUse
     
     public async Task<PagedResult<GetEventResponseDto>> Handle(GetUserEventsQuery request, CancellationToken cancellationToken)
     {
-        var user = await dbContext.Users
-            .Include(u => u.Events)
-            .FirstOrDefaultAsync(u => u.Id == request.UserId, cancellationToken);
-        
-        if (user == null)
+        var userExists = await dbContext.Users
+            .AnyAsync(u => u.Id == request.UserId, cancellationToken);
+
+        if (!userExists)
             throw new KeyNotFoundException($"User with id: {request.UserId} not found");
 
+        var from = request.From < 1 ? 1 : request.From;
+        var skip = from - 1;
+
+        var eventsQuery = dbContext.UserEventRegistrations
+            .Where(r => r.UserId == request.UserId)
+            .Select(r => r.Event)
+            .AsQueryable();
+        
         var query = request.OrderType == OrderType.Asc
-            ? user.Events.OrderBy(e => e.Date)
-            : user.Events.OrderByDescending(e => e.Date);
+            ? eventsQuery.OrderBy(e => e.Date)
+            : eventsQuery.OrderByDescending(e => e.Date);
 
         var data = query
-            .Skip(request.From - 1)
+            .Skip(skip)
             .Take(request.Take)
             .Select(ev => new GetEventResponseDto(
                 ev.Name,
                 ev.Description,
-                ev.ShortDescription,
                 ev.Type,
                 ev.Date,
                 ev.Address))

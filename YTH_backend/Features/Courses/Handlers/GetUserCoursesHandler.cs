@@ -14,19 +14,26 @@ public class GetUserCoursesHandler(AppDbContext context) : IRequestHandler<GetUs
     
     public async Task<PagedResult<GetCourseResponseDto>> Handle(GetUserCoursesQuery request, CancellationToken cancellationToken)
     {
-        var user = await dbContext.Users
-            .Include(u => u.Courses)
-            .FirstOrDefaultAsync(u => u.Id == request.UserId, cancellationToken);
+        var userExists = await dbContext.Users
+            .AnyAsync(u => u.Id == request.UserId, cancellationToken);
+
+        if (!userExists)
+            throw new KeyNotFoundException($"User with id: {request.UserId} not found");
         
-        if (user == null)
-            throw new KeyNotFoundException($"User with id {request.UserId} not found");
+        var from = request.From < 1 ? 1 : request.From;
+        var skip = from - 1;
+
+        var coursesQuery = dbContext.UserCourseRegistrations
+            .Where(r => r.UserId == request.UserId)
+            .Select(r => r.Course)
+            .AsQueryable();
         
-        var query = request.OrderType == OrderType.Asc 
-            ? user.Courses.OrderBy(x => x.Name)
-            : user.Courses.OrderByDescending(x => x.Name);
+        coursesQuery = request.OrderType == OrderType.Asc 
+            ? coursesQuery.OrderBy(x => x.Name)
+            : coursesQuery.OrderByDescending(x => x.Name);
         
-        var data = query
-            .Skip(request.From - 1)
+        var data = coursesQuery
+            .Skip(skip)
             .Take(request.Take)
             .Select(c => new GetCourseResponseDto(
                 c.Name,

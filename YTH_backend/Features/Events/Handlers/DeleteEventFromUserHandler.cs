@@ -11,23 +11,24 @@ public class DeleteEventFromUserHandler(AppDbContext context) : IRequestHandler<
     
     public async Task Handle(DeleteEventFromUserCommand request, CancellationToken cancellationToken)
     {
-        var user = await dbContext.Users
-            .Include(u => u.Events) 
-            .FirstOrDefaultAsync(u => u.Id == request.UserId, cancellationToken);
+        var userExists = await dbContext.Users
+            .AnyAsync(u => u.Id == request.UserId, cancellationToken);
 
-        if (user == null) 
+        if (!userExists)
             throw new KeyNotFoundException($"User with id: {request.UserId} not found");
 
-        var ev = await dbContext.Events
-            .Include(e => e.Users) 
-            .FirstOrDefaultAsync(e => e.Id == request.EventId, cancellationToken);
+        var eventExists = await dbContext.Events
+            .AnyAsync(e => e.Id == request.EventId, cancellationToken);
 
-        if (ev == null)
+        if (eventExists)
             throw new KeyNotFoundException($"Event with id: {request.EventId} not found");
-
-        if (user.Events.Any(e => e.Id == ev.Id))
+        
+        var registration = await dbContext.UserEventRegistrations
+            .FirstOrDefaultAsync(r => r.EventId == request.EventId && r.UserId == request.UserId, cancellationToken);
+        
+        if (registration != null)
         {
-            user.Events.Remove(ev);
+            dbContext.UserEventRegistrations.Remove(registration);
             await dbContext.SaveChangesAsync(cancellationToken);
         }
     }

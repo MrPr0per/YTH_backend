@@ -12,7 +12,7 @@ public class Post
     [Required]
     public Guid AuthorId { get; set; }
     
-    [ForeignKey("AuthorId")]
+    [ForeignKey(nameof(AuthorId))]
     public User.User User { get; set; } = null!;
     
     // [Required]
@@ -24,9 +24,10 @@ public class Post
     [Required, MaxLength(512)]
     public string Title { get; set; } = null!;
     
-    [MaxLength(512)]
-    public string ShortDescription { get; set; } = null!;
+    // [MaxLength(512)]
+    // public string ShortDescription { get; set; } = null!;
     
+    [Required]
     public string Description { get; set; } = null!;
     
     [Required]

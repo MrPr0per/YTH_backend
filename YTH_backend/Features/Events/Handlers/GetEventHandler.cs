@@ -19,7 +19,6 @@ public class GetEventHandler(AppDbContext context) : IRequestHandler<GetEventQue
         return new GetEventResponseDto(
             ev.Name,
             ev.Description,
-            ev.ShortDescription,
             ev.Type,
             ev.Date,
             ev.Address);

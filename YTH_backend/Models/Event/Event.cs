@@ -1,6 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using YTH_backend.Enums;
+using YTH_backend.Models.User;
 
 namespace YTH_backend.Models.Event;
 
@@ -21,10 +22,11 @@ public class Event
     [Required]
     public DateTime Date { get; set; }
     
-    public string? Description { get; set; }
+    [Required]
+    public string Description { get; set; }
     
-    [MaxLength(512)]
-    public string? ShortDescription { get; set; }
+    // [MaxLength(512)]
+    // public string? ShortDescription { get; set; }
     
     [Required]
     public EventTypes Type { get; set; }
@@ -32,7 +34,7 @@ public class Event
     [MaxLength(512)]
     public string? Address { get; set; } = null!;
 
-    public ICollection<User.User> Users { get; set; } = new List<User.User>();
+    public ICollection<UserEventRegistration> UserEventRegistration { get; set; } = new List<UserEventRegistration>();
     
     // public ICollection<EventTag> Tags { get; set; } = new List<EventTag>();
 }

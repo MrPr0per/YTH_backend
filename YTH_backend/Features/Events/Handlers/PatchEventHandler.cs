@@ -16,7 +16,7 @@ public class PatchEventHandler(AppDbContext context) : IRequestHandler<PatchEven
         if (ev == null)
             throw new KeyNotFoundException($"Event with id: {request.EventId} not found");
 
-        var dto = new PatchEventRequestDto(ev.Name, ev.Description, ev.ShortDescription, ev.Type, ev.Date, ev.Address);
+        var dto = new PatchEventRequestDto(ev.Name, ev.Description, ev.Type, ev.Date, ev.Address);
         
         request.Patch.ApplyTo(dto);
         
@@ -24,8 +24,6 @@ public class PatchEventHandler(AppDbContext context) : IRequestHandler<PatchEven
             ev.Name = dto.Name;
         if (dto.Description is not null)
             ev.Description = dto.Description;
-        if (dto.ShortDescription is not null)
-            ev.ShortDescription = dto.ShortDescription;
         if (dto.Type is not null)
             ev.Type = dto.Type.Value;
         if (dto.Date is not null)

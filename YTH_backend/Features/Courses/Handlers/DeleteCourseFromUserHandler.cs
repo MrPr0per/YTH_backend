@@ -11,23 +11,24 @@ public class DeleteCourseFromUserHandler(AppDbContext context) : IRequestHandler
     
     public async Task Handle(DeleteCourseFromUserCommand request, CancellationToken cancellationToken)
     {
-        var user = await dbContext.Users
-            .Include(u => u.Courses) 
-            .FirstOrDefaultAsync(u => u.Id == request.UserId, cancellationToken);
+        var userExists = await dbContext.Users
+            .AnyAsync(u => u.Id == request.UserId, cancellationToken);
 
-        if (user == null) 
+        if (!userExists)
             throw new KeyNotFoundException($"User with id: {request.UserId} not found");
         
-        var course = await dbContext.Courses
-            .Include(c => c.Users)
-            .FirstOrDefaultAsync(c => c.Id == request.CourseId, cancellationToken);
-        
-        if (course == null)
-            throw new KeyNotFoundException($"Course with id: {request.CourseId} not found");
+        var courseExists = await dbContext.Courses
+            .AnyAsync(c => c.Id == request.CourseId, cancellationToken);
 
-        if (user.Courses.Any(c => c.Id == course.Id))
+        if (!courseExists)
+            throw new KeyNotFoundException($"Course with id: {request.CourseId} not found");
+        
+        var registration = await dbContext.UserCourseRegistrations
+            .FirstOrDefaultAsync(r => r.UserId == request.UserId && r.CourseId == request.CourseId, cancellationToken);
+
+        if (registration != null)
         {
-            user.Courses.Remove(course);
+            dbContext.UserCourseRegistrations.Remove(registration);
             await dbContext.SaveChangesAsync(cancellationToken);
         }
     }

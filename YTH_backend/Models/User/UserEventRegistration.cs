@@ -3,10 +3,13 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace YTH_backend.Models.User;
 
-public class Notification
+public class UserEventRegistration
 {
     [Key]
     public Guid Id { get; set; }
+    
+    [Required]
+    public DateTime CreatedAt { get; set; } = DateTime.Now;
     
     [Required]
     public Guid UserId { get; set; }
@@ -14,15 +17,9 @@ public class Notification
     [ForeignKey(nameof(UserId))]
     public User User { get; set; } = null!;
     
-    [Required, MaxLength(256)]
-    public string Title { get; set; } = null!;
-    
     [Required]
-    public string NotificationText { get; set; } = null!;
+    public Guid EventId { get; set; }
     
-    [Required]
-    public bool IsRead { get; set; } = false;
-    
-    [Required]
-    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+    [ForeignKey(nameof(EventId))]
+    public Event.Event Event { get; set; } = null!;
 }

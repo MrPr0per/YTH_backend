@@ -13,10 +13,10 @@ public class AddEventHandler(AppDbContext context) : IRequestHandler<AddEventCom
     {
         var newEvent = new Event
         {
+            Id = Guid.NewGuid(),
             Name = request.Name,
             Description = request.Description,
             Date = request.Date,
-            ShortDescription = request.ShortDescription,
             Type = request.Type,
             Address = request.Address
         };

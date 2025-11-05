@@ -27,7 +27,6 @@ public class GetAllPostHandler(AppDbContext context) :  IRequestHandler<GetAllPo
             .Select(post => new GetPostResponseDto(
                 post.AuthorId,
                 post.Title,
-                post.ShortDescription,
                 post.Description,
                 post.Status,
                 post.CreatedAt

@@ -13,6 +13,7 @@ public class AddCourseHandler(AppDbContext context) : IRequestHandler<AddCourseC
     {
         var newCourse = new Course
         {
+            Id = Guid.NewGuid(),
             Name = request.Name,
             Description = request.Description,
             Link = request.Link

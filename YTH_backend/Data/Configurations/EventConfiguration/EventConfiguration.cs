@@ -39,6 +39,7 @@ public class EventConfiguration : IEntityTypeConfiguration<Event>
         
         builder
             .Property(e => e.Description)
+            .IsRequired()
             .HasColumnType("text")
             .HasColumnName("description");
         
@@ -46,11 +47,11 @@ public class EventConfiguration : IEntityTypeConfiguration<Event>
         //     .Property(e => e.CategoryId)
         //     .HasColumnName("category_id");
         
-        builder
-            .Property(x => x.ShortDescription)
-            .HasMaxLength(512)
-            .HasColumnType("varchar(512)")
-            .HasColumnName("short_description");
+        // builder
+        //     .Property(x => x.ShortDescription)
+        //     .HasMaxLength(512)
+        //     .HasColumnType("varchar(512)")
+        //     .HasColumnName("short_description");
         
         builder
             .Property(x => x.Address)
@@ -78,9 +79,11 @@ public class EventConfiguration : IEntityTypeConfiguration<Event>
         //     .UsingEntity(j => j.ToTable("events_tags"));
         
         builder
-            .HasMany(x => x.Users)
-            .WithMany(x => x.Events)
-            .UsingEntity(j => j.ToTable("events_users"));
+            .HasMany(x => x.UserEventRegistration)
+            .WithOne(x => x.Event)
+            .HasForeignKey(x => x.EventId)
+            .HasConstraintName("fk_events_user_event_registration")
+            .OnDelete(DeleteBehavior.Cascade);
         
         // builder
         //     .HasIndex(x => x.CategoryId)

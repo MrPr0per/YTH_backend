@@ -17,14 +17,12 @@ public class PatchPostHandler(AppDbContext context) : IRequestHandler<PatchPostC
         if (post == null)
             throw new KeyNotFoundException($"Post with id:{id} not found");
         
-        var dto = new PatchPostRequestDto(post.Title, post.ShortDescription, post.Description, post.Status, post.CreatedAt);
+        var dto = new PatchPostRequestDto(post.Title, post.Description, post.Status, post.CreatedAt);
         
         request.Patch.ApplyTo(dto);
         
         if (dto.Title is not null)
             post.Title = dto.Title;
-        if (dto.ShortDescription is not null)
-            post.ShortDescription = dto.ShortDescription;
         if (dto.Description is not null)
             post.Description = dto.Description;
         if (dto.Status is not null)

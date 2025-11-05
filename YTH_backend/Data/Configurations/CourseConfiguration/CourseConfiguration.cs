@@ -43,6 +43,7 @@ public class CourseConfiguration : IEntityTypeConfiguration<Course>
         
         builder
             .Property(x => x.Description)
+            .IsRequired()
             .HasColumnType("text")
             .HasColumnName("description");
         
@@ -69,9 +70,11 @@ public class CourseConfiguration : IEntityTypeConfiguration<Course>
         //     .UsingEntity(j => j.ToTable("courses_tags"));
         
         builder
-            .HasMany(x => x.Users)
-            .WithMany(x => x.Courses)
-            .UsingEntity(j => j.ToTable("courses_users"));
+            .HasMany(x => x.UserCourseRegistration)
+            .WithOne(x => x.Course)
+            .HasForeignKey(x => x.CourseId)
+            .HasConstraintName("fk_courses_user_course_registration")
+            .OnDelete(DeleteBehavior.Cascade);
         
         // builder
         //     .HasIndex(x => x.CategoryId)

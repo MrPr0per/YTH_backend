@@ -28,7 +28,6 @@ public class GetAllEventsHandler(AppDbContext context) : IRequestHandler<GetAllE
             .Select(ev => new GetEventResponseDto(
                 ev.Name,
                 ev.Description,
-                ev.ShortDescription,
                 ev.Type,
                 ev.Date,
                 ev.Address))

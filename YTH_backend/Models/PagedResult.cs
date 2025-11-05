@@ -8,4 +8,5 @@ public class PagedResult<T>(int from, int take, OrderType orderType, List<T> ite
     public int Take { get; init; } = take;
     public OrderType OrderType { get; init; } = orderType;
     public List<T> Items { get; init; } = items;
+    public int ActualTake => Items.Count;
 }

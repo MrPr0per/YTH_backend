@@ -15,7 +15,6 @@ public class CreatePostHandler(AppDbContext context): IRequestHandler<CreatePost
         {
             Title = request.Title,
             Description = request.Description,
-            ShortDescription = request.ShortDescription,
             AuthorId = request.AuthorId,
             Status = request.Status,
         };
