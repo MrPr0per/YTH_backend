@@ -15,7 +15,7 @@ public class CoursesController(IMediator mediator) : ControllerBase
 {
     private readonly IMediator mediator = mediator;
     
-    [HttpGet("{id}")]
+    [HttpGet("{id:guid}")]
     public async Task<IActionResult> GetCourseController(Guid id)
     {
         var query = new GetCourseQuery(id);
@@ -30,7 +30,7 @@ public class CoursesController(IMediator mediator) : ControllerBase
     }
 
     [HttpPost]
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "admin,superadmin")]
     public async Task<IActionResult> AddCourseController([FromBody] AddCourseRequestDto addCourseRequestDto)
     {
         var command = new AddCourseCommand(addCourseRequestDto.Name, addCourseRequestDto.Description, addCourseRequestDto.Link);
@@ -38,6 +38,7 @@ public class CoursesController(IMediator mediator) : ControllerBase
     }
 
     [HttpDelete("{id:guid}")]
+    [Authorize(Roles = "admin,superadmin")]
     public async Task<IActionResult> DeleteCourseController(Guid id)
     {
         var query = new DeleteCourseCommand(id);
@@ -45,6 +46,7 @@ public class CoursesController(IMediator mediator) : ControllerBase
     }
     
     [HttpPatch("{id:guid}")]
+    [Authorize(Roles = "admin,superadmin")]
     public async Task<IActionResult> PatchCourseController(Guid id, [FromBody] JsonPatchDocument<PatchCourseRequestDto> patchCourseRequestDto)
     {
         var command = new PatchCourseCommand(id, patchCourseRequestDto);

@@ -24,7 +24,7 @@ public class PostsController(IMediator mediator) : ControllerBase
         throw new NotImplementedException();
     }
 
-    [HttpGet("{id}")]
+    [HttpGet("{id:guid}")]
     public async Task<IActionResult> GetPostByIdController(Guid id)
     {
         var query = new GetPostByIdQuery(id);
@@ -32,7 +32,7 @@ public class PostsController(IMediator mediator) : ControllerBase
     }
 
     [HttpPost]
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "admin,superadmin")]
     public async Task<IActionResult> CreatePostController([FromBody] CreatePostRequestDto createPostRequestDto)
     {
         var userIdClaim = User.FindFirst("sub")?.Value
@@ -45,16 +45,16 @@ public class PostsController(IMediator mediator) : ControllerBase
         throw new NotImplementedException();
     }
 
-    [HttpDelete("{id}")]
-    [Authorize(Roles = "Admin")]
+    [HttpDelete("{id:guid}")]
+    [Authorize(Roles = "admin,superadmin")]
     public async Task<IActionResult> DeletePostController(Guid id)
     {
         var command = new DeletePostCommand(id);
         throw new NotImplementedException();
     }
 
-    [HttpPatch("{id}")]
-    [Authorize(Roles = "Admin")]
+    [HttpPatch("{id:guid}")]
+    [Authorize(Roles = "admin,superadmin")]
     public async Task<IActionResult> PatchPostController(Guid id, [FromBody] JsonPatchDocument<PatchPostRequestDto> patchPostRequestDto)
     {
         var command = new PatchPostCommand(id, patchPostRequestDto);

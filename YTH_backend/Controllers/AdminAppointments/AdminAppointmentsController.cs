@@ -12,7 +12,7 @@ public class AdminAppointmentsController(IMediator mediator) : ControllerBase
     private readonly IMediator mediator = mediator;
 
     [HttpPut("roles/admin")]
-    [Authorize(Roles = "SuperAdmin")]
+    [Authorize(Roles = "superadmin")]
     public async Task<IActionResult> AddAdminController(Guid id)
     {
         var query = new AddAdminCommand(id);
@@ -20,7 +20,7 @@ public class AdminAppointmentsController(IMediator mediator) : ControllerBase
     }
 
     [HttpDelete("roles/admin")]
-    [Authorize(Roles = "SuperAdmin")]
+    [Authorize(Roles = "superadmin")]
     public async Task<IActionResult> RemoveAdminController(Guid id)
     {
         var query = new RemoveAdminCommand(id);

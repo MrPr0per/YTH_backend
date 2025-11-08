@@ -10,7 +10,7 @@ using YTH_backend.Models.User;
 namespace YTH_backend.Controllers.Users;
 
 [ApiController]
-[Route("api/v0/users/{id}/notifications")]
+[Route("api/v0/users/{id:guid}/notifications")]
 public class NotificationsController(IMediator mediator) : ControllerBase
 {
     private readonly IMediator mediator = mediator;
@@ -30,7 +30,7 @@ public class NotificationsController(IMediator mediator) : ControllerBase
         throw new NotImplementedException();
     }
 
-    [HttpGet("{notificationId}")]
+    [HttpGet("{notificationId:guid}")]
     [Authorize]
     public async Task<IActionResult> GetNotificationController([FromRoute] Guid id, Guid notificationId)
     {
@@ -44,7 +44,7 @@ public class NotificationsController(IMediator mediator) : ControllerBase
         throw new NotImplementedException();
     }
 
-    [HttpPatch("{notificationId}/")]
+    [HttpPatch("{notificationId:guid}/markAsRead")]
     [Authorize]
     public async Task<IActionResult> ReadNotification(Guid notificationId, Guid id)
     {

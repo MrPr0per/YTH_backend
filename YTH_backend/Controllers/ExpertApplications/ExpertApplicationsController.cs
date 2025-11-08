@@ -15,7 +15,7 @@ public class ExpertApplicationsController(IMediator mediator) : ControllerBase
     private readonly IMediator mediator = mediator;
 
     [HttpPost]
-    [Authorize(Roles = "Student")]
+    [Authorize(Roles = "student")]
     public async Task<IActionResult> CreateExpertApplicationController([FromBody] CreateExpertApplicationRequestDto request)
     {
         var userIdClaim = User.FindFirst("sub")?.Value
@@ -28,8 +28,8 @@ public class ExpertApplicationsController(IMediator mediator) : ControllerBase
         throw new NotImplementedException();
     }
 
-    [HttpPost("{id}/send")]
-    [Authorize(Roles = "Student")]
+    [HttpPost("{id:guid}/send")]
+    [Authorize(Roles = "student")]
     public async Task<IActionResult> SendExpertApplicationController(Guid id)
     {
         var userIdClaim = User.FindFirst("sub")?.Value
@@ -42,8 +42,8 @@ public class ExpertApplicationsController(IMediator mediator) : ControllerBase
         throw new NotImplementedException();
     }
 
-    [HttpPost("{id}/recall")]
-    [Authorize(Roles = "Student")]
+    [HttpPost("{id:guid}/recall")]
+    [Authorize(Roles = "student")]
     public async Task<IActionResult> RecallExpertApplicationController(Guid id)
     {
         var userIdClaim = User.FindFirst("sub")?.Value
@@ -55,24 +55,24 @@ public class ExpertApplicationsController(IMediator mediator) : ControllerBase
         throw new NotImplementedException();
     }
     
-    [HttpPost("{id}/acceptedForReview")]
-    [Authorize(Roles = "Admin")]
+    [HttpPost("{id:guid}/acceptedForReview")]
+    [Authorize(Roles = "admin,superadmin")]
     public async Task<IActionResult> AcceptForReviewExpertApplicationController(Guid id)
     {
         var command = new AcceptForReviewExpertApplicationCommand(id);
         throw new NotImplementedException();
     }
     
-    [HttpPost("{id}/cancelReview")]
-    [Authorize(Roles = "Admin")]
+    [HttpPost("{id:guid}/cancelReview")]
+    [Authorize(Roles = "admin,superadmin")]
     public async Task<IActionResult> CancelForReviewExpertApplicationController(Guid id)
     { 
         var command = new CancelForReviewExpertApplicationCommand(id);
         throw new NotImplementedException();
     }
     
-    [HttpPost("{id}/completeReview")]
-    [Authorize(Roles = "Admin")]
+    [HttpPost("{id:guid}/completeReview")]
+    [Authorize(Roles = "admin,superadmin")]
     public async Task<IActionResult> CompleteReviewExpertApplicationController(Guid id, [FromBody] CompleteReviewExpertApplicationRequestDto request)
     {
         var userIdClaim = User.FindFirst("sub")?.Value
@@ -85,8 +85,8 @@ public class ExpertApplicationsController(IMediator mediator) : ControllerBase
         throw new NotImplementedException();
     }
 
-    [HttpPatch("{id}")]
-    [Authorize(Roles = "Student")]
+    [HttpPatch("{id:guid}")]
+    [Authorize(Roles = "student")]
     public async Task<IActionResult> PatchExpertApplicationController(Guid id,
         [FromBody] JsonPatchDocument<PatchExpertApplicationRequestDto> request)
     {
@@ -100,8 +100,8 @@ public class ExpertApplicationsController(IMediator mediator) : ControllerBase
         throw new NotImplementedException();
     }
 
-    [HttpDelete("{id}")]
-    [Authorize(Roles = "Student")]
+    [HttpDelete("{id:guid}")]
+    [Authorize(Roles = "student,superadmin")]
     public async Task<IActionResult> DeleteExpertApplicationController(Guid id)
     {
         var userIdClaim = User.FindFirst("sub")?.Value

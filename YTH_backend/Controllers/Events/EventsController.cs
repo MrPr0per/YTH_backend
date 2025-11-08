@@ -15,36 +15,38 @@ public class EventsController(IMediator mediator) : ControllerBase
 {
     private readonly IMediator mediator = mediator;
     
-    [HttpGet("{id}")]
+    [HttpGet("{id:guid}")]
     public async Task<IActionResult> GetEventController(Guid id)
     {
         var query = new GetEventQuery(id);
         throw new NotImplementedException();
     }
     
-    [HttpGet()]
+    [HttpGet]
     public async Task<IActionResult> GetAllEventsController([FromQuery] int from = 0, [FromQuery] int take = 10, [FromQuery] OrderType orderType = OrderType.Asc)
     {
         var query = new GetAllEventsQuery(from, take, orderType);
         throw new NotImplementedException();
     }
 
-    [HttpPost()]
-    [Authorize(Roles = "Admin")]
+    [HttpPost]
+    [Authorize(Roles = "admin,superadmin")]
     public async Task<IActionResult> AddEventController([FromBody] AddEventRequestDto addEventRequestDto)
     {
         var command = new AddEventCommand(addEventRequestDto.Name, addEventRequestDto.Description, addEventRequestDto.ShortDescription, addEventRequestDto.Type, addEventRequestDto.Date, addEventRequestDto.Address);
         throw new NotImplementedException();
     }
 
-    [HttpDelete("{id}")]
+    [HttpDelete("{id:guid}")]
+    [Authorize(Roles = "admin,superadmin")]
     public async Task<IActionResult> DeleteEventController(Guid id)
     {
         var command = new DeleteEventCommand(id);
         throw new NotImplementedException();
     }
     
-    [HttpPatch("{id}")]
+    [HttpPatch("{id:guid}")]
+    [Authorize(Roles = "admin,superadmin")]
     public async Task<IActionResult> PatchEventController(Guid id, [FromBody] JsonPatchDocument<PatchEventRequestDto> patchEventRequestDto)
     {
         var command = new PatchEventCommand(id, patchEventRequestDto);
