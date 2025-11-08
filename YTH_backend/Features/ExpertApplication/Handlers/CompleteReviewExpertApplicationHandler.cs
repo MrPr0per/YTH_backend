@@ -26,39 +26,30 @@ public class CompleteReviewExpertApplicationHandler(AppDbContext context) : IReq
         
         if (application.Status != ExpertApplicationStatus.AcceptedForReview)
             throw new InvalidOperationException("Expert application is not reviewing");
+        
+        application.Status = ExpertApplicationStatus.Reviewed;
 
-        await using var transaction = await dbContext.Database.BeginTransactionAsync(cancellationToken);
-        try
+        var notification = new Notification()
         {
-            application.Status = ExpertApplicationStatus.Reviewed;
+            Id = Guid.NewGuid(),
+            UserId = application.UserId,
+            Title = "Ваша заявка на экспертность была рассмотрена",
+            NotificationText = resolution.IsApproved
+                ? "Вы получили статус эксперта!"
+                : "Вам было отказано в статусе эксперта"
+        };
 
-            var notification = new Notification()
-            {
-                Id = Guid.NewGuid(),
-                UserId = application.UserId,
-                Title = "Ваша заявка на экспертность была рассмотрена",
-                NotificationText = resolution.IsApproved
-                    ? "Вы получили статус эксперта!"
-                    : "Вам было отказано в статусе эксперта"
-            };
+        await dbContext.Notifications.AddAsync(notification, cancellationToken);
 
-            await dbContext.Notifications.AddAsync(notification, cancellationToken);
-
-            if (resolution.IsApproved)
-            {
-                var user = await dbContext.Users.FindAsync(application.UserId, cancellationToken);
-                if (user == null)
-                    throw new KeyNotFoundException($"User with id: {application.UserId} does not exist");
-                user.Role = Roles.Expert;
-            }
-
-            await dbContext.SaveChangesAsync(cancellationToken);
-            await transaction.CommitAsync(cancellationToken);
-        }
-        catch
+        if (resolution.IsApproved)
         {
-            await transaction.RollbackAsync(cancellationToken);
-            throw;
+            var user = await dbContext.Users.FindAsync(application.UserId, cancellationToken);
+            if (user == null)
+                throw new KeyNotFoundException($"User with id: {application.UserId} does not exist");
+            user.Role = Roles.Expert;
         }
+
+        await dbContext.SaveChangesAsync(cancellationToken);
+        
     }
 }

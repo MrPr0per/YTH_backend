@@ -23,14 +23,16 @@ public class ChangePasswordHandler(AppDbContext context) : IRequestHandler<Chang
         
         if (oldHash != user.PasswordHash)
             throw new UnauthorizedAccessException("Passwords do not match");
-
+        
         var newSalt = PasswordHasher.GenerateSalt();
         var newHash = PasswordHasher.HashPassword(request.NewPassword, newSalt);
-        
+
         user.PasswordHash = newHash;
         user.PasswordSalt = newSalt;
-        
+
         await dbContext.SaveChangesAsync(cancellationToken);
+  
+   
     }
 
     
