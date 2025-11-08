@@ -12,7 +12,7 @@ public class ReadNotificationHandler(AppDbContext context) : IRequestHandler<Rea
     public async Task Handle(ReadNotificationCommand request, CancellationToken cancellationToken)
     {
         if (request.CurrentUserId != request.UserId)
-            throw new AccessViolationException("User does not have permission to view other users notifications");
+            throw new UnauthorizedAccessException("User does not have permission to view other users notifications");
 
         var notification = await dbContext.Notifications.FindAsync(request.NotificationId, cancellationToken);
 
@@ -20,7 +20,7 @@ public class ReadNotificationHandler(AppDbContext context) : IRequestHandler<Rea
             throw new KeyNotFoundException($"Notification with id:{request.NotificationId} not found");
         
         if (notification.IsRead)
-            throw new ArgumentException("Notification is already read");
+            throw new InvalidOperationException("Notification is already read");
         
         notification.IsRead = true;
         await dbContext.SaveChangesAsync(cancellationToken);

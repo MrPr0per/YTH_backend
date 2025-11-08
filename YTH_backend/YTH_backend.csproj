@@ -19,6 +19,7 @@
 
     <ItemGroup>
       <Folder Include="Features\AdminAppointments\Queries\" />
+      <Folder Include="Features\ExpertApplication\Queries\" />
     </ItemGroup>
 
 </Project>

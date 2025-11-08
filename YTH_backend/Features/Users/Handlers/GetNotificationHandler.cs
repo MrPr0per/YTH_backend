@@ -13,7 +13,7 @@ public class GetNotificationHandler(AppDbContext context) : IRequestHandler<GetN
     public async Task<GetNotificationsResponseDto> Handle(GetNotificationQuery request, CancellationToken cancellationToken)
     {
         if (request.CurrentUserId != request.UserId)
-            throw new AccessViolationException("User does not have permission to view other users notifications");
+            throw new UnauthorizedAccessException("User does not have permission to view other users notifications");
 
         var notification = await dbContext.Notifications.FindAsync(request.NotificationId, cancellationToken);
 
