@@ -1,9 +1,8 @@
-using System.ComponentModel.DataAnnotations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using YTH_backend.Models.User;
 
-namespace YTH_backend.Data.Configurations.UserConfiguration;
+namespace YTH_backend.Data.Configurations.ExpertApplicationConfiguration;
 
 public class ExpertApplicationConfiguration : IEntityTypeConfiguration<ExpertApplication>
 {

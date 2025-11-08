@@ -17,6 +17,7 @@ public class RegistrationController(IMediator mediator) : ControllerBase
     public async Task<IActionResult> GetUserCoursesController(Guid id, [FromQuery] int from = 0, [FromQuery] int take = 10, [FromQuery] OrderType orderType = OrderType.Asc)
     {
         var query = new GetUserCoursesQuery(id, from, take, orderType);
+        await mediator.Send(query);
         throw new NotImplementedException();
     }
     

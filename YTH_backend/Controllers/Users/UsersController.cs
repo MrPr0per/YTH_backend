@@ -1,4 +1,5 @@
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using YTH_backend.DTOs.Course;
@@ -71,6 +72,7 @@ public class UsersController(IMediator mediator) : ControllerBase
     }
     
     [HttpPatch("{id}")]
+    [Authorize]
     public async Task<IActionResult> PatchUserController(Guid id,
         [FromBody] JsonPatchDocument<PatchUserRequestDto> patchUserRequestDto)
     {

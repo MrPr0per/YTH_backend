@@ -29,9 +29,9 @@ public class Post
     
     [Required]
     public string Description { get; set; } = null!;
-    
-    [Required]
-    public Status Status { get; set; }
+
+    [Required] 
+    public PostStatus PostStatus { get; set; } = PostStatus.Posted;
     
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     

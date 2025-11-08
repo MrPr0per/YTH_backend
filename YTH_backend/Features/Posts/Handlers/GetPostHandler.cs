@@ -14,7 +14,7 @@ public class GetPostHandler(AppDbContext context) : IRequestHandler<GetPostByIdQ
         var post = await dbContext.Posts.FindAsync(request.PostId, cancellationToken);
 
         if (post != null)
-            return new GetPostResponseDto(post.AuthorId, post.Title, post.Description, post.Status, post.CreatedAt);
+            return new GetPostResponseDto(post.AuthorId, post.Title, post.Description, post.PostStatus, post.CreatedAt);
         
         throw new KeyNotFoundException($"Post with id:{request.PostId} not found");
     }

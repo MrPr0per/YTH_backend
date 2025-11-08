@@ -16,7 +16,7 @@ public class CreatePostHandler(AppDbContext context): IRequestHandler<CreatePost
             Title = request.Title,
             Description = request.Description,
             AuthorId = request.AuthorId,
-            Status = request.Status,
+            PostStatus = request.PostStatus,
         };
         
         await dbContext.Posts.AddAsync(newPost, cancellationToken);

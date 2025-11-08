@@ -16,7 +16,7 @@ public class PostsController(IMediator mediator) : ControllerBase
 {
     private readonly IMediator mediator = mediator;
 
-    [HttpGet()]
+    [HttpGet]
     public async Task<IActionResult> GetAllPostsController([FromQuery] int from = 0, [FromQuery] int take = 10,
         [FromQuery] OrderType orderType = OrderType.Asc)
     {
@@ -31,7 +31,7 @@ public class PostsController(IMediator mediator) : ControllerBase
         throw new NotImplementedException();
     }
 
-    [HttpPost()]
+    [HttpPost]
     [Authorize(Roles = "Admin")]
     public async Task<IActionResult> CreatePostController([FromBody] CreatePostRequestDto createPostRequestDto)
     {
@@ -41,7 +41,7 @@ public class PostsController(IMediator mediator) : ControllerBase
 
         var userId = Guid.Parse(userIdClaim);
         
-        var command = new CreatePostCommand(userId, createPostRequestDto.Title, createPostRequestDto.ShortDescription, createPostRequestDto.Description, createPostRequestDto.Status);
+        var command = new CreatePostCommand(userId, createPostRequestDto.Title, createPostRequestDto.Description, createPostRequestDto.PostStatus);
         throw new NotImplementedException();
     }
 

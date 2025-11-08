@@ -1,6 +1,6 @@
 namespace YTH_backend.Enums;
 
-public enum Status
+public enum PostStatus
 {
     Posted,
     Hidden

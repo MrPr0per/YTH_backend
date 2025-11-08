@@ -28,7 +28,7 @@ public class GetAllPostHandler(AppDbContext context) :  IRequestHandler<GetAllPo
                 post.AuthorId,
                 post.Title,
                 post.Description,
-                post.Status,
+                post.PostStatus,
                 post.CreatedAt
             ))
             .ToListAsync(cancellationToken);

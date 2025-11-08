@@ -39,11 +39,12 @@ public class PostConfiguration : IEntityTypeConfiguration<Post>
             .HasColumnName("description");
         
         builder
-            .Property(x => x.Status)
+            .Property(x => x.PostStatus)
             .IsRequired()
             .HasConversion<string>()
             .HasMaxLength(50)
             .HasColumnType("varchar(50)")
+            .HasDefaultValue("Posted")
             .HasColumnName("status");
         
         builder
