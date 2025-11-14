@@ -61,13 +61,23 @@ builder.Services
                     }
 
                     id.AddClaim(new Claim("email", emailEl.GetString()));
+                    
+                    if (!root.TryGetProperty("id", out var idEl) 
+                        || idEl.ValueKind != JsonValueKind.String
+                        || string.IsNullOrWhiteSpace(idEl.GetString()))
+                    {
+                        ctx.Fail("Claim 'id' is required in 'context' for role 'with_confirmed_email'.");
+                        return Task.CompletedTask;
+                    }
+                    
+                    id.AddClaim(new Claim("id", idEl.GetString()));
 
                     // Опциональные поля — без fail
-                    if (root.TryGetProperty("name", out var nameEl) 
-                        && nameEl.ValueKind == JsonValueKind.String)
-                    {
-                        id.AddClaim(new Claim("name", nameEl.GetString()));
-                    }
+                    // if (root.TryGetProperty("id", out var idEl) 
+                    //     && idEl.ValueKind == JsonValueKind.String)
+                    // {
+                    //     id.AddClaim(new Claim("id", idEl.GetString()));
+                    // }
                 }
                 catch (Exception ex)
                 {
@@ -82,7 +92,7 @@ builder.Services
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddSingleton(new JwtSetting(jwtSecret));
+builder.Services.AddSingleton(new JwtSettings(jwtSecret));
 //TODO
 builder.Services.AddSingleton<IEmailService>(new MailKitEmailService(
     smtpHost: "smtp.example.com",

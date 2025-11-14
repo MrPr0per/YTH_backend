@@ -27,10 +27,30 @@ public class AuthController(IMediator mediator) : ControllerBase
         
         if (string.IsNullOrWhiteSpace(email))
             return BadRequest("Email is required to register a user.");
-        
-        var command = new CreateUserCommand(createUserRequestDto.UserName, createUserRequestDto.Password, email);
-        mediator.Send(command);
-        throw new NotImplementedException();
+
+        try
+        {
+            var command = new CreateUserCommand(createUserRequestDto.UserName, createUserRequestDto.Password, email);
+            var createUserResponseDto = await mediator.Send(command);
+            
+            Response.Cookies.Append("refreshToken",  createUserResponseDto.RefreshToken, new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true,
+                SameSite = SameSiteMode.Strict,
+                Expires = DateTime.UtcNow.AddDays(30)
+            });
+            
+            return Created("", new {access_token = createUserResponseDto.AccessToken});
+        }
+        catch (EntityAlreadyExistsException ex)
+        {
+            return Conflict(new { error = ex.Message });
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new { error = ex.Message });
+        }
     }
 
     [HttpPost("sendVerificationEmailForRegistration")]

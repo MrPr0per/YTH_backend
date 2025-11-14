@@ -10,11 +10,11 @@ using YTH_backend.Models.Infrastructure;
 
 namespace YTH_backend.Features.Users.Handlers;
 
-public class SendVerificationEmailHandler(AppDbContext dbContext, IEmailService emailService, JwtSetting jwtSetting) : IRequestHandler<SendVerificationEmailCommand>
+public class SendVerificationEmailHandler(AppDbContext dbContext, IEmailService emailService, JwtSettings jwtSettings) : IRequestHandler<SendVerificationEmailCommand>
 {
     public async Task Handle(SendVerificationEmailCommand request, CancellationToken cancellationToken)
     {
-        var token = JwtHelper.GenerateVerificationToken(request.Email, jwtSetting.Secret);
+        var token = JwtHelper.GenerateVerificationToken(new Dictionary<string, object>{["email"] = request.Email}, jwtSettings.Secret);
         if (!EmailHelper.IsValidEmail(request.Email))
             throw new ArgumentException("Invalid email");
         
