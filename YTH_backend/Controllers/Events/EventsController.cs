@@ -7,6 +7,7 @@ using YTH_backend.Enums;
 using YTH_backend.Features.Events.Commands;
 using YTH_backend.Features.Events.Queries;
 using YTH_backend.Infrastructure;
+using YTH_backend.Infrastructure.Exceptions;
 
 namespace YTH_backend.Controllers.Events;
 
@@ -24,14 +25,27 @@ public class EventsController(IMediator mediator) : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetAllEventsController([FromQuery] string? cursor = null, [FromQuery] int take = 10, [FromQuery] string? order = null)
     {
-        var orderParams = QueryParamsParser.ParseOrderParams(order);
-        var cursorParams = QueryParamsParser.ParseCursorParams(cursor);
-        
-        if (take <= 0)
-            take = 10;
-        
-        var query = new GetAllEventsQuery(take, orderParams.OrderType, cursorParams.CursorType, orderParams.FieldName, cursorParams.CursorId);
-        throw new NotImplementedException();
+        try
+        {
+            var orderParams = QueryParamsParser.ParseOrderParams(order);
+            var cursorParams = QueryParamsParser.ParseCursorParams(cursor);
+
+            if (take <= 0)
+                take = 10;
+
+            var query = new GetAllEventsQuery(take, orderParams.OrderType, cursorParams.CursorType,
+                orderParams.FieldName, cursorParams.CursorId);
+            var response = await mediator.Send(query);
+            return Ok(response);
+        }
+        catch (EntityNotFoundException ex)
+        {
+            return NotFound(new { error = ex.Message });
+        }
+        catch (ArgumentException ex)
+        {
+            return BadRequest(new { error = ex.Message });
+        }
     }
 
     [HttpPost]

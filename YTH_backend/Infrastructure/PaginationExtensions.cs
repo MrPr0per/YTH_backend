@@ -1,5 +1,6 @@
 using System.Linq.Expressions;
 using YTH_backend.Enums;
+using YTH_backend.Infrastructure.Exceptions;
 
 namespace YTH_backend.Infrastructure;
 
@@ -23,7 +24,7 @@ public static class PaginationExtensions
         var property = typeof(T).GetProperty(fieldName);
         
         if (property is null)
-            throw new InvalidOperationException($"Property {fieldName} not found on type {typeof(T).FullName}");
+            throw new ArgumentException($"Property {fieldName} not found on type {typeof(T).FullName}");
         
         var parameter = Expression.Parameter(typeof(T), "t");
         var propertyAccess = Expression.Property(parameter, property);
@@ -55,7 +56,7 @@ public static class PaginationExtensions
         var index = ids.IndexOf(cursorId.Value);
         
         if (index == -1)
-            throw new ArgumentException("Cursor ID not found in the query.", nameof(cursorId));
+            throw new EntityNotFoundException("Cursor ID not found in the query");
         
         switch (cursorType)
         {

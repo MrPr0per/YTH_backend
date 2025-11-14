@@ -1,23 +1,110 @@
+using System.Security.Claims;
+using System.Text;
+using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
 using MediatR;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 using YTH_backend.Data;
+using YTH_backend.Infrastructure.Email;
+using YTH_backend.Models.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
+var jwtSecret = Environment.GetEnvironmentVariable("JWT_SECRET")
+                ?? throw new InvalidOperationException("JWT_SECRET is not set.");
+
+var smtpPassword = builder.Configuration["Email:SmtpPassword"]
+                   ?? Environment.GetEnvironmentVariable("SMTP_PASSWORD")
+                   ?? throw new InvalidOperationException("SMTP_PASSWORD is not configured.");
 
 // Add services
+builder.Services
+    .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = false,        // или true + ValidIssuer, если нужно
+            ValidateAudience = false,      // или true + ValidAudience
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSecret)),
+            // ВАЖНО: чтобы roles работали с [Authorize(Roles = "...")]
+            RoleClaimType = "roles"
+        };
+
+        options.Events = new JwtBearerEvents
+        {
+            OnTokenValidated = ctx =>
+            {
+                if (ctx.Principal.Identity is not ClaimsIdentity id)
+                    return Task.CompletedTask;
+
+                var contextJson = id.FindFirst("context")?.Value;
+                if (string.IsNullOrWhiteSpace(contextJson))
+                {
+                    ctx.Fail("Missing 'context' claim.");
+                    return Task.CompletedTask;
+                }
+
+                try
+                {
+                    using var doc = JsonDocument.Parse(contextJson);
+                    var root = doc.RootElement;
+                    
+                    if (!root.TryGetProperty("email", out var emailEl) 
+                        || emailEl.ValueKind != JsonValueKind.String
+                        || string.IsNullOrWhiteSpace(emailEl.GetString()))
+                    {
+                        ctx.Fail("Claim 'email' is required in 'context' for role 'with_confirmed_email'.");
+                        return Task.CompletedTask;
+                    }
+
+                    id.AddClaim(new Claim("email", emailEl.GetString()));
+
+                    // Опциональные поля — без fail
+                    if (root.TryGetProperty("name", out var nameEl) 
+                        && nameEl.ValueKind == JsonValueKind.String)
+                    {
+                        id.AddClaim(new Claim("name", nameEl.GetString()));
+                    }
+                }
+                catch (Exception ex)
+                {
+                    ctx.Fail($"Failed to parse 'context': {ex.Message}");
+                }
+
+                return Task.CompletedTask;
+            }
+        };
+    });
+
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddSingleton(new JwtSetting(jwtSecret));
+//TODO
+builder.Services.AddSingleton<IEmailService>(new MailKitEmailService(
+    smtpHost: "smtp.example.com",
+    smtpPort: 587,
+    smtpUser: "user@example.com",
+    smtpPassword: smtpPassword,
+    fromEmail: "no-reply@example.com",
+    fromName: "MyApp"
+));
 
-// DbContext (SQLite)
+// DbContext
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")
+                      ?? throw new InvalidOperationException("Connection string 'DefaultConnection' is missing."),
+        npgsqlOptions => npgsqlOptions.MigrationsAssembly(typeof(AppDbContext).Assembly.FullName)));
 
 // MediatR
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(Program).Assembly));
 
 var app = builder.Build();
 
+app.MapGet("/health", () => Results.Ok(new { status = "healthy", time = DateTime.UtcNow }));
 // Initialize DB (create DB file if not exists)
 using (var scope = app.Services.CreateScope())
 {
@@ -32,5 +119,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseRouting();
+app.UseAuthentication();  
+app.UseAuthorization();
 app.MapControllers();
 app.Run();

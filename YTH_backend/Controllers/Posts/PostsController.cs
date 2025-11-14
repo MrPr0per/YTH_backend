@@ -8,6 +8,7 @@ using YTH_backend.Enums;
 using YTH_backend.Features.Posts.Commands;
 using YTH_backend.Features.Posts.Queries;
 using YTH_backend.Infrastructure;
+using YTH_backend.Infrastructure.Exceptions;
 
 namespace YTH_backend.Controllers.Posts;
 
@@ -18,14 +19,27 @@ public class PostsController(IMediator mediator) : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetAllPostsController([FromQuery] string? cursor = null, [FromQuery] int take = 10, [FromQuery] string? order = null)
     {
-        var orderParams = QueryParamsParser.ParseOrderParams(order);
-        var cursorParams = QueryParamsParser.ParseCursorParams(cursor);
-        
-        if (take <= 0)
-            take = 10;
-        
-        var query = new GetAllPostQuery(take, orderParams.OrderType, cursorParams.CursorType, orderParams.FieldName, cursorParams.CursorId);
-        throw new NotImplementedException();
+        try
+        {
+            var orderParams = QueryParamsParser.ParseOrderParams(order);
+            var cursorParams = QueryParamsParser.ParseCursorParams(cursor);
+
+            if (take <= 0)
+                take = 10;
+
+            var query = new GetAllPostQuery(take, orderParams.OrderType, cursorParams.CursorType, orderParams.FieldName,
+                cursorParams.CursorId);
+            var response = await mediator.Send(query);
+            return Ok(response);
+        }
+        catch (EntityNotFoundException ex)
+        {
+            return NotFound(new { error = ex.Message });
+        }
+        catch (ArgumentException ex)
+        {
+            return BadRequest(new { error = ex.Message });
+        }
     }
 
     [HttpGet("{id:guid}")]

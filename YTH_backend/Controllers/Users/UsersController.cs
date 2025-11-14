@@ -13,6 +13,7 @@ using YTH_backend.Features.Events.Queries;
 using YTH_backend.Features.Users.Commands;
 using YTH_backend.Features.Users.Queries;
 using YTH_backend.Infrastructure;
+using YTH_backend.Infrastructure.Exceptions;
 using YTH_backend.Models;
 
 namespace YTH_backend.Controllers.Users;
@@ -40,14 +41,27 @@ public class UsersController(IMediator mediator) : ControllerBase
     [Authorize]
     public async Task<IActionResult> GetUserEventsController(Guid id, [FromQuery] string? cursor = null, [FromQuery] int take = 10, [FromQuery] string? order = null)
     {
-        var orderParams = QueryParamsParser.ParseOrderParams(order);
-        var cursorParams = QueryParamsParser.ParseCursorParams(cursor);
-        
-        if (take <= 0)
-            take = 10;
-        
-        var query = new GetUserEventsQuery(id, take, orderParams.OrderType, cursorParams.CursorType, orderParams.FieldName, cursorParams.CursorId);
-        throw new NotImplementedException();
+        try
+        {
+            var orderParams = QueryParamsParser.ParseOrderParams(order);
+            var cursorParams = QueryParamsParser.ParseCursorParams(cursor);
+
+            if (take <= 0)
+                take = 10;
+
+            var query = new GetUserEventsQuery(id, take, orderParams.OrderType, cursorParams.CursorType,
+                orderParams.FieldName, cursorParams.CursorId);
+            var response = await mediator.Send(query);
+            return Ok(response);
+        }
+        catch (EntityNotFoundException ex)
+        {
+            return NotFound(new { error = ex.Message });
+        }
+        catch (ArgumentException ex)
+        {
+            return BadRequest(new { error = ex.Message });
+        }
     }
 
     [HttpPost("{id:guid}/anonymize")]

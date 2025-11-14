@@ -12,7 +12,7 @@ public class ChangePasswordHandler(AppDbContext dbContext) : IRequestHandler<Cha
 {
     public async Task Handle(ChangePasswordCommand request, CancellationToken cancellationToken)
     {
-        var user = await dbContext.Users.FindAsync(request.UserId);
+        var user = await dbContext.Users.FindAsync(request.UserId, cancellationToken);
 
         if (user == null)
             throw new KeyNotFoundException($"User with id: {request.UserId} not found");
@@ -29,9 +29,5 @@ public class ChangePasswordHandler(AppDbContext dbContext) : IRequestHandler<Cha
         user.PasswordSalt = newSalt;
 
         await dbContext.SaveChangesAsync(cancellationToken);
-  
-   
     }
-
-    
 }
