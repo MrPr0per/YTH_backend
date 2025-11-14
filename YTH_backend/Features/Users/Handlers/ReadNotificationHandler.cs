@@ -5,10 +5,8 @@ using YTH_backend.Features.Users.Commands;
 
 namespace YTH_backend.Features.Users.Handlers;
 
-public class ReadNotificationHandler(AppDbContext context) : IRequestHandler<ReadNotificationCommand>
+public class ReadNotificationHandler(AppDbContext dbContext) : IRequestHandler<ReadNotificationCommand>
 {
-    private readonly AppDbContext dbContext = context;
-    
     public async Task Handle(ReadNotificationCommand request, CancellationToken cancellationToken)
     {
         if (request.CurrentUserId != request.UserId)

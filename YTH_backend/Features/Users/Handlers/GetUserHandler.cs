@@ -6,10 +6,8 @@ using YTH_backend.Features.Users.Queries;
 
 namespace YTH_backend.Features.Users.Handlers;
 
-public class GetUserHandler(AppDbContext context) : IRequestHandler<GetUserQuery, GetUserResponseDto>
+public class GetUserHandler(AppDbContext dbContext) : IRequestHandler<GetUserQuery, GetUserResponseDto>
 {
-    private readonly AppDbContext dbContext = context;
-    
     public async Task<GetUserResponseDto> Handle(GetUserQuery request, CancellationToken cancellationToken)
     {
         var user = await dbContext.Users.FindAsync(request.Id, cancellationToken);

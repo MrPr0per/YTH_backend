@@ -7,10 +7,8 @@ using YTH_backend.Models.User;
 
 namespace YTH_backend.Features.Events.Handlers;
 
-public class AddEventToUserHandler(AppDbContext context) : IRequestHandler<AddEventToUserCommand>
+public class AddEventToUserHandler(AppDbContext dbContext) : IRequestHandler<AddEventToUserCommand>
 {
-    private readonly AppDbContext dbContext = context;
-    
     public async Task Handle(AddEventToUserCommand request, CancellationToken cancellationToken)
     {
         var userExists = await dbContext.Users

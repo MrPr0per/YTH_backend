@@ -5,10 +5,8 @@ using YTH_backend.Features.Posts.Queries;
 
 namespace YTH_backend.Features.Posts.Handlers;
 
-public class GetPostHandler(AppDbContext context) : IRequestHandler<GetPostByIdQuery, GetPostResponseDto>
+public class GetPostHandler(AppDbContext dbContext) : IRequestHandler<GetPostByIdQuery, GetPostResponseDto>
 {
-    private readonly AppDbContext dbContext = context;
-    
     public async Task<GetPostResponseDto> Handle(GetPostByIdQuery request, CancellationToken cancellationToken)
     {
         var post = await dbContext.Posts.FindAsync(request.PostId, cancellationToken);

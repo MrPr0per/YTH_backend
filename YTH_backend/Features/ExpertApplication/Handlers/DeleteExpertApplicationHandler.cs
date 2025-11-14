@@ -4,10 +4,8 @@ using YTH_backend.Features.ExpertApplication.Commands;
 
 namespace YTH_backend.Features.ExpertApplication.Handlers;
 
-public class DeleteExpertApplicationHandler(AppDbContext context) : IRequestHandler<DeleteExpertApplicationCommand>
+public class DeleteExpertApplicationHandler(AppDbContext dbContext) : IRequestHandler<DeleteExpertApplicationCommand>
 {
-    private readonly AppDbContext dbContext = context;
-    
     public async Task Handle(DeleteExpertApplicationCommand request, CancellationToken cancellationToken)
     {
         var application = await dbContext.ExpertApplications.FindAsync(request.ApplicationId, cancellationToken);

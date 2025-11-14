@@ -5,10 +5,8 @@ using YTH_backend.Features.Events.Commands;
 
 namespace YTH_backend.Features.Courses.Handlers;
 
-public class DeleteCourseHandler(AppDbContext context) : IRequestHandler<DeleteCourseCommand>
+public class DeleteCourseHandler(AppDbContext dbContext) : IRequestHandler<DeleteCourseCommand>
 {
-    private readonly AppDbContext dbContext = context;
-    
     public async Task Handle(DeleteCourseCommand request, CancellationToken cancellationToken)
     {
         var course = await dbContext.Courses.FindAsync(request.CourseId, cancellationToken);

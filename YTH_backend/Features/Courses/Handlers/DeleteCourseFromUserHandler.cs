@@ -5,10 +5,8 @@ using YTH_backend.Features.Courses.Commands;
 
 namespace YTH_backend.Features.Courses.Handlers;
 
-public class DeleteCourseFromUserHandler(AppDbContext context) : IRequestHandler<DeleteCourseFromUserCommand>
+public class DeleteCourseFromUserHandler(AppDbContext dbContext) : IRequestHandler<DeleteCourseFromUserCommand>
 {
-    private readonly AppDbContext dbContext = context;
-    
     public async Task Handle(DeleteCourseFromUserCommand request, CancellationToken cancellationToken)
     {
         var userExists = await dbContext.Users

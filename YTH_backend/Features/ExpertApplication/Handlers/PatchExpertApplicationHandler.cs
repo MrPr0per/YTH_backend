@@ -5,10 +5,8 @@ using YTH_backend.Features.ExpertApplication.Commands;
 
 namespace YTH_backend.Features.ExpertApplication.Handlers;
 
-public class PatchExpertApplicationHandler(AppDbContext context) : IRequestHandler<PatchExpertApplicationCommand>
+public class PatchExpertApplicationHandler(AppDbContext dbContext) : IRequestHandler<PatchExpertApplicationCommand>
 {
-    private readonly AppDbContext dbContext = context;
-    
     public async Task Handle(PatchExpertApplicationCommand request, CancellationToken cancellationToken)
     {
         var application = await dbContext.ExpertApplications.FindAsync(request.ApplicationId, cancellationToken);

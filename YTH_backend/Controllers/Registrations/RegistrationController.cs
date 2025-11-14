@@ -4,6 +4,7 @@ using YTH_backend.DTOs.Course;
 using YTH_backend.Enums;
 using YTH_backend.Features.Courses.Commands;
 using YTH_backend.Features.Courses.Queries;
+using YTH_backend.Infrastructure;
 
 namespace YTH_backend.Controllers.Registrations;
 
@@ -11,12 +12,16 @@ namespace YTH_backend.Controllers.Registrations;
 [Route("api/v0/registrations")]
 public class RegistrationController(IMediator mediator) : ControllerBase
 {
-    private readonly IMediator mediator = mediator;
-    
     [HttpGet]
-    public async Task<IActionResult> GetUserCoursesController(Guid id, [FromQuery] int from = 0, [FromQuery] int take = 10, [FromQuery] OrderType orderType = OrderType.Asc)
+    public async Task<IActionResult> GetUserCoursesController(Guid id, [FromQuery] string? cursor = null, [FromQuery] int take = 10, [FromQuery] string? order = null)
     {
-        var query = new GetUserCoursesQuery(id, from, take, orderType);
+        var orderParams = QueryParamsParser.ParseOrderParams(order);
+        var cursorParams = QueryParamsParser.ParseCursorParams(cursor);
+        
+        if (take <= 0)
+            take = 10;
+        
+        var query = new GetUserCoursesQuery(id, take, orderParams.OrderType, cursorParams.CursorType, cursorParams.CursorId, orderParams.FieldName);
         await mediator.Send(query);
         throw new NotImplementedException();
     }

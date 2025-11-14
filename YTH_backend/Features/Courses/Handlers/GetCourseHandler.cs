@@ -6,10 +6,8 @@ using YTH_backend.Features.Courses.Queries;
 
 namespace YTH_backend.Features.Courses.Handlers;
 
-public class GetCourseHandler(AppDbContext context) : IRequestHandler<GetCourseQuery, GetCourseResponseDto>
+public class GetCourseHandler(AppDbContext dbContext) : IRequestHandler<GetCourseQuery, GetCourseResponseDto>
 {
-    private readonly AppDbContext dbContext = context;
-    
     public async Task<GetCourseResponseDto> Handle(GetCourseQuery request, CancellationToken cancellationToken)
     {
         var course = await dbContext.Courses.FindAsync(request.CourseId, cancellationToken);

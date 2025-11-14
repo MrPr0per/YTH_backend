@@ -12,6 +12,7 @@ using YTH_backend.Features.Events.Commands;
 using YTH_backend.Features.Events.Queries;
 using YTH_backend.Features.Users.Commands;
 using YTH_backend.Features.Users.Queries;
+using YTH_backend.Infrastructure;
 using YTH_backend.Models;
 
 namespace YTH_backend.Controllers.Users;
@@ -20,8 +21,6 @@ namespace YTH_backend.Controllers.Users;
 [Route("api/v0/users")]
 public class UsersController(IMediator mediator) : ControllerBase
 {
-    private readonly IMediator mediator = mediator;
-
     [HttpGet]
     
     public async Task<IActionResult> GetPersonalDataController()
@@ -39,9 +38,15 @@ public class UsersController(IMediator mediator) : ControllerBase
 
     [HttpGet("{id:guid}/events")]
     [Authorize]
-    public async Task<IActionResult> GetUserEventsController(Guid id, [FromQuery] int from = 0, [FromQuery] int take = 10, [FromQuery] OrderType orderType = OrderType.Asc)
+    public async Task<IActionResult> GetUserEventsController(Guid id, [FromQuery] string? cursor = null, [FromQuery] int take = 10, [FromQuery] string? order = null)
     {
-        var query = new GetUserEventsQuery(id, from, take, orderType);
+        var orderParams = QueryParamsParser.ParseOrderParams(order);
+        var cursorParams = QueryParamsParser.ParseCursorParams(cursor);
+        
+        if (take <= 0)
+            take = 10;
+        
+        var query = new GetUserEventsQuery(id, take, orderParams.OrderType, cursorParams.CursorType, orderParams.FieldName, cursorParams.CursorId);
         throw new NotImplementedException();
     }
 

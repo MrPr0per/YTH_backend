@@ -5,10 +5,8 @@ using YTH_backend.Models.Event;
 
 namespace YTH_backend.Features.Events.Handlers;
 
-public class AddEventHandler(AppDbContext context) : IRequestHandler<AddEventCommand>
+public class AddEventHandler(AppDbContext dbContext) : IRequestHandler<AddEventCommand>
 {
-    private readonly AppDbContext dbContext = context;
-    
     public async Task Handle(AddEventCommand request, CancellationToken cancellationToken)
     {
         var newEvent = new Event

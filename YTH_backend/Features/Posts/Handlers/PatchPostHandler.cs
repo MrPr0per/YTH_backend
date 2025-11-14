@@ -5,10 +5,8 @@ using YTH_backend.Features.Posts.Commands;
 
 namespace YTH_backend.Features.Posts.Handlers;
 
-public class PatchPostHandler(AppDbContext context) : IRequestHandler<PatchPostCommand>
+public class PatchPostHandler(AppDbContext dbContext) : IRequestHandler<PatchPostCommand>
 {
-    private readonly AppDbContext dbContext = context;
-    
     public async Task Handle(PatchPostCommand request, CancellationToken cancellationToken)
     {
         var id = request.PostId;

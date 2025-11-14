@@ -5,10 +5,8 @@ using YTH_backend.Features.ExpertApplication.Commands;
 
 namespace YTH_backend.Features.ExpertApplication.Handlers;
 
-public class SendExpertApplicationHandler(AppDbContext context) : IRequestHandler<SendExpertApplicationCommand>
+public class SendExpertApplicationHandler(AppDbContext dbContext) : IRequestHandler<SendExpertApplicationCommand>
 {
-    private readonly AppDbContext dbContext = context;
-    
     public async Task Handle(SendExpertApplicationCommand request, CancellationToken cancellationToken)
     {
         var application = await dbContext.ExpertApplications.FindAsync(request.ApplicationId, cancellationToken);

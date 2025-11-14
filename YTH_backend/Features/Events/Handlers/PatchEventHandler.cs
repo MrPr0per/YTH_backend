@@ -5,10 +5,8 @@ using YTH_backend.Features.Events.Commands;
 
 namespace YTH_backend.Features.Events.Handlers;
 
-public class PatchEventHandler(AppDbContext context) : IRequestHandler<PatchEventCommand>
+public class PatchEventHandler(AppDbContext dbContext) : IRequestHandler<PatchEventCommand>
 {
-    private readonly AppDbContext dbContext = context;
-    
     public async Task Handle(PatchEventCommand request, CancellationToken cancellationToken)
     {
         var ev = await dbContext.Events.FindAsync(request.EventId, cancellationToken);

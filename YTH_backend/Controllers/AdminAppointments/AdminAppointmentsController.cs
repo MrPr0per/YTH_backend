@@ -9,8 +9,6 @@ namespace YTH_backend.Controllers.AdminAppointments;
 [Route("api/v0/users/{id}")]
 public class AdminAppointmentsController(IMediator mediator) : ControllerBase
 {
-    private readonly IMediator mediator = mediator;
-
     [HttpPut("roles/admin")]
     [Authorize(Roles = "superadmin")]
     public async Task<IActionResult> AddAdminController(Guid id)

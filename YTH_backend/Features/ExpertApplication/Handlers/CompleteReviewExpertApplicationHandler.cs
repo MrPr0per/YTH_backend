@@ -6,10 +6,8 @@ using YTH_backend.Models.User;
 
 namespace YTH_backend.Features.ExpertApplication.Handlers;
 
-public class CompleteReviewExpertApplicationHandler(AppDbContext context) : IRequestHandler<CompleteReviewExpertApplicationCommand>
+public class CompleteReviewExpertApplicationHandler(AppDbContext dbContext) : IRequestHandler<CompleteReviewExpertApplicationCommand>
 {
-    private readonly AppDbContext dbContext = context;
-    
     public async Task Handle(CompleteReviewExpertApplicationCommand request, CancellationToken cancellationToken)
     {
         var application = await dbContext.ExpertApplications.FindAsync(request.ApplicationId, cancellationToken);

@@ -7,6 +7,7 @@ using YTH_backend.DTOs.Post;
 using YTH_backend.Enums;
 using YTH_backend.Features.Posts.Commands;
 using YTH_backend.Features.Posts.Queries;
+using YTH_backend.Infrastructure;
 
 namespace YTH_backend.Controllers.Posts;
 
@@ -14,13 +15,16 @@ namespace YTH_backend.Controllers.Posts;
 [Route("api/v0/posts")]
 public class PostsController(IMediator mediator) : ControllerBase
 {
-    private readonly IMediator mediator = mediator;
-
     [HttpGet]
-    public async Task<IActionResult> GetAllPostsController([FromQuery] int from = 0, [FromQuery] int take = 10,
-        [FromQuery] OrderType orderType = OrderType.Asc)
+    public async Task<IActionResult> GetAllPostsController([FromQuery] string? cursor = null, [FromQuery] int take = 10, [FromQuery] string? order = null)
     {
-        var query = new GetAllPostQuery(from, take, orderType);
+        var orderParams = QueryParamsParser.ParseOrderParams(order);
+        var cursorParams = QueryParamsParser.ParseCursorParams(cursor);
+        
+        if (take <= 0)
+            take = 10;
+        
+        var query = new GetAllPostQuery(take, orderParams.OrderType, cursorParams.CursorType, orderParams.FieldName, cursorParams.CursorId);
         throw new NotImplementedException();
     }
 

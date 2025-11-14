@@ -4,26 +4,22 @@ using YTH_backend.Data;
 using YTH_backend.DTOs.Post;
 using YTH_backend.Enums;
 using YTH_backend.Features.Posts.Queries;
+using YTH_backend.Infrastructure;
 using YTH_backend.Models;
+using YTH_backend.Models.Infrastructure;
 using YTH_backend.Models.Post;
 
 namespace YTH_backend.Features.Posts.Handlers;
 
-public class GetAllPostHandler(AppDbContext context) :  IRequestHandler<GetAllPostQuery, PagedResult<GetPostResponseDto>>
+public class GetAllPostHandler(AppDbContext dbContext) :  IRequestHandler<GetAllPostQuery, PagedResult<GetPostResponseDto>>
 {
-    private readonly AppDbContext dbContext = context;
-    
     public async Task<PagedResult<GetPostResponseDto>> Handle(GetAllPostQuery request, CancellationToken cancellationToken)
     {
-        IQueryable<Post> query = dbContext.Posts;
-        
-        query = request.OrderType == OrderType.Asc
-            ? query.OrderBy(post => post.CreatedAt)
-            : query.OrderByDescending(post => post.CreatedAt);
+        var query = dbContext.Posts
+            .ApplyOrderSettings(request.OrderType, request.OrderFieldName)
+            .ApplyCursorSettings(request.CursorType, request.Take, request.CursorId, x => x.Id);;
         
         var data = await query
-            .Skip(request.From - 1)
-            .Take(request.Take)
             .Select(post => new GetPostResponseDto(
                 post.AuthorId,
                 post.Title,
@@ -34,9 +30,10 @@ public class GetAllPostHandler(AppDbContext context) :  IRequestHandler<GetAllPo
             .ToListAsync(cancellationToken);
 
         return new PagedResult<GetPostResponseDto>(
-            request.From,
             request.Take,
+            request.OrderFieldName,
             request.OrderType,
+            request.CursorType,
             data
         );
     }

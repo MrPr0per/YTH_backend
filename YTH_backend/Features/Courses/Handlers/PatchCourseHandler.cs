@@ -5,10 +5,8 @@ using YTH_backend.Features.Courses.Commands;
 
 namespace YTH_backend.Features.Courses.Handlers;
 
-public class PatchCourseHandler(AppDbContext context) : IRequestHandler<PatchCourseCommand>
+public class PatchCourseHandler(AppDbContext dbContext) : IRequestHandler<PatchCourseCommand>
 {
-    private readonly AppDbContext dbContext = context;
-    
     public async Task Handle(PatchCourseCommand request, CancellationToken cancellationToken)
     {
         var course = await dbContext.Courses.FindAsync(request.CourseId, cancellationToken);

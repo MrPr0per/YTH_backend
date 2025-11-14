@@ -5,10 +5,8 @@ using YTH_backend.Models.Post;
 
 namespace YTH_backend.Features.Posts.Handlers;
 
-public class CreatePostHandler(AppDbContext context): IRequestHandler<CreatePostCommand>
+public class CreatePostHandler(AppDbContext dbContext): IRequestHandler<CreatePostCommand>
 {
-    private readonly AppDbContext dbContext = context;
-    
     public async Task Handle(CreatePostCommand request, CancellationToken cancellationToken)
     {
         var newPost = new Post

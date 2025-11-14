@@ -4,10 +4,8 @@ using YTH_backend.Features.Users.Commands;
 
 namespace YTH_backend.Features.Users.Handlers;
 
-public class PatchUserHandler(AppDbContext context) : IRequestHandler<PatchUserCommand>
+public class PatchUserHandler(AppDbContext dbContext) : IRequestHandler<PatchUserCommand>
 {
-    private readonly AppDbContext dbContext = context;
-    
     public Task Handle(PatchUserCommand request, CancellationToken cancellationToken)
     {
         throw new NotImplementedException();

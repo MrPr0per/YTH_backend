@@ -5,10 +5,8 @@ using YTH_backend.Features.Users.Queries;
 
 namespace YTH_backend.Features.Users.Handlers;
 
-public class GetPersonalDataHandler(AppDbContext context) : IRequestHandler<GetPersonalDataQuery, GetPersonalDataResponseDto>
+public class GetPersonalDataHandler(AppDbContext dbContext) : IRequestHandler<GetPersonalDataQuery, GetPersonalDataResponseDto>
 {
-    private readonly AppDbContext dbContext = context;
-    
     public Task<GetPersonalDataResponseDto> Handle(GetPersonalDataQuery request, CancellationToken cancellationToken)
     {
         throw new NotImplementedException();

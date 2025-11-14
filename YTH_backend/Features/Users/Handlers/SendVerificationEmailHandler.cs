@@ -4,10 +4,8 @@ using YTH_backend.Features.Users.Commands;
 
 namespace YTH_backend.Features.Users.Handlers;
 
-public class SendVerificationEmailHandler(AppDbContext context) : IRequestHandler<SendVerificationEmailCommand>
+public class SendVerificationEmailHandler(AppDbContext dbContext) : IRequestHandler<SendVerificationEmailCommand>
 {
-    private readonly AppDbContext dbContext = context;
-    
     public async Task Handle(SendVerificationEmailCommand request, CancellationToken cancellationToken)
     {
         throw new NotImplementedException();

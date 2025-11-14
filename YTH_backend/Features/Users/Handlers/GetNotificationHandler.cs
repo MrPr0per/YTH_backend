@@ -6,10 +6,8 @@ using YTH_backend.Models.User;
 
 namespace YTH_backend.Features.Users.Handlers;
 
-public class GetNotificationHandler(AppDbContext context) : IRequestHandler<GetNotificationQuery, GetNotificationsResponseDto>
+public class GetNotificationHandler(AppDbContext dbContext) : IRequestHandler<GetNotificationQuery, GetNotificationsResponseDto>
 {
-    private readonly AppDbContext dbContext = context;
-    
     public async Task<GetNotificationsResponseDto> Handle(GetNotificationQuery request, CancellationToken cancellationToken)
     {
         if (request.CurrentUserId != request.UserId)

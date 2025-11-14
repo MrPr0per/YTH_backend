@@ -4,14 +4,14 @@ using YTH_backend.Data;
 using YTH_backend.DTOs.Event;
 using YTH_backend.Enums;
 using YTH_backend.Features.Events.Queries;
+using YTH_backend.Infrastructure;
 using YTH_backend.Models;
+using YTH_backend.Models.Infrastructure;
 
 namespace YTH_backend.Features.Events.Handlers;
 
-public class GetUserEventsHandler(AppDbContext context) : IRequestHandler<GetUserEventsQuery, PagedResult<GetEventResponseDto>>
+public class GetUserEventsHandler(AppDbContext dbContext) : IRequestHandler<GetUserEventsQuery, PagedResult<GetEventResponseDto>>
 {
-    private readonly AppDbContext dbContext = context;
-    
     public async Task<PagedResult<GetEventResponseDto>> Handle(GetUserEventsQuery request, CancellationToken cancellationToken)
     {
         var userExists = await dbContext.Users
@@ -20,21 +20,16 @@ public class GetUserEventsHandler(AppDbContext context) : IRequestHandler<GetUse
         if (!userExists)
             throw new KeyNotFoundException($"User with id: {request.UserId} not found");
 
-        var from = request.From < 1 ? 1 : request.From;
-        var skip = from - 1;
-
         var eventsQuery = dbContext.UserEventRegistrations
             .Where(r => r.UserId == request.UserId)
             .Select(r => r.Event)
             .AsQueryable();
         
-        var query = request.OrderType == OrderType.Asc
-            ? eventsQuery.OrderBy(e => e.Date)
-            : eventsQuery.OrderByDescending(e => e.Date);
+        var query = eventsQuery
+            .ApplyOrderSettings(request.OrderType, request.OrderFieldName)
+            .ApplyCursorSettings(request.CursorType, request.Take, request.CursorId, x => x.Id);
 
         var data = query
-            .Skip(skip)
-            .Take(request.Take)
             .Select(ev => new GetEventResponseDto(
                 ev.Name,
                 ev.Description,
@@ -44,9 +39,10 @@ public class GetUserEventsHandler(AppDbContext context) : IRequestHandler<GetUse
             .ToList();
         
         return new PagedResult<GetEventResponseDto>(
-            request.From,
             request.Take,
+            request.OrderFieldName,
             request.OrderType,
+            request.CursorType,
             data);
     }
 }

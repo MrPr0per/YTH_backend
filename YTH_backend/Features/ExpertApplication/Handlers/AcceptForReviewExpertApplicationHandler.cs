@@ -5,10 +5,8 @@ using YTH_backend.Features.ExpertApplication.Commands;
 
 namespace YTH_backend.Features.ExpertApplication.Handlers;
 
-public class AcceptForReviewExpertApplicationHandler(AppDbContext context) : IRequestHandler<AcceptForReviewExpertApplicationCommand>
+public class AcceptForReviewExpertApplicationHandler(AppDbContext dbContext) : IRequestHandler<AcceptForReviewExpertApplicationCommand>
 {
-    private readonly AppDbContext dbContext = context;
-    
     public async Task Handle(AcceptForReviewExpertApplicationCommand request, CancellationToken cancellationToken)
     {
         var application = await dbContext.ExpertApplications.FindAsync(request.Id, cancellationToken);

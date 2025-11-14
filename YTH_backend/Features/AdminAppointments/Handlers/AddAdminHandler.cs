@@ -6,10 +6,8 @@ using YTH_backend.Models.User;
 
 namespace YTH_backend.Features.AdminAppointments.Handlers;
 
-public class AddAdminHandler(AppDbContext context) : IRequestHandler<AddAdminCommand>
+public class AddAdminHandler(AppDbContext dbContext) : IRequestHandler<AddAdminCommand>
 {
-    private readonly AppDbContext dbContext = context;
-    
     public async Task Handle(AddAdminCommand request, CancellationToken cancellationToken)
     {
         var user = await dbContext.Users.FindAsync(request.UserId, cancellationToken);

@@ -10,8 +10,6 @@ namespace YTH_backend.Controllers.Users;
 [Route("api/v0/auth")]
 public class AuthController(IMediator mediator) : ControllerBase
 {
-    private readonly IMediator mediator = mediator;
-
     [HttpPost("login")]
     public async Task<IActionResult> LoginController([FromBody] LoginUserRequestDto loginUserRequestDto)
     {

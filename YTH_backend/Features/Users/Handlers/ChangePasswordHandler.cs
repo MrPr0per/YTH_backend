@@ -8,10 +8,8 @@ using YTH_backend.Infrastructure;
 
 namespace YTH_backend.Features.Users.Handlers;
 
-public class ChangePasswordHandler(AppDbContext context) : IRequestHandler<ChangePasswordCommand>
+public class ChangePasswordHandler(AppDbContext dbContext) : IRequestHandler<ChangePasswordCommand>
 {
-    private readonly AppDbContext dbContext = context;
-    
     public async Task Handle(ChangePasswordCommand request, CancellationToken cancellationToken)
     {
         var user = await dbContext.Users.FindAsync(request.UserId);

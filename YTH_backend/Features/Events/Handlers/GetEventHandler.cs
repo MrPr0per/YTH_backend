@@ -5,10 +5,8 @@ using YTH_backend.Features.Events.Queries;
 
 namespace YTH_backend.Features.Events.Handlers;
 
-public class GetEventHandler(AppDbContext context) : IRequestHandler<GetEventQuery, GetEventResponseDto>
+public class GetEventHandler(AppDbContext dbContext) : IRequestHandler<GetEventQuery, GetEventResponseDto>
 {
-    private readonly AppDbContext dbContext = context;
-    
     public async Task<GetEventResponseDto> Handle(GetEventQuery request, CancellationToken cancellationToken)
     {
         var ev = await dbContext.Events.FindAsync(request.EventId, cancellationToken);

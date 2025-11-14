@@ -6,6 +6,7 @@ using YTH_backend.DTOs.Course;
 using YTH_backend.Enums;
 using YTH_backend.Features.Courses.Commands;
 using YTH_backend.Features.Courses.Queries;
+using YTH_backend.Infrastructure;
 
 namespace YTH_backend.Controllers.Courses;
 
@@ -13,8 +14,6 @@ namespace YTH_backend.Controllers.Courses;
 [Route("api/v0/courses")]
 public class CoursesController(IMediator mediator) : ControllerBase
 {
-    private readonly IMediator mediator = mediator;
-    
     [HttpGet("{id:guid}")]
     public async Task<IActionResult> GetCourseController(Guid id)
     {
@@ -23,9 +22,15 @@ public class CoursesController(IMediator mediator) : ControllerBase
     }
     
     [HttpGet]
-    public async Task<IActionResult> GetAllCoursesController([FromQuery] int from = 0, [FromQuery] int take = 10, [FromQuery] OrderType orderType = OrderType.Asc)
+    public async Task<IActionResult> GetAllCoursesController([FromQuery] string? cursor = null, [FromQuery] int take = 10, [FromQuery] string? order = null)
     {
-        var query = new GetAllCoursesQuery(from, take, orderType);
+        var orderParams = QueryParamsParser.ParseOrderParams(order);
+        var cursorParams = QueryParamsParser.ParseCursorParams(cursor);
+        
+        if (take <= 0)
+            take = 10;
+        
+        var query = new GetAllCoursesQuery(take, orderParams.OrderType, cursorParams.CursorType, orderParams.FieldName, cursorParams.CursorId);
         throw new NotImplementedException();
     }
 

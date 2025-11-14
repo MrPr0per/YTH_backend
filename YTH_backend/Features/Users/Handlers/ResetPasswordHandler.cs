@@ -5,10 +5,8 @@ using YTH_backend.Infrastructure;
 
 namespace YTH_backend.Features.Users.Handlers;
 
-public class ResetPasswordHandler(AppDbContext context) : IRequestHandler<ResetPasswordCommand>
+public class ResetPasswordHandler(AppDbContext dbContext) : IRequestHandler<ResetPasswordCommand>
 {
-    private readonly AppDbContext dbContext = context;
-    
     public async Task Handle(ResetPasswordCommand request, CancellationToken cancellationToken)
     {
         //TODO разобраться с Jwt

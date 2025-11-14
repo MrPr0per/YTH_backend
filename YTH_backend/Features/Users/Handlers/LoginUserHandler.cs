@@ -11,10 +11,8 @@ using YTH_backend.Models.User;
 
 namespace YTH_backend.Features.Users.Handlers;
 
-public class LoginUserHandler(AppDbContext context) : IRequestHandler<LoginUserCommand>
+public class LoginUserHandler(AppDbContext dbContext) : IRequestHandler<LoginUserCommand>
 {
-    private readonly AppDbContext dbContext = context;
-    
     public async Task Handle(LoginUserCommand request, CancellationToken cancellationToken)
     {
         var user = await dbContext.Users.FirstOrDefaultAsync(u => u.UserName == request.Login, cancellationToken);

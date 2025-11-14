@@ -4,32 +4,25 @@ using YTH_backend.Data;
 using YTH_backend.DTOs.User;
 using YTH_backend.Enums;
 using YTH_backend.Features.Users.Queries;
+using YTH_backend.Infrastructure;
 using YTH_backend.Models;
+using YTH_backend.Models.Infrastructure;
 using YTH_backend.Models.User;
 
 namespace YTH_backend.Features.Users.Handlers;
 
-public class GetAllNotificationsHandler(AppDbContext context) : IRequestHandler<GetAllNotificationsQuery, PagedResult<GetNotificationsResponseDto>>
+public class GetAllNotificationsHandler(AppDbContext dbContext) : IRequestHandler<GetAllNotificationsQuery, PagedResult<GetNotificationsResponseDto>>
 {
-    private readonly AppDbContext dbContext = context;
-    
     public async Task<PagedResult<GetNotificationsResponseDto>> Handle(GetAllNotificationsQuery request, CancellationToken cancellationToken)
     {
         if (request.CurrentUserId != request.Id)
             throw new UnauthorizedAccessException("User does not have permission to view other users notifications");
                 
-        IQueryable<Notification> query = dbContext.Notifications;
-        
-        query = request.OrderType == OrderType.Asc
-            ? query.OrderBy(x => x.CreatedAt)
-            : query.OrderByDescending(x => x.CreatedAt);
-        
-        var from = request.From < 1 ? 1 : request.From;
-        var skip = from - 1;
+        var query = dbContext.Notifications
+            .ApplyOrderSettings(request.OrderType, request.OrderFieldName)
+            .ApplyCursorSettings(request.CursorType, request.Take, request.CursorId, x => x.Id);
         
         var data = await query
-            .Skip(skip)
-            .Take(request.Take)
             .Select(n => new GetNotificationsResponseDto(
                 n.Title,
                 n.NotificationText,
@@ -38,9 +31,10 @@ public class GetAllNotificationsHandler(AppDbContext context) : IRequestHandler<
             .ToListAsync(cancellationToken);
 
         return new PagedResult<GetNotificationsResponseDto>(
-            request.From,
             request.Take,
+            request.OrderFieldName,
             request.OrderType,
+            request.CursorType,
             data);
     }
 }

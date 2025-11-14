@@ -4,10 +4,8 @@ using YTH_backend.Features.Users.Commands;
 
 namespace YTH_backend.Features.Users.Handlers;
 
-public class AnonymizeUserHandler(AppDbContext context) : IRequestHandler<AnonymizeUserCommand>
+public class AnonymizeUserHandler(AppDbContext dbContext) : IRequestHandler<AnonymizeUserCommand>
 {
-    private readonly AppDbContext dbContext = context;
-    
     public Task Handle(AnonymizeUserCommand request, CancellationToken cancellationToken)
     {
         throw new NotImplementedException();

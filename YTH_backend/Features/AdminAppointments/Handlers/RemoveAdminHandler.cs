@@ -5,10 +5,8 @@ using YTH_backend.Features.AdminAppointments.Commands;
 
 namespace YTH_backend.Features.AdminAppointments.Handlers;
 
-public class RemoveAdminHandler(AppDbContext context) : IRequestHandler<RemoveAdminCommand>
+public class RemoveAdminHandler(AppDbContext dbContext) : IRequestHandler<RemoveAdminCommand>
 {
-    private readonly AppDbContext dbContext = context;
-    
     public async Task Handle(RemoveAdminCommand request, CancellationToken cancellationToken)
     {
         var user = await dbContext.Users.FindAsync(request.RevokedId, cancellationToken);

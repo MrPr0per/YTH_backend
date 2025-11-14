@@ -4,10 +4,8 @@ using YTH_backend.Features.Posts.Commands;
 
 namespace YTH_backend.Features.Posts.Handlers;
 
-public class DeletePostHandler(AppDbContext context) : IRequestHandler<DeletePostCommand>
+public class DeletePostHandler(AppDbContext dbContext) : IRequestHandler<DeletePostCommand>
 {
-    private readonly AppDbContext dbContext = context;
-    
     public async Task Handle(DeletePostCommand request, CancellationToken cancellationToken)
     {
         var post = await dbContext.Posts.FindAsync(request.PostId, cancellationToken);

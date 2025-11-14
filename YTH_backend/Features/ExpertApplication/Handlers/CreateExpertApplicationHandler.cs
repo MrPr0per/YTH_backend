@@ -6,10 +6,8 @@ using YTH_backend.Features.ExpertApplication.Commands;
 
 namespace YTH_backend.Features.ExpertApplication.Handlers;
 
-public class CreateExpertApplicationHandler(AppDbContext context) : IRequestHandler<CreateExpertApplicationCommand>
+public class CreateExpertApplicationHandler(AppDbContext dbContext) : IRequestHandler<CreateExpertApplicationCommand>
 {
-    private readonly AppDbContext dbContext = context;
-    
     public async Task Handle(CreateExpertApplicationCommand request, CancellationToken cancellationToken)
     {
         var oldApplication = await dbContext.ExpertApplications

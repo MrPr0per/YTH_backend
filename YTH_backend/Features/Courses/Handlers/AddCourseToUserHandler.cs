@@ -7,10 +7,8 @@ using YTH_backend.Models.User;
 
 namespace YTH_backend.Features.Courses.Handlers;
 
-public class AddCourseToUserHandler(AppDbContext context) : IRequestHandler<AddCourseToUserCommand>
+public class AddCourseToUserHandler(AppDbContext dbContext) : IRequestHandler<AddCourseToUserCommand>
 {
-    private readonly AppDbContext dbContext = context;
-    
     public async Task Handle(AddCourseToUserCommand request, CancellationToken cancellationToken)
     {
         var userExists = await dbContext.Users

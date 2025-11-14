@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using YTH_backend.Enums;
 using YTH_backend.Features.Users.Commands;
 using YTH_backend.Features.Users.Queries;
+using YTH_backend.Infrastructure;
 using YTH_backend.Models.User;
 
 namespace YTH_backend.Controllers.Users;
@@ -13,12 +14,9 @@ namespace YTH_backend.Controllers.Users;
 [Route("api/v0/users/{id:guid}/notifications")]
 public class NotificationsController(IMediator mediator) : ControllerBase
 {
-    private readonly IMediator mediator = mediator;
-
     [HttpGet]
     [Authorize]
-    public async Task<IActionResult> GetAllNotificationsController([FromRoute] Guid id, [FromQuery] int from = 0, [FromQuery] int take = 10,
-        [FromQuery] OrderType orderType = OrderType.Asc)
+    public async Task<IActionResult> GetAllNotificationsController([FromRoute] Guid id, [FromQuery] string? cursor = null, [FromQuery] int take = 10, [FromQuery] string? order = null)
     {
         var userIdClaim = User.FindFirst("sub")?.Value
                           ?? User.FindFirst(ClaimTypes.NameIdentifier)?.Value
@@ -26,7 +24,13 @@ public class NotificationsController(IMediator mediator) : ControllerBase
         
         var userId = Guid.Parse(userIdClaim);
         
-        var query = new GetAllNotificationsQuery(id, userId, from, take, orderType);
+        var orderParams = QueryParamsParser.ParseOrderParams(order);
+        var cursorParams = QueryParamsParser.ParseCursorParams(cursor);
+        
+        if (take <= 0)
+            take = 10;
+        
+        var query = new GetAllNotificationsQuery(id, userId, take, orderParams.OrderType, cursorParams.CursorType, orderParams.FieldName, cursorParams.CursorId);
         throw new NotImplementedException();
     }
 

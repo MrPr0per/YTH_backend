@@ -12,8 +12,6 @@ namespace YTH_backend.Controllers.ExpertApplications;
 [Route("api/v0/expertApplications")]
 public class ExpertApplicationsController(IMediator mediator) : ControllerBase
 {
-    private readonly IMediator mediator = mediator;
-
     [HttpPost]
     [Authorize(Roles = "student")]
     public async Task<IActionResult> CreateExpertApplicationController([FromBody] CreateExpertApplicationRequestDto request)

@@ -4,14 +4,14 @@ using YTH_backend.Data;
 using YTH_backend.DTOs.Course;
 using YTH_backend.Enums;
 using YTH_backend.Features.Courses.Queries;
+using YTH_backend.Infrastructure;
 using YTH_backend.Models;
+using YTH_backend.Models.Infrastructure;
 
 namespace YTH_backend.Features.Courses.Handlers;
 
-public class GetUserCoursesHandler(AppDbContext context) : IRequestHandler<GetUserCoursesQuery, PagedResult<GetCourseResponseDto>>
+public class GetUserCoursesHandler(AppDbContext dbContext) : IRequestHandler<GetUserCoursesQuery, PagedResult<GetCourseResponseDto>>
 {
-    private readonly AppDbContext dbContext = context;
-    
     public async Task<PagedResult<GetCourseResponseDto>> Handle(GetUserCoursesQuery request, CancellationToken cancellationToken)
     {
         var userExists = await dbContext.Users
@@ -20,21 +20,16 @@ public class GetUserCoursesHandler(AppDbContext context) : IRequestHandler<GetUs
         if (!userExists)
             throw new KeyNotFoundException($"User with id: {request.UserId} not found");
         
-        var from = request.From < 1 ? 1 : request.From;
-        var skip = from - 1;
-
         var coursesQuery = dbContext.UserCourseRegistrations
             .Where(r => r.UserId == request.UserId)
             .Select(r => r.Course)
             .AsQueryable();
-        
-        coursesQuery = request.OrderType == OrderType.Asc 
-            ? coursesQuery.OrderBy(x => x.Name)
-            : coursesQuery.OrderByDescending(x => x.Name);
+
+        coursesQuery = coursesQuery
+            .ApplyOrderSettings(request.OrderType, request.OrderFieldName)
+            .ApplyCursorSettings(request.CursorType, request.Take, request.CursorId, x => x.Id);
         
         var data = coursesQuery
-            .Skip(skip)
-            .Take(request.Take)
             .Select(c => new GetCourseResponseDto(
                 c.Name,
                 c.Description,
@@ -43,9 +38,10 @@ public class GetUserCoursesHandler(AppDbContext context) : IRequestHandler<GetUs
             .ToList();
         
         return new PagedResult<GetCourseResponseDto>(
-            request.From,
             request.Take,
+            request.OrderFieldName,
             request.OrderType,
+            request.CursorType,
             data);
     }
 }

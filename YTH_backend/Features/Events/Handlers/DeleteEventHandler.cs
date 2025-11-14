@@ -5,10 +5,8 @@ using YTH_backend.Features.Events.Commands;
 
 namespace YTH_backend.Features.Events.Handlers;
 
-public class DeleteEventHandler(AppDbContext context) : IRequestHandler<DeleteEventCommand>
+public class DeleteEventHandler(AppDbContext dbContext) : IRequestHandler<DeleteEventCommand>
 {
-    private readonly AppDbContext dbContext = context;
-    
     public async Task Handle(DeleteEventCommand request, CancellationToken cancellationToken)
     {
         var ev = await dbContext.Events.FindAsync(request.EventId, cancellationToken);

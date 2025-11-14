@@ -5,10 +5,8 @@ using YTH_backend.Features.ExpertApplication.Commands;
 
 namespace YTH_backend.Features.ExpertApplication.Handlers;
 
-public class CancelForReviewExpertApplicationHandler(AppDbContext context) : IRequestHandler<CancelForReviewExpertApplicationCommand>
+public class CancelForReviewExpertApplicationHandler(AppDbContext dbContext) : IRequestHandler<CancelForReviewExpertApplicationCommand>
 {
-    private readonly AppDbContext dbContext = context;
-    
     public async Task Handle(CancelForReviewExpertApplicationCommand request, CancellationToken cancellationToken)
     {
         var application = await dbContext.ExpertApplications.FindAsync(request.Id, cancellationToken);

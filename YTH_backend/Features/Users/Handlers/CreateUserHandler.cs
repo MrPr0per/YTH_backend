@@ -8,10 +8,8 @@ using YTH_backend.Models.User;
 
 namespace YTH_backend.Features.Users.Handlers;
 
-public class CreateUserHandler(AppDbContext context) : IRequestHandler<CreateUserCommand>
+public class CreateUserHandler(AppDbContext dbContext) : IRequestHandler<CreateUserCommand>
 {
-    private readonly AppDbContext dbContext = context;
-    
     public async Task Handle(CreateUserCommand request, CancellationToken cancellationToken)
     {
         if (await dbContext.Users.AnyAsync(u => u.UserName == request.UserName, cancellationToken))

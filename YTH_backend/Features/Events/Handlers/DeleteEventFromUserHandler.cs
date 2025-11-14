@@ -5,10 +5,8 @@ using YTH_backend.Features.Events.Commands;
 
 namespace YTH_backend.Features.Events.Handlers;
 
-public class DeleteEventFromUserHandler(AppDbContext context) : IRequestHandler<DeleteEventFromUserCommand>
+public class DeleteEventFromUserHandler(AppDbContext dbContext) : IRequestHandler<DeleteEventFromUserCommand>
 {
-    private readonly AppDbContext dbContext = context;
-    
     public async Task Handle(DeleteEventFromUserCommand request, CancellationToken cancellationToken)
     {
         var userExists = await dbContext.Users
