@@ -103,6 +103,22 @@ builder.Services.AddSingleton<IEmailService>(new MailKitEmailService(
     fromName: "MyApp"
 ));
 
+if (builder.Environment.IsDevelopment())
+{
+    builder.Services.AddDistributedMemoryCache(); // ← локальный, в памяти
+}
+else
+{
+    builder.Services.AddStackExchangeRedisCache(options =>
+    {
+        var redisConn = Environment.GetEnvironmentVariable("REDIS_CONNECTION")
+                        ?? throw new InvalidOperationException("REDIS_CONNECTION is not set.");
+
+        options.Configuration = redisConn;
+        options.InstanceName = "yth_login_";
+    });
+}
+
 // DbContext
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")
@@ -119,7 +135,7 @@ app.MapGet("/health", () => Results.Ok(new { status = "healthy", time = DateTime
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    db.Database.EnsureCreated();
+    db.Database.Migrate();
 }
 
 if (app.Environment.IsDevelopment())
@@ -127,7 +143,21 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+else
+{
+    app.UseHsts();
+}
 
+app.Use(async (ctx, next) =>
+{
+    ctx.Response.Headers["X-Frame-Options"] = "DENY"; // или "SAMEORIGIN"
+    await next();
+});
+app.Use(async (ctx, next) =>
+{
+    ctx.Response.Headers["X-Content-Type-Options"] = "nosniff";
+    await next();
+});
 app.UseRouting();
 app.UseAuthentication();  
 app.UseAuthorization();

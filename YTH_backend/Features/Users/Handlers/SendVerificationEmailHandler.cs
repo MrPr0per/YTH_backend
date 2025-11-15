@@ -14,13 +14,14 @@ public class SendVerificationEmailHandler(AppDbContext dbContext, IEmailService 
 {
     public async Task Handle(SendVerificationEmailCommand request, CancellationToken cancellationToken)
     {
-        var token = JwtHelper.GenerateVerificationToken(new Dictionary<string, object>{["email"] = request.Email}, jwtSettings.Secret);
         if (!EmailHelper.IsValidEmail(request.Email))
             throw new ArgumentException("Invalid email");
         
         var user = await dbContext.Users.FirstOrDefaultAsync(u => u.Email == request.Email, cancellationToken);
         if (user != null)
-            throw new EntityAlreadyExistsException($"Email:{request.Email} is already exists");
+            throw new EntityAlreadyExistsException($"User with email:{request.Email} is already exists");
+        
+        var token = JwtHelper.GenerateVerificationToken(new Dictionary<string, object>{["email"] = request.Email}, jwtSettings.Secret);
         //TODO
         //var verificationLink = $"{registrationUrl}?token={token}";
         // await emailService.SendEmailAsync(

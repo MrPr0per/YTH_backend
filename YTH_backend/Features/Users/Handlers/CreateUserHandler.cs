@@ -26,14 +26,15 @@ public class CreateUserHandler(AppDbContext dbContext, JwtSettings jwtSettings) 
 
         var newUser = new User
         {
+            Id = Guid.NewGuid(),
             UserName = request.UserName,
             PasswordHash = passwordHash,
             PasswordSalt = salt,
             Role = Roles.Student,
             Email = request.Email
         };
+        
         await dbContext.Users.AddAsync(newUser, cancellationToken);
-        await dbContext.SaveChangesAsync(cancellationToken);
         
         var contextData = new Dictionary<string, object>
         {
@@ -49,6 +50,17 @@ public class CreateUserHandler(AppDbContext dbContext, JwtSettings jwtSettings) 
         );
         
         var refreshToken = JwtHelper.GenerateRefreshToken();
+
+        var refresh = new RefreshToken
+        {
+            Id = Guid.NewGuid(),
+            UserId = newUser.Id,
+            TokenHash = JwtHelper.HashRefreshToken(refreshToken),
+            ExpiresAt = DateTime.UtcNow.AddDays(30)
+        };
+        
+        await dbContext.RefreshTokens.AddAsync(refresh, cancellationToken);
+        await dbContext.SaveChangesAsync(cancellationToken);
         
         return new CreateUserResponseDto(accessToken, refreshToken);
     }

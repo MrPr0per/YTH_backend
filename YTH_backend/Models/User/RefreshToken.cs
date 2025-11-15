@@ -14,7 +14,7 @@ public class RefreshToken
     [ForeignKey(nameof(UserId))]
     public Models.User.User User { get; set; } = null!;
     
-    [Required]
+    [Required, MaxLength(256)]
     public string TokenHash { get; set; } = null!;
     
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;

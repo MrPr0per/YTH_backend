@@ -15,8 +15,36 @@ public class AuthController(IMediator mediator) : ControllerBase
     [HttpPost("login")]
     public async Task<IActionResult> LoginController([FromBody] LoginUserRequestDto loginUserRequestDto)
     {
-        var command = new LoginUserCommand(loginUserRequestDto.Login, loginUserRequestDto.Password);
-        throw new NotImplementedException();
+        try
+        {
+            var command = new LoginUserCommand(loginUserRequestDto.Login, loginUserRequestDto.Password);
+            var response = await mediator.Send(command);
+            Response.Cookies.Append("refreshToken", response.RefreshToken, new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true,
+                SameSite = SameSiteMode.Strict,
+                Expires = DateTime.UtcNow.AddDays(30)
+            });
+
+            return Ok(new { access_token = response.AccessToken });
+        }
+        catch (EntityNotFoundException ex)
+        {
+            return BadRequest(new { error = ex.Message });
+        }
+        catch (UnauthorizedAccessException ex)
+        {
+            return BadRequest(new { error = ex.Message });
+        }
+        catch (TooManyRequestsException ex)
+        {
+            return StatusCode(429, new { error = ex.Message });
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new { error = ex.Message });
+        }
     }
     
     [HttpPost("register")]
@@ -53,6 +81,38 @@ public class AuthController(IMediator mediator) : ControllerBase
         }
     }
 
+    [HttpPost("refresh")]
+    [Authorize]
+    public async Task<IActionResult> RefreshTokenController()
+    {
+        try
+        {
+            var response = await mediator.Send(new RefreshCommand());
+
+            Response.Cookies.Append("refreshToken", response.RefreshToken, new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true,
+                SameSite = SameSiteMode.Strict,
+                Expires = DateTime.UtcNow.AddDays(30)
+            });
+
+            return Ok(new { access_token = response.AccessToken });
+        }
+        catch (TokenExpiredException ex)
+        {
+            return Unauthorized(new { error = ex.Message });
+        }
+        catch (TooManyRequestsException ex)
+        {
+            return StatusCode(429, new { error = ex.Message });
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new { error = ex.Message });
+        }
+    }
+
     [HttpPost("sendVerificationEmailForRegistration")]
     public async Task<IActionResult> SendVerificationEmailController(
         [FromBody] SendVerificationEmailRequestDto sendVerificationEmailRequestDto)
@@ -81,32 +141,98 @@ public class AuthController(IMediator mediator) : ControllerBase
     [Authorize("logged_in,student,admin,superadmin")]
     public async Task<IActionResult> LogoutController()
     {
-        throw new NotImplementedException();
+        try
+        {
+            await mediator.Send(new LogoutCommand());
+            return NoContent();
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new { error = ex.Message });
+        }
     }
     
     [HttpPost("changePassword")]
     [Authorize("logged_in,student,admin,superadmin")]
     public async Task<IActionResult> ChangePasswordController([FromBody] ChangePasswordRequestDto changePasswordRequestDto)
     {
-        //var command = new ChangePasswordCommand(User.FindFirst("UserId")?.Value, changePasswordRequestDto.NewPassword, changePasswordRequestDto.OldPassword);
-        throw new NotImplementedException();
+        try
+        {
+            var userId = Guid.Empty;
+            var recivedId = User.FindFirstValue("id");
+
+            if (recivedId != null)
+                userId = Guid.Parse(recivedId);
+
+            var command = new ChangePasswordCommand(userId, changePasswordRequestDto.NewPassword,
+                changePasswordRequestDto.OldPassword);
+            
+            await mediator.Send(command);
+            
+            return NoContent();
+        }
+        catch (EntityNotFoundException ex)
+        {
+            return BadRequest(new { error = ex.Message });
+        }
+        catch (UnauthorizedAccessException ex)
+        {
+            return BadRequest(new { error = ex.Message });
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new { error = ex.Message });
+        }
     }
     
-    [HttpPost("forgotPassword")]
+    [HttpPost("sendVerificationEmailForResetPassword")]
     public async Task<IActionResult> ForgotPasswordController([FromBody] ForgotPasswordRequestDto forgotPasswordRequestDto)
     {
-        var command = new ForgotPasswordCommand(forgotPasswordRequestDto.Email);
-        throw new NotImplementedException();
+        try
+        {
+            var command = new ForgotPasswordCommand(forgotPasswordRequestDto.Email);
+            await mediator.Send(command);
+            
+            return NoContent();
+        }
+        catch (ArgumentException ex)
+        {
+            return BadRequest(new { error = ex.Message });
+        }
+        catch (EntityNotFoundException ex)
+        {
+            return NotFound(new { error = ex.Message });
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new { error = ex.Message });
+        }
     }
     
-    [Authorize]
     [HttpPost("resetPassword")]
     [Authorize(Roles = "with_confirmed_email")]
     public async Task<IActionResult> ResetPasswordController([FromBody] ResetPasswordRequestDto resetPasswordRequestDto)
     {
-        //TODO надо разобряться с Jwt
-        
-        //var command = new ResetPasswordCommand(resetPasswordRequestDto.NewPassword);
-        throw new NotImplementedException();
+        try
+        {
+            var userId = Guid.Empty;
+            var recivedId = User.FindFirstValue("id");
+
+            if (recivedId != null)
+                userId = Guid.Parse(recivedId);
+
+            var command = new ResetPasswordCommand(userId, resetPasswordRequestDto.NewPassword);
+            await mediator.Send(command);
+            
+            return NoContent();
+        }
+        catch (EntityNotFoundException ex)
+        {
+            return BadRequest(new { error = ex.Message });
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new { error = ex.Message });
+        }
     }
 }

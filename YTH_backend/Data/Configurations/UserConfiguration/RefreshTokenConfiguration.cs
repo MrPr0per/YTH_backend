@@ -16,7 +16,12 @@ public class RefreshTokenConfiguration : IEntityTypeConfiguration<RefreshToken>
 
         builder
             .HasIndex(x => x.UserId)
+            .IsUnique()
             .HasDatabaseName("IX_refresh_tokens_users_id");
+        
+        builder
+            .HasIndex(x => x.TokenHash)
+            .HasDatabaseName("IX_refresh_tokens_token_hash");
 
         builder
             .Property(x => x.Id)
