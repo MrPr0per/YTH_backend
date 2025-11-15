@@ -9,7 +9,7 @@ public class GetPostHandler(AppDbContext dbContext) : IRequestHandler<GetPostByI
 {
     public async Task<GetPostResponseDto> Handle(GetPostByIdQuery request, CancellationToken cancellationToken)
     {
-        var post = await dbContext.Posts.FindAsync(request.PostId, cancellationToken);
+        var post = await dbContext.Posts.FindAsync([request.PostId], cancellationToken);
 
         if (post != null)
             return new GetPostResponseDto(post.AuthorId, post.Title, post.Description, post.PostStatus, post.CreatedAt);

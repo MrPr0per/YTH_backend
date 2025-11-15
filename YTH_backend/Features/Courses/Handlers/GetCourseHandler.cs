@@ -10,7 +10,7 @@ public class GetCourseHandler(AppDbContext dbContext) : IRequestHandler<GetCours
 {
     public async Task<GetCourseResponseDto> Handle(GetCourseQuery request, CancellationToken cancellationToken)
     {
-        var course = await dbContext.Courses.FindAsync(request.CourseId, cancellationToken);
+        var course = await dbContext.Courses.FindAsync([request.CourseId], cancellationToken);
         
         if (course == null)
             throw new KeyNotFoundException($"Course with id: {request.CourseId} not found");

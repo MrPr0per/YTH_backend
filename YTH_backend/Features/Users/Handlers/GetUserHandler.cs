@@ -10,7 +10,7 @@ public class GetUserHandler(AppDbContext dbContext) : IRequestHandler<GetUserQue
 {
     public async Task<GetUserResponseDto> Handle(GetUserQuery request, CancellationToken cancellationToken)
     {
-        var user = await dbContext.Users.FindAsync(request.Id, cancellationToken);
+        var user = await dbContext.Users.FindAsync([request.Id], cancellationToken);
 
         if (user != null)
             return new GetUserResponseDto(user.UserName, user.Role);

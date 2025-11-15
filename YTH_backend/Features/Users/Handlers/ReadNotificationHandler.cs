@@ -12,7 +12,7 @@ public class ReadNotificationHandler(AppDbContext dbContext) : IRequestHandler<R
         if (request.CurrentUserId != request.UserId)
             throw new UnauthorizedAccessException("User does not have permission to view other users notifications");
 
-        var notification = await dbContext.Notifications.FindAsync(request.NotificationId, cancellationToken);
+        var notification = await dbContext.Notifications.FindAsync([request.NotificationId], cancellationToken);
 
         if (notification == null)
             throw new KeyNotFoundException($"Notification with id:{request.NotificationId} not found");

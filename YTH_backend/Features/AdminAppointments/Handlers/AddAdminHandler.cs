@@ -10,7 +10,7 @@ public class AddAdminHandler(AppDbContext dbContext) : IRequestHandler<AddAdminC
 {
     public async Task Handle(AddAdminCommand request, CancellationToken cancellationToken)
     {
-        var user = await dbContext.Users.FindAsync(request.UserId, cancellationToken);
+        var user = await dbContext.Users.FindAsync([request.UserId], cancellationToken);
         
         if (user == null)
             throw new KeyNotFoundException($"User with id {request.UserId} not found");

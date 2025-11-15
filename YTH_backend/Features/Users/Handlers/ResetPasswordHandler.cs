@@ -10,7 +10,7 @@ public class ResetPasswordHandler(AppDbContext dbContext) : IRequestHandler<Rese
 {
     public async Task Handle(ResetPasswordCommand request, CancellationToken cancellationToken)
     {
-        var user = await dbContext.Users.FindAsync(request.UserId, cancellationToken);
+        var user = await dbContext.Users.FindAsync([request.UserId], cancellationToken);
         
         if (user == null)
             throw new EntityNotFoundException($"User with id {request.UserId} not found");

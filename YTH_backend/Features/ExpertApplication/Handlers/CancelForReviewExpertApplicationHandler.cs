@@ -9,7 +9,7 @@ public class CancelForReviewExpertApplicationHandler(AppDbContext dbContext) : I
 {
     public async Task Handle(CancelForReviewExpertApplicationCommand request, CancellationToken cancellationToken)
     {
-        var application = await dbContext.ExpertApplications.FindAsync(request.Id, cancellationToken);
+        var application = await dbContext.ExpertApplications.FindAsync([request.Id], cancellationToken);
         
         if (application == null)
             throw new KeyNotFoundException($"Expert application with id: {request.Id} does not exist");

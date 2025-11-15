@@ -10,8 +10,8 @@ public class CompleteReviewExpertApplicationHandler(AppDbContext dbContext) : IR
 {
     public async Task Handle(CompleteReviewExpertApplicationCommand request, CancellationToken cancellationToken)
     {
-        var application = await dbContext.ExpertApplications.FindAsync(request.ApplicationId, cancellationToken);
-        var resolution = await dbContext.ExpertApplicationResolutions.FindAsync(request.ResolutionId, cancellationToken);
+        var application = await dbContext.ExpertApplications.FindAsync([request.ApplicationId], cancellationToken);
+        var resolution = await dbContext.ExpertApplicationResolutions.FindAsync([request.ResolutionId], cancellationToken);
         
         if (resolution == null)
             throw new KeyNotFoundException($"Expert resolution with id: {request.ResolutionId} does not exist");
@@ -41,7 +41,7 @@ public class CompleteReviewExpertApplicationHandler(AppDbContext dbContext) : IR
 
         if (resolution.IsApproved)
         {
-            var user = await dbContext.Users.FindAsync(application.UserId, cancellationToken);
+            var user = await dbContext.Users.FindAsync([application.UserId], cancellationToken);
             if (user == null)
                 throw new KeyNotFoundException($"User with id: {application.UserId} does not exist");
             user.Role = Roles.Expert;

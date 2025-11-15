@@ -10,7 +10,7 @@ public class PatchPostHandler(AppDbContext dbContext) : IRequestHandler<PatchPos
     public async Task Handle(PatchPostCommand request, CancellationToken cancellationToken)
     {
         var id = request.PostId;
-        var post = await dbContext.Posts.FindAsync(id, cancellationToken);
+        var post = await dbContext.Posts.FindAsync([id], cancellationToken);
         
         if (post == null)
             throw new KeyNotFoundException($"Post with id:{id} not found");

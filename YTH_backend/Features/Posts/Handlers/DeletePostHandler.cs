@@ -8,7 +8,7 @@ public class DeletePostHandler(AppDbContext dbContext) : IRequestHandler<DeleteP
 {
     public async Task Handle(DeletePostCommand request, CancellationToken cancellationToken)
     {
-        var post = await dbContext.Posts.FindAsync(request.PostId, cancellationToken);
+        var post = await dbContext.Posts.FindAsync([request.PostId], cancellationToken);
         
         if (post != null)
         { 

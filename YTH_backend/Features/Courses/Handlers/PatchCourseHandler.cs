@@ -9,7 +9,7 @@ public class PatchCourseHandler(AppDbContext dbContext) : IRequestHandler<PatchC
 {
     public async Task Handle(PatchCourseCommand request, CancellationToken cancellationToken)
     {
-        var course = await dbContext.Courses.FindAsync(request.CourseId, cancellationToken);
+        var course = await dbContext.Courses.FindAsync([request.CourseId], cancellationToken);
         
         if (course == null)
             throw new KeyNotFoundException($"Course with id {request.CourseId} not found");

@@ -9,7 +9,7 @@ public class DeleteEventHandler(AppDbContext dbContext) : IRequestHandler<Delete
 {
     public async Task Handle(DeleteEventCommand request, CancellationToken cancellationToken)
     {
-        var ev = await dbContext.Events.FindAsync(request.EventId, cancellationToken);
+        var ev = await dbContext.Events.FindAsync([request.EventId], cancellationToken);
         
         if (ev == null)
             throw new KeyNotFoundException($"Event with id: {request.EventId} not found");

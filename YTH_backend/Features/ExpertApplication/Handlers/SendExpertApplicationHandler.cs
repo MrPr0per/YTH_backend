@@ -9,7 +9,7 @@ public class SendExpertApplicationHandler(AppDbContext dbContext) : IRequestHand
 {
     public async Task Handle(SendExpertApplicationCommand request, CancellationToken cancellationToken)
     {
-        var application = await dbContext.ExpertApplications.FindAsync(request.ApplicationId, cancellationToken);
+        var application = await dbContext.ExpertApplications.FindAsync([request.ApplicationId], cancellationToken);
         
         if (application == null)
             throw new KeyNotFoundException($"Expert application with id: {request.ApplicationId} does not exist");

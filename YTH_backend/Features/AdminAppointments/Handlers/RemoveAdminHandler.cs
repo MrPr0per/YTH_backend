@@ -9,7 +9,7 @@ public class RemoveAdminHandler(AppDbContext dbContext) : IRequestHandler<Remove
 {
     public async Task Handle(RemoveAdminCommand request, CancellationToken cancellationToken)
     {
-        var user = await dbContext.Users.FindAsync(request.RevokedId, cancellationToken);
+        var user = await dbContext.Users.FindAsync([request.RevokedId], cancellationToken);
         
         if (user == null)
             throw new KeyNotFoundException($"User with id {request.RevokedId} not found");
