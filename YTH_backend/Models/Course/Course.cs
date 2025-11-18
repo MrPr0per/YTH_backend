@@ -25,7 +25,7 @@ public class Course
     public string Description { get; set; }
     
     [Required]
-    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+    public DateTime CreatedAt { get; init; } = DateTime.UtcNow;
     
     [MaxLength(512)]
     public string? Link { get; set; }

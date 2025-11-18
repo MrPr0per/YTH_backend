@@ -21,6 +21,7 @@ public class GetAllCoursesHandler(AppDbContext dbContext) : IRequestHandler<GetA
         
         var data = await query
             .Select(c => new GetCourseResponseDto(
+                c.Id,
                 c.Name,
                 c.Description,
                 c.Link,

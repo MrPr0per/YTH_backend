@@ -15,11 +15,20 @@ namespace YTH_backend.Controllers.Courses;
 [Route("api/v0/courses")]
 public class CoursesController(IMediator mediator) : ControllerBase
 {
-    [HttpGet("{id:guid}")]
+    [HttpGet("{id:guid}", Name = nameof(GetCourseController))]
     public async Task<IActionResult> GetCourseController(Guid id)
     {
-        var query = new GetCourseQuery(id);
-        throw new NotImplementedException();
+        try
+        {
+            var query = new GetCourseQuery(id);
+            var response = await mediator.Send(query);
+            
+            return Ok(response);
+        }
+        catch (EntityNotFoundException e)
+        {
+            return NotFound(new {error = e.Message });
+        }
     }
     
     [HttpGet]
@@ -54,22 +63,44 @@ public class CoursesController(IMediator mediator) : ControllerBase
     public async Task<IActionResult> AddCourseController([FromBody] AddCourseRequestDto addCourseRequestDto)
     {
         var command = new AddCourseCommand(addCourseRequestDto.Name, addCourseRequestDto.Description, addCourseRequestDto.Link);
-        throw new NotImplementedException();
+        var response = await mediator.Send(command);
+        
+        return CreatedAtAction(
+            nameof(GetCourseController),  
+            new { id = response.Id },     
+            response                       
+        );
     }
 
     [HttpDelete("{id:guid}")]
     [Authorize(Roles = "admin,superadmin")]
     public async Task<IActionResult> DeleteCourseController(Guid id)
     {
-        var query = new DeleteCourseCommand(id);
-        throw new NotImplementedException();
+        try
+        {
+            var command = new DeleteCourseCommand(id);
+            await mediator.Send(command);
+            return NoContent();
+        }
+        catch (EntityNotFoundException e)
+        {
+            return NotFound(new { error = e.Message });
+        }
     }
     
     [HttpPatch("{id:guid}")]
     [Authorize(Roles = "admin,superadmin")]
     public async Task<IActionResult> PatchCourseController(Guid id, [FromBody] JsonPatchDocument<PatchCourseRequestDto> patchCourseRequestDto)
     {
-        var command = new PatchCourseCommand(id, patchCourseRequestDto);
-        throw new NotImplementedException();
+        try
+        {
+            var command = new PatchCourseCommand(id, patchCourseRequestDto);
+            await mediator.Send(command);
+            return NoContent();
+        }
+        catch (EntityNotFoundException e)
+        {
+            return NotFound(new { error = e.Message });
+        }
     }
 }

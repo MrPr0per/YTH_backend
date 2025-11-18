@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
@@ -22,19 +23,47 @@ namespace YTH_backend.Controllers.Users;
 [Route("api/v0/users")]
 public class UsersController(IMediator mediator) : ControllerBase
 {
-    [HttpGet]
-    
-    public async Task<IActionResult> GetPersonalDataController()
-    {
-        var query = new GetPersonalDataQuery();
-        throw new NotImplementedException();
-    }
+    // [HttpGet]
+    //
+    // public async Task<IActionResult> GetPersonalDataController()
+    // {
+    //     var query = new GetPersonalDataQuery();
+    //     throw new NotImplementedException();
+    // }
 
     [HttpGet("{id:guid}")]
     public async Task<IActionResult> GetUserController(Guid id)
     {
-        var query = new GetUserQuery(id);
-        throw new NotImplementedException();
+        try
+        {
+            var query = new GetUserQuery(id);
+            var response = await mediator.Send(query);
+            
+            return Ok(response);
+        }
+        catch (EntityNotFoundException ex)
+        {
+            return NotFound(new {error = ex.Message});
+        }
+    }
+
+    [HttpGet]
+    [Authorize(Roles = "superadmin")]
+    public async Task<IActionResult> GetAllUsers([FromQuery] string? cursor = null, [FromQuery] int take = 10,
+        [FromQuery] string? order = null)
+    {
+        
+        var orderParams = QueryParamsParser.ParseOrderParams(order);
+        var cursorParams = QueryParamsParser.ParseCursorParams(cursor);
+
+        if (take <= 0)
+            take = 10;
+
+        var query = new GetAllUsersQuery(take, orderParams.OrderType, cursorParams.CursorType,
+            orderParams.FieldName, cursorParams.CursorId);
+        var response = await mediator.Send(query);
+        
+        return Ok(response);
     }
 
     [HttpGet("{id:guid}/events")]
@@ -65,11 +94,30 @@ public class UsersController(IMediator mediator) : ControllerBase
     }
 
     [HttpPost("{id:guid}/anonymize")]
-    [Authorize]
+    [Authorize(Roles = "logged_in,student,admin,superadmin")]
     public async Task<IActionResult> AnonimyzeUserController(Guid id)
     {
-        var command = new AnonymizeUserCommand(id);
-        throw new NotImplementedException();
+        try
+        {
+            var userId = Guid.Empty;
+            var recivedId = User.FindFirstValue("id");
+
+            if (recivedId != null)
+                userId = Guid.Parse(recivedId);
+            
+            var command = new AnonymizeUserCommand(id, userId);
+            await mediator.Send(command);
+            
+            return NoContent();
+        }
+        catch (UnauthorizedAccessException ex)
+        {
+            return Forbid();
+        }
+        catch (EntityNotFoundException ex)
+        {
+            return NotFound(new { error = ex.Message });
+        }
     }
     
     [HttpPost("{id:guid}/events/{eventId:guid}")]
@@ -97,10 +145,20 @@ public class UsersController(IMediator mediator) : ControllerBase
     }
     
     [HttpPatch("{id:guid}")]
-    [Authorize]
+    [Authorize(Roles = "logged_in,student,admin,superadmin")]
     public async Task<IActionResult> PatchUserController(Guid id,
         [FromBody] JsonPatchDocument<PatchUserRequestDto> patchUserRequestDto)
     {
-        throw new NotImplementedException();
+        try
+        {
+            var command = new PatchUserCommand(id, patchUserRequestDto);
+            await mediator.Send(command);
+            
+            return NoContent();
+        }
+        catch (EntityNotFoundException ex)
+        {
+            return NotFound(new { error = ex.Message });
+        }
     }
 }

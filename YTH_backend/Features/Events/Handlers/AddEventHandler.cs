@@ -1,13 +1,14 @@
 using MediatR;
 using YTH_backend.Data;
+using YTH_backend.DTOs.Event;
 using YTH_backend.Features.Events.Commands;
 using YTH_backend.Models.Event;
 
 namespace YTH_backend.Features.Events.Handlers;
 
-public class AddEventHandler(AppDbContext dbContext) : IRequestHandler<AddEventCommand>
+public class AddEventHandler(AppDbContext dbContext) : IRequestHandler<AddEventCommand, AddEventResponseDto>
 {
-    public async Task Handle(AddEventCommand request, CancellationToken cancellationToken)
+    public async Task<AddEventResponseDto> Handle(AddEventCommand request, CancellationToken cancellationToken)
     {
         var newEvent = new Event
         {
@@ -20,6 +21,9 @@ public class AddEventHandler(AppDbContext dbContext) : IRequestHandler<AddEventC
         };
         
         await dbContext.Events.AddAsync(newEvent, cancellationToken);
-        await dbContext.SaveChangesAsync(cancellationToken); 
+        await dbContext.SaveChangesAsync(cancellationToken);
+
+        return new AddEventResponseDto(newEvent.Id, newEvent.Name, newEvent.Description, newEvent.Date, newEvent.Type,
+            newEvent.Address);
     }
 }

@@ -31,6 +31,7 @@ public class GetUserEventsHandler(AppDbContext dbContext) : IRequestHandler<GetU
 
         var data = query
             .Select(ev => new GetEventResponseDto(
+                ev.Id,
                 ev.Name,
                 ev.Description,
                 ev.Type,

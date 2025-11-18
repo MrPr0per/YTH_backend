@@ -2,6 +2,7 @@ using MediatR;
 using YTH_backend.Data;
 using YTH_backend.DTOs.Course;
 using YTH_backend.Features.Courses.Commands;
+using YTH_backend.Infrastructure.Exceptions;
 
 namespace YTH_backend.Features.Courses.Handlers;
 
@@ -12,7 +13,7 @@ public class PatchCourseHandler(AppDbContext dbContext) : IRequestHandler<PatchC
         var course = await dbContext.Courses.FindAsync([request.CourseId], cancellationToken);
         
         if (course == null)
-            throw new KeyNotFoundException($"Course with id {request.CourseId} not found");
+            throw new EntityNotFoundException($"Course with id {request.CourseId} not found");
         
         var dto = new PatchCourseRequestDto(course.Name, course.Description, course.Link);
         

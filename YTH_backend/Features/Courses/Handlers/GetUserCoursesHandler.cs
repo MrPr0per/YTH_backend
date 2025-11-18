@@ -31,6 +31,7 @@ public class GetUserCoursesHandler(AppDbContext dbContext) : IRequestHandler<Get
         
         var data = coursesQuery
             .Select(c => new GetCourseResponseDto(
+                c.Id,
                 c.Name,
                 c.Description,
                 c.Link,

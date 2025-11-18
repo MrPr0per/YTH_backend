@@ -1,4 +1,3 @@
 namespace YTH_backend.DTOs.User;
 
-//TODO
-public record PatchUserRequestDto();
+public record PatchUserRequestDto(string? UserName);

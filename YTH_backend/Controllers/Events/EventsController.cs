@@ -15,11 +15,20 @@ namespace YTH_backend.Controllers.Events;
 [Route("api/v0/events")]
 public class EventsController(IMediator mediator) : ControllerBase
 {
-    [HttpGet("{id:guid}")]
+    [HttpGet("{id:guid}", Name = "GetEventController")]
     public async Task<IActionResult> GetEventController(Guid id)
     {
-        var query = new GetEventQuery(id);
-        throw new NotImplementedException();
+        try
+        {
+            var query = new GetEventQuery(id);
+            var response = await mediator.Send(query);
+                
+            return Ok(response);
+        }
+        catch (EntityNotFoundException e)
+        {
+            return NotFound(new {error = e.Message });
+        }
     }
     
     [HttpGet]
@@ -52,23 +61,45 @@ public class EventsController(IMediator mediator) : ControllerBase
     [Authorize(Roles = "admin,superadmin")]
     public async Task<IActionResult> AddEventController([FromBody] AddEventRequestDto addEventRequestDto)
     {
-        var command = new AddEventCommand(addEventRequestDto.Name, addEventRequestDto.Description, addEventRequestDto.ShortDescription, addEventRequestDto.Type, addEventRequestDto.Date, addEventRequestDto.Address);
-        throw new NotImplementedException();
+        var command = new AddEventCommand(addEventRequestDto.Name, addEventRequestDto.Description, addEventRequestDto.Type, addEventRequestDto.Date, addEventRequestDto.Address);
+        var response = await mediator.Send(command);
+        
+        return CreatedAtAction(
+            nameof(GetEventController),  
+            new { id = response.Id },     
+            response                       
+        );
     }
 
     [HttpDelete("{id:guid}")]
     [Authorize(Roles = "admin,superadmin")]
     public async Task<IActionResult> DeleteEventController(Guid id)
     {
-        var command = new DeleteEventCommand(id);
-        throw new NotImplementedException();
+        try
+        {
+            var command = new DeleteEventCommand(id);
+            await mediator.Send(command);
+            return NoContent();
+        }
+        catch (EntityNotFoundException e)
+        {
+            return NotFound(new { error = e.Message });
+        }
     }
     
     [HttpPatch("{id:guid}")]
     [Authorize(Roles = "admin,superadmin")]
     public async Task<IActionResult> PatchEventController(Guid id, [FromBody] JsonPatchDocument<PatchEventRequestDto> patchEventRequestDto)
     {
-        var command = new PatchEventCommand(id, patchEventRequestDto);
-        throw new NotImplementedException();
+        try
+        {
+            var command = new PatchEventCommand(id, patchEventRequestDto);
+            await mediator.Send(command);
+            return NoContent();
+        }
+        catch (EntityNotFoundException e)
+        {
+            return NotFound(new { error = e.Message });
+        }
     }
 }

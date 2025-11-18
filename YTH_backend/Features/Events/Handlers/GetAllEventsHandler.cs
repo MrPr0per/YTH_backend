@@ -22,6 +22,7 @@ public class GetAllEventsHandler(AppDbContext dbContext) : IRequestHandler<GetAl
         
         var data = await query
             .Select(ev => new GetEventResponseDto(
+                ev.Id,
                 ev.Name,
                 ev.Description,
                 ev.Type,

@@ -3,6 +3,7 @@ using YTH_backend.Data;
 using YTH_backend.DTOs.User;
 using YTH_backend.Features.Posts.Queries;
 using YTH_backend.Features.Users.Queries;
+using YTH_backend.Infrastructure.Exceptions;
 
 namespace YTH_backend.Features.Users.Handlers;
 
@@ -13,8 +14,8 @@ public class GetUserHandler(AppDbContext dbContext) : IRequestHandler<GetUserQue
         var user = await dbContext.Users.FindAsync([request.Id], cancellationToken);
 
         if (user != null)
-            return new GetUserResponseDto(user.UserName, user.Role);
+            return new GetUserResponseDto(user.UserName, user.Email, user.Role);
         
-        throw new KeyNotFoundException($"User with id:{request.Id} not found");
+        throw new EntityNotFoundException($"User with id:{request.Id} not found");
     }
 }
