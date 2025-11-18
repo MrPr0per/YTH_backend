@@ -47,4 +47,6 @@ public class User
     public ICollection<RefreshToken> RefreshTokens { get; set; } = new List<RefreshToken>();
     
     public ICollection<Post.Post> Posts { get; set; } = new List<Post.Post>();
+    
+    public AcceptedForReviewExpertApplications? AcceptedForReviewExpertApplication { get; set; }
 }

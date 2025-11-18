@@ -24,6 +24,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     public DbSet<UserCourseRegistration> UserCourseRegistrations => Set<UserCourseRegistration>();
     public DbSet<UserEventRegistration> UserEventRegistrations => Set<UserEventRegistration>();
     public DbSet<Notification> Notifications => Set<Notification>();
+    public DbSet<AcceptedForReviewExpertApplications> AcceptedForReviewExpertApplications => Set<AcceptedForReviewExpertApplications>();
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

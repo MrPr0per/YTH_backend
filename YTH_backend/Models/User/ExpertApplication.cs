@@ -25,4 +25,6 @@ public class ExpertApplication
     public DateTime CreatedAt { get; set; } = DateTime.Now;
     
     public ExpertApplicationResolution? Resolution { get; set; }
+    
+    public AcceptedForReviewExpertApplications? AcceptedForReviewExpertApplication { get; set; }
 }
