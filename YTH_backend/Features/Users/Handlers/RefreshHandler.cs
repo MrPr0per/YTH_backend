@@ -33,8 +33,6 @@ public class RefreshHandler(AppDbContext dbContext, IHttpContextAccessor httpCon
         if (attempts >= MaxRefreshAttempts)
             throw new TooManyRequestsException("Too many refresh attempts. Try again later.");
         
-        
-        
         var oldRefreshToken = context.Request.Cookies["refreshToken"] 
                            ?? context.Request.Headers["Refresh-Token"].ToString();
         

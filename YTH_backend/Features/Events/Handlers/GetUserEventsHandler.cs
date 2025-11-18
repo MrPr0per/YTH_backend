@@ -27,7 +27,7 @@ public class GetUserEventsHandler(AppDbContext dbContext) : IRequestHandler<GetU
         
         var query = eventsQuery
             .ApplyOrderSettings(request.OrderType, request.OrderFieldName)
-            .ApplyCursorSettings(request.CursorType, request.Take, request.CursorId, x => x.Id);
+            .ApplyCursorSettings(request.CursorType, request.Take, request.CursorId);
 
         var data = query
             .Select(ev => new GetEventResponseDto(

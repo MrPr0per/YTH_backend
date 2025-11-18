@@ -17,7 +17,7 @@ public class GetAllCoursesHandler(AppDbContext dbContext) : IRequestHandler<GetA
     {
         var query = dbContext.Courses
             .ApplyOrderSettings(request.OrderType, request.OrderFieldName)
-            .ApplyCursorSettings(request.CursorType, request.Take, request.CursorId, x => x.Id);
+            .ApplyCursorSettings(request.CursorType, request.Take, request.CursorId);
         
         var data = await query
             .Select(c => new GetCourseResponseDto(

@@ -138,7 +138,7 @@ public class AuthController(IMediator mediator) : ControllerBase
     }
 
     [HttpPost("logout")]
-    [Authorize("logged_in,student,admin,superadmin")]
+    [Authorize(Roles = "logged_in,student,admin,superadmin")]
     public async Task<IActionResult> LogoutController()
     {
         try
@@ -153,7 +153,7 @@ public class AuthController(IMediator mediator) : ControllerBase
     }
     
     [HttpPost("changePassword")]
-    [Authorize("logged_in,student,admin,superadmin")]
+    [Authorize(Roles = "logged_in,student,admin,superadmin")]
     public async Task<IActionResult> ChangePasswordController([FromBody] ChangePasswordRequestDto changePasswordRequestDto)
     {
         try

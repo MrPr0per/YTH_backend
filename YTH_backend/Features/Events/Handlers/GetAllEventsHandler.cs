@@ -18,7 +18,7 @@ public class GetAllEventsHandler(AppDbContext dbContext) : IRequestHandler<GetAl
     {
         var query = dbContext.Events
             .ApplyOrderSettings(request.OrderType, request.OrderFieldName)
-            .ApplyCursorSettings(request.CursorType, request.Take, request.CursorId, x => x.Id);
+            .ApplyCursorSettings(request.CursorType, request.Take, request.CursorId);
         
         var data = await query
             .Select(ev => new GetEventResponseDto(
