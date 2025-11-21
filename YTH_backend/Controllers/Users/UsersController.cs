@@ -99,11 +99,7 @@ public class UsersController(IMediator mediator) : ControllerBase
     {
         try
         {
-            var userId = Guid.Empty;
-            var recivedId = User.FindFirstValue("id");
-
-            if (recivedId != null)
-                userId = Guid.Parse(recivedId);
+            var userId = JwtHelper.GetUserIdFromUser(User);
             
             var command = new AnonymizeUserCommand(id, userId);
             await mediator.Send(command);
@@ -120,13 +116,7 @@ public class UsersController(IMediator mediator) : ControllerBase
         }
     }
     
-    [HttpPost("{id:guid}/events/{eventId:guid}")]
-    [Authorize]
-    public async Task<IActionResult> AddEventsToUserController(Guid id, Guid eventId)
-    {
-        var command = new AddEventToUserCommand(id, eventId);
-        throw new NotImplementedException();
-    }
+    
 
     [HttpDelete("{id:guid}/events/{eventId:guid}")]
     [Authorize]

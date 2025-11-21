@@ -10,7 +10,7 @@ using YTH_backend.Models.Infrastructure;
 
 namespace YTH_backend.Features.Events.Handlers;
 
-public class GetUserEventsHandler(AppDbContext dbContext) : IRequestHandler<GetUserEventsQuery, PagedResult<GetEventResponseDto>>
+public class GetUserAllEventsHandler(AppDbContext dbContext) : IRequestHandler<GetUserEventsQuery, PagedResult<GetEventResponseDto>>
 {
     public async Task<PagedResult<GetEventResponseDto>> Handle(GetUserEventsQuery request, CancellationToken cancellationToken)
     {

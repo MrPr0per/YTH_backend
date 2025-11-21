@@ -10,7 +10,7 @@ using YTH_backend.Models.Infrastructure;
 
 namespace YTH_backend.Features.Courses.Handlers;
 
-public class GetUserCoursesHandler(AppDbContext dbContext) : IRequestHandler<GetUserCoursesQuery, PagedResult<GetCourseResponseDto>>
+public class GetUserAllCoursesHandler(AppDbContext dbContext) : IRequestHandler<GetUserCoursesQuery, PagedResult<GetCourseResponseDto>>
 {
     public async Task<PagedResult<GetCourseResponseDto>> Handle(GetUserCoursesQuery request, CancellationToken cancellationToken)
     {

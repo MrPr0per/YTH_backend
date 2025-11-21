@@ -138,6 +138,20 @@ public static class JwtHelper
         
         return rolesList;
     }
-    
-    
+
+    /// <summary>
+    /// Возвращает Id пользователя или Guid.Empty из Claims JWT
+    /// </summary>
+    /// <param name="userClaims"></param>
+    /// <returns></returns>
+    public static Guid GetUserIdFromUser(ClaimsPrincipal userClaims)
+    {
+        var userId = Guid.Empty;
+        var recivedId = userClaims.FindFirstValue("id");
+
+        if (recivedId != null)
+            userId = Guid.Parse(recivedId);
+        
+        return userId;
+    }
 }

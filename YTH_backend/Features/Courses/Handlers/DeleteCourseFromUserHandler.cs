@@ -2,6 +2,7 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using YTH_backend.Data;
 using YTH_backend.Features.Courses.Commands;
+using YTH_backend.Infrastructure.Exceptions;
 
 namespace YTH_backend.Features.Courses.Handlers;
 
@@ -9,25 +10,16 @@ public class DeleteCourseFromUserHandler(AppDbContext dbContext) : IRequestHandl
 {
     public async Task Handle(DeleteCourseFromUserCommand request, CancellationToken cancellationToken)
     {
-        var userExists = await dbContext.Users
-            .AnyAsync(u => u.Id == request.UserId, cancellationToken);
-
-        if (!userExists)
-            throw new KeyNotFoundException($"User with id: {request.UserId} not found");
+        var registration =
+            await dbContext.UserCourseRegistrations.FindAsync([request.RegistrationId], cancellationToken);
         
-        var courseExists = await dbContext.Courses
-            .AnyAsync(c => c.Id == request.CourseId, cancellationToken);
-
-        if (!courseExists)
-            throw new KeyNotFoundException($"Course with id: {request.CourseId} not found");
+        if (registration == null)
+            throw new EntityNotFoundException($"Course registration with id:{request.RegistrationId} was not found");
         
-        var registration = await dbContext.UserCourseRegistrations
-            .FirstOrDefaultAsync(r => r.UserId == request.UserId && r.CourseId == request.CourseId, cancellationToken);
-
-        if (registration != null)
-        {
-            dbContext.UserCourseRegistrations.Remove(registration);
-            await dbContext.SaveChangesAsync(cancellationToken);
-        }
+        if (registration.UserId != request.CurrentUserId)
+            throw new UnauthorizedAccessException("You do not have permission to delete other user's course");
+        
+        dbContext.UserCourseRegistrations.Remove(registration);
+        await dbContext.SaveChangesAsync(cancellationToken);
     }
 }

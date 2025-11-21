@@ -15,7 +15,7 @@ namespace YTH_backend.Controllers.Users;
 [Route("api/v0/users/{id:guid}/notifications")]
 public class NotificationsController(IMediator mediator) : ControllerBase
 {
-    [HttpGet]
+    [HttpGet()]
     [Authorize]
     public async Task<IActionResult> GetAllNotificationsController([FromRoute] Guid id, [FromQuery] string? cursor = null, [FromQuery] int take = 10, [FromQuery] string? order = null)
     {
@@ -29,9 +29,6 @@ public class NotificationsController(IMediator mediator) : ControllerBase
 
             var orderParams = QueryParamsParser.ParseOrderParams(order);
             var cursorParams = QueryParamsParser.ParseCursorParams(cursor);
-
-            if (take <= 0)
-                take = 10;
 
             var query = new GetAllNotificationsQuery(id, userId, take, orderParams.OrderType, cursorParams.CursorType,
                 orderParams.FieldName, cursorParams.CursorId);

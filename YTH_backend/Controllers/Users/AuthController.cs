@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using YTH_backend.DTOs.User;
 using YTH_backend.Features.Users.Commands;
+using YTH_backend.Infrastructure;
 using YTH_backend.Infrastructure.Exceptions;
 
 namespace YTH_backend.Controllers.Users;
@@ -136,11 +137,7 @@ public class AuthController(IMediator mediator) : ControllerBase
     {
         try
         {
-            var userId = Guid.Empty;
-            var recivedId = User.FindFirstValue("id");
-
-            if (recivedId != null)
-                userId = Guid.Parse(recivedId);
+            var userId = JwtHelper.GetUserIdFromUser(User);
 
             var command = new ChangePasswordCommand(userId, changePasswordRequestDto.NewPassword,
                 changePasswordRequestDto.OldPassword);
@@ -185,11 +182,7 @@ public class AuthController(IMediator mediator) : ControllerBase
     {
         try
         {
-            var userId = Guid.Empty;
-            var recivedId = User.FindFirstValue("id");
-
-            if (recivedId != null)
-                userId = Guid.Parse(recivedId);
+            var userId = JwtHelper.GetUserIdFromUser(User);
 
             var command = new ResetPasswordCommand(userId, resetPasswordRequestDto.NewPassword);
             await mediator.Send(command);

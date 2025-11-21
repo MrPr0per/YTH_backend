@@ -18,6 +18,11 @@ public class GetAllNotificationsHandler(AppDbContext dbContext) : IRequestHandle
         if (request.CurrentUserId != request.Id)
             throw new UnauthorizedAccessException("User does not have permission to view other users notifications");
 
+        var take = request.Take;
+        
+        if (take < 0)
+            take = 10;
+        
         var query = dbContext.Notifications
             .ApplyOrderSettings(request.OrderType, request.OrderFieldName)
             .ApplyCursorSettings(request.CursorType, request.Take, request.CursorId);

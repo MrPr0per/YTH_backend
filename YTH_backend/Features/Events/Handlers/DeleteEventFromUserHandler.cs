@@ -2,6 +2,7 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using YTH_backend.Data;
 using YTH_backend.Features.Events.Commands;
+using YTH_backend.Infrastructure.Exceptions;
 
 namespace YTH_backend.Features.Events.Handlers;
 
@@ -9,25 +10,15 @@ public class DeleteEventFromUserHandler(AppDbContext dbContext) : IRequestHandle
 {
     public async Task Handle(DeleteEventFromUserCommand request, CancellationToken cancellationToken)
     {
-        var userExists = await dbContext.Users
-            .AnyAsync(u => u.Id == request.UserId, cancellationToken);
-
-        if (!userExists)
-            throw new KeyNotFoundException($"User with id: {request.UserId} not found");
-
-        var eventExists = await dbContext.Events
-            .AnyAsync(e => e.Id == request.EventId, cancellationToken);
-
-        if (eventExists)
-            throw new KeyNotFoundException($"Event with id: {request.EventId} not found");
+        var registration = await dbContext.UserEventRegistrations.FindAsync([request.RegistrationId], cancellationToken);
         
-        var registration = await dbContext.UserEventRegistrations
-            .FirstOrDefaultAsync(r => r.EventId == request.EventId && r.UserId == request.UserId, cancellationToken);
+        if (registration == null)
+            throw new EntityNotFoundException($"Event registration with id:{request.RegistrationId} was not found");
         
-        if (registration != null)
-        {
-            dbContext.UserEventRegistrations.Remove(registration);
-            await dbContext.SaveChangesAsync(cancellationToken);
-        }
+        if (registration.UserId != request.CurrentUserId)
+            throw new UnauthorizedAccessException("You do not have permission to delete other user's event");
+        
+        dbContext.UserEventRegistrations.Remove(registration);
+        await dbContext.SaveChangesAsync(cancellationToken);
     }
 }
