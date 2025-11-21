@@ -2,6 +2,7 @@ using MediatR;
 using YTH_backend.Data;
 using YTH_backend.DTOs.User;
 using YTH_backend.Features.Users.Queries;
+using YTH_backend.Infrastructure.Exceptions;
 using YTH_backend.Models.User;
 
 namespace YTH_backend.Features.Users.Handlers;
@@ -16,9 +17,9 @@ public class GetNotificationHandler(AppDbContext dbContext) : IRequestHandler<Ge
         var notification = await dbContext.Notifications.FindAsync([request.NotificationId], cancellationToken);
 
         if (notification != null)
-            return new GetNotificationsResponseDto(notification.Title, notification.NotificationText,
-                notification.CreatedAt, notification.IsRead);
+            return new GetNotificationsResponseDto(notification.Id,notification.Title, notification.NotificationText,
+                notification.CreatedAt, notification.IsRead, notification.UserId);
         
-        throw new KeyNotFoundException($"Notification with id:{request.NotificationId} not found");
+        throw new EntityNotFoundException($"Notification with id:{request.NotificationId} not found");
     }
 }

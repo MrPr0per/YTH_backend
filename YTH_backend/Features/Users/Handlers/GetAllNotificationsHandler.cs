@@ -25,18 +25,20 @@ public class GetAllNotificationsHandler(AppDbContext dbContext) : IRequestHandle
         
         var query = dbContext.Notifications
             .ApplyOrderSettings(request.OrderType, request.OrderFieldName)
-            .ApplyCursorSettings(request.CursorType, request.Take, request.CursorId);
+            .ApplyCursorSettings(request.CursorType, take, request.CursorId);
         
         var data = await query
             .Select(n => new GetNotificationsResponseDto(
+                n.Id,
                 n.Title,
                 n.NotificationText,
                 n.CreatedAt,
-                n.IsRead))
+                n.IsRead,
+                n.UserId))
             .ToListAsync(cancellationToken);
 
         return new PagedResult<GetNotificationsResponseDto>(
-            request.Take,
+            take,
             request.OrderFieldName,
             request.OrderType,
             request.CursorType,

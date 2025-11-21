@@ -15,23 +15,21 @@ namespace YTH_backend.Controllers.Users;
 [Route("api/v0/users/{id:guid}/notifications")]
 public class NotificationsController(IMediator mediator) : ControllerBase
 {
-    [HttpGet()]
-    [Authorize]
+    [HttpGet]
+    [Authorize(Roles = "logged_in,student,admin,superadmin")]
     public async Task<IActionResult> GetAllNotificationsController([FromRoute] Guid id, [FromQuery] string? cursor = null, [FromQuery] int take = 10, [FromQuery] string? order = null)
     {
         try
         {
-            var userIdClaim = User.FindFirst("sub")?.Value
-                              ?? User.FindFirst(ClaimTypes.NameIdentifier)?.Value
-                              ?? throw new UnauthorizedAccessException("User ID not found in token");
-
-            var userId = Guid.Parse(userIdClaim);
+            var currentUserId = JwtHelper.GetUserIdFromUser(User);
 
             var orderParams = QueryParamsParser.ParseOrderParams(order);
             var cursorParams = QueryParamsParser.ParseCursorParams(cursor);
 
-            var query = new GetAllNotificationsQuery(id, userId, take, orderParams.OrderType, cursorParams.CursorType,
+            var query = new GetAllNotificationsQuery(id, currentUserId, take, orderParams.OrderType,
+                cursorParams.CursorType,
                 orderParams.FieldName, cursorParams.CursorId);
+
             var response = await mediator.Send(query);
             return Ok(response);
         }
@@ -43,33 +41,56 @@ public class NotificationsController(IMediator mediator) : ControllerBase
         {
             return BadRequest(new { error = ex.Message });
         }
+        catch (UnauthorizedAccessException)
+        {
+            return Forbid();
+        }
     }
 
     [HttpGet("{notificationId:guid}")]
-    [Authorize]
+    [Authorize(Roles = "logged_in,student,admin,superadmin")]
     public async Task<IActionResult> GetNotificationController([FromRoute] Guid id, Guid notificationId)
     {
-        var userIdClaim = User.FindFirst("sub")?.Value
-                          ?? User.FindFirst(ClaimTypes.NameIdentifier)?.Value
-                          ?? throw new UnauthorizedAccessException("User ID not found in token");
-        
-        var userId = Guid.Parse(userIdClaim);
-
-        var query = new GetNotificationQuery(id, userId, notificationId);
-        throw new NotImplementedException();
+        try
+        {
+            var currentUserId = JwtHelper.GetUserIdFromUser(User);
+            var query = new GetNotificationQuery(id, currentUserId, notificationId);
+            var response = await mediator.Send(query);
+            return Ok(response);
+        }
+        catch (EntityNotFoundException ex)
+        {
+            return NotFound(new { error = ex.Message });
+        }
+        catch (UnauthorizedAccessException)
+        {
+            return Forbid();
+        }
     }
 
     [HttpPatch("{notificationId:guid}/markAsRead")]
-    [Authorize]
+    [Authorize(Roles = "logged_in,student,admin,superadmin")]
     public async Task<IActionResult> ReadNotification(Guid notificationId, Guid id)
     {
-        var userIdClaim = User.FindFirst("sub")?.Value
-                          ?? User.FindFirst(ClaimTypes.NameIdentifier)?.Value
-                          ?? throw new UnauthorizedAccessException("User ID not found in token");
-        
-        var userId = Guid.Parse(userIdClaim);
-        
-        var command = new ReadNotificationCommand(id, userId, notificationId);
-        throw new NotImplementedException();
+        try
+        {
+            var currentUserId = JwtHelper.GetUserIdFromUser(User);
+            var command = new ReadNotificationCommand(id, currentUserId, notificationId);
+            
+            await mediator.Send(command);
+            return NoContent();
+        }
+        catch (EntityNotFoundException ex)
+        {
+            return NotFound(new { error = ex.Message });
+        }
+        catch (UnauthorizedAccessException)
+        {
+            return Forbid();
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(new { error = ex.Message });
+        }
     }
 }

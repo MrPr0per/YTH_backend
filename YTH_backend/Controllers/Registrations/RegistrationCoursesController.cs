@@ -69,7 +69,7 @@ public class RegistrationCoursesController(IMediator mediator) : ControllerBase
         }
     }
 
-    [HttpGet("{registrationId}")]
+    [HttpGet("{registrationId:guid}")]
     [Authorize(Roles = "logged_in,student,admin,superadmin")]
     public async Task<IActionResult> GetUserCourseByIdController(Guid registrationId)
     {
@@ -91,7 +91,7 @@ public class RegistrationCoursesController(IMediator mediator) : ControllerBase
         }
     }
 
-    [HttpDelete("{registrationId}")]
+    [HttpDelete("{registrationId:guid}")]
     [Authorize(Roles = "logged_in,student,admin,superadmin")]
     public async Task<IActionResult> DeleteCourseFromUserController(Guid registrationId)
     {

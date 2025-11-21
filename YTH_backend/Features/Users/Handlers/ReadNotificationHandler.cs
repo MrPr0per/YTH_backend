@@ -2,6 +2,7 @@ using MediatR;
 using YTH_backend.Data;
 using YTH_backend.DTOs.User;
 using YTH_backend.Features.Users.Commands;
+using YTH_backend.Infrastructure.Exceptions;
 
 namespace YTH_backend.Features.Users.Handlers;
 
@@ -15,7 +16,7 @@ public class ReadNotificationHandler(AppDbContext dbContext) : IRequestHandler<R
         var notification = await dbContext.Notifications.FindAsync([request.NotificationId], cancellationToken);
 
         if (notification == null)
-            throw new KeyNotFoundException($"Notification with id:{request.NotificationId} not found");
+            throw new EntityNotFoundException($"Notification with id:{request.NotificationId} not found");
         
         if (notification.IsRead)
             throw new InvalidOperationException("Notification is already read");
