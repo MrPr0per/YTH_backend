@@ -16,9 +16,14 @@ public class GetAllEventsHandler(AppDbContext dbContext) : IRequestHandler<GetAl
 {
     public async Task<PagedResult<GetEventResponseDto>> Handle(GetAllEventsQuery request, CancellationToken cancellationToken)
     {
+        var take = request.Take;
+
+        if (take < 0)
+            take = 10;
+        
         var query = dbContext.Events
             .ApplyOrderSettings(request.OrderType, request.OrderFieldName)
-            .ApplyCursorSettings(request.CursorType, request.Take, request.CursorId);
+            .ApplyCursorSettings(request.CursorType, take, request.CursorId);
         
         var data = await query
             .Select(ev => new GetEventResponseDto(
@@ -31,7 +36,7 @@ public class GetAllEventsHandler(AppDbContext dbContext) : IRequestHandler<GetAl
             .ToListAsync(cancellationToken);
 
         return new PagedResult<GetEventResponseDto>(
-            request.Take,
+            take,
             request.OrderFieldName,
             request.OrderType,
             request.CursorType,

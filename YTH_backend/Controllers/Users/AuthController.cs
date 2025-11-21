@@ -41,10 +41,6 @@ public class AuthController(IMediator mediator) : ControllerBase
         {
             return StatusCode(429, new { error = ex.Message });
         }
-        catch (Exception ex)
-        {
-            return StatusCode(500, new { error = ex.Message });
-        }
     }
     
     [HttpPost("register")]
@@ -75,10 +71,6 @@ public class AuthController(IMediator mediator) : ControllerBase
         {
             return Conflict(new { error = ex.Message });
         }
-        catch (Exception ex)
-        {
-            return StatusCode(500, new { error = ex.Message });
-        }
     }
 
     [HttpPost("refresh")]
@@ -107,10 +99,6 @@ public class AuthController(IMediator mediator) : ControllerBase
         {
             return StatusCode(429, new { error = ex.Message });
         }
-        catch (Exception ex)
-        {
-            return StatusCode(500, new { error = ex.Message });
-        }
     }
 
     [HttpPost("sendVerificationEmailForRegistration")]
@@ -131,25 +119,15 @@ public class AuthController(IMediator mediator) : ControllerBase
         {
             return Conflict(new { error = ex.Message });
         }
-        catch (Exception ex)
-        {
-            return StatusCode(500, new { error = ex.Message });
-        }
     }
 
     [HttpPost("logout")]
     [Authorize(Roles = "logged_in,student,admin,superadmin")]
     public async Task<IActionResult> LogoutController()
     {
-        try
-        {
-            await mediator.Send(new LogoutCommand());
-            return NoContent();
-        }
-        catch (Exception ex)
-        {
-            return StatusCode(500, new { error = ex.Message });
-        }
+    
+        await mediator.Send(new LogoutCommand());
+        return NoContent();
     }
     
     [HttpPost("changePassword")]
@@ -179,10 +157,6 @@ public class AuthController(IMediator mediator) : ControllerBase
         {
             return BadRequest(new { error = ex.Message });
         }
-        catch (Exception ex)
-        {
-            return StatusCode(500, new { error = ex.Message });
-        }
     }
     
     [HttpPost("sendVerificationEmailForResetPassword")]
@@ -202,10 +176,6 @@ public class AuthController(IMediator mediator) : ControllerBase
         catch (EntityNotFoundException ex)
         {
             return NotFound(new { error = ex.Message });
-        }
-        catch (Exception ex)
-        {
-            return StatusCode(500, new { error = ex.Message });
         }
     }
     
@@ -229,10 +199,6 @@ public class AuthController(IMediator mediator) : ControllerBase
         catch (EntityNotFoundException ex)
         {
             return BadRequest(new { error = ex.Message });
-        }
-        catch (Exception ex)
-        {
-            return StatusCode(500, new { error = ex.Message });
         }
     }
 }

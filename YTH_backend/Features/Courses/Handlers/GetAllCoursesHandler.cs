@@ -15,9 +15,14 @@ public class GetAllCoursesHandler(AppDbContext dbContext) : IRequestHandler<GetA
 {
     public async Task<PagedResult<GetCourseResponseDto>> Handle(GetAllCoursesQuery request, CancellationToken cancellationToken)
     {
+        var take = request.Take;
+
+        if (take < 0)
+            take = 10;
+        
         var query = dbContext.Courses
             .ApplyOrderSettings(request.OrderType, request.OrderFieldName)
-            .ApplyCursorSettings(request.CursorType, request.Take, request.CursorId);
+            .ApplyCursorSettings(request.CursorType, take, request.CursorId);
         
         var data = await query
             .Select(c => new GetCourseResponseDto(
@@ -29,7 +34,7 @@ public class GetAllCoursesHandler(AppDbContext dbContext) : IRequestHandler<GetA
             .ToListAsync(cancellationToken);
         
         return new PagedResult<GetCourseResponseDto>(
-            request.Take,
+            take,
             request.OrderFieldName,
             request.OrderType,
             request.CursorType,

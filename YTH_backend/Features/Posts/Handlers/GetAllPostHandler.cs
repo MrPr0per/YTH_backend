@@ -15,9 +15,14 @@ public class GetAllPostHandler(AppDbContext dbContext) :  IRequestHandler<GetAll
 {
     public async Task<PagedResult<GetPostResponseDto>> Handle(GetAllPostQuery request, CancellationToken cancellationToken)
     {
+        var take = request.Take;
+
+        if (take < 0)
+            take = 10;
+        
         var query = dbContext.Posts
             .ApplyOrderSettings(request.OrderType, request.OrderFieldName)
-            .ApplyCursorSettings(request.CursorType, request.Take, request.CursorId);
+            .ApplyCursorSettings(request.CursorType, take, request.CursorId);
         
         var data = await query
             .Select(post => new GetPostResponseDto(
@@ -30,7 +35,7 @@ public class GetAllPostHandler(AppDbContext dbContext) :  IRequestHandler<GetAll
             .ToListAsync(cancellationToken);
 
         return new PagedResult<GetPostResponseDto>(
-            request.Take,
+            take,
             request.OrderFieldName,
             request.OrderType,
             request.CursorType,

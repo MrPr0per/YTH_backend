@@ -39,9 +39,6 @@ public class CoursesController(IMediator mediator) : ControllerBase
             var orderParams = QueryParamsParser.ParseOrderParams(order);
             var cursorParams = QueryParamsParser.ParseCursorParams(cursor);
 
-            if (take <= 0)
-                take = 10;
-
             var query = new GetAllCoursesQuery(take, orderParams.OrderType, cursorParams.CursorType,
                 orderParams.FieldName, cursorParams.CursorId);
 

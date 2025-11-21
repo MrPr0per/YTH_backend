@@ -25,9 +25,14 @@ public class GetUserCoursesHandler(AppDbContext dbContext) : IRequestHandler<Get
             .Select(r => r.Course)
             .AsQueryable();
 
+        var take = request.Take;
+        
+        if (take < 0)
+            take = 10;
+
         coursesQuery = coursesQuery
             .ApplyOrderSettings(request.OrderType, request.OrderFieldName)
-            .ApplyCursorSettings(request.CursorType, request.Take, request.CursorId);
+            .ApplyCursorSettings(request.CursorType, take, request.CursorId);
         
         var data = coursesQuery
             .Select(c => new GetCourseResponseDto(
@@ -39,7 +44,7 @@ public class GetUserCoursesHandler(AppDbContext dbContext) : IRequestHandler<Get
             .ToList();
         
         return new PagedResult<GetCourseResponseDto>(
-            request.Take,
+            take,
             request.OrderFieldName,
             request.OrderType,
             request.CursorType,
