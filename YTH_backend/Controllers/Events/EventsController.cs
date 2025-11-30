@@ -16,7 +16,7 @@ namespace YTH_backend.Controllers.Events;
 public class EventsController(IMediator mediator) : ControllerBase
 {
     [HttpGet("{id:guid}", Name = nameof(GetEventController))]
-    public async Task<IActionResult> GetEventController(Guid id)
+    public async Task<IActionResult> GetEventController([FromRoute] Guid id)
     {
         try
         {
@@ -70,7 +70,7 @@ public class EventsController(IMediator mediator) : ControllerBase
 
     [HttpDelete("{id:guid}")]
     [Authorize(Policy = "admin")]
-    public async Task<IActionResult> DeleteEventController(Guid id)
+    public async Task<IActionResult> DeleteEventController([FromRoute] Guid id)
     {
         try
         {
@@ -86,7 +86,7 @@ public class EventsController(IMediator mediator) : ControllerBase
     
     [HttpPatch("{id:guid}")]
     [Authorize(Policy = "admin")]
-    public async Task<IActionResult> PatchEventController(Guid id, [FromBody] JsonPatchDocument<PatchEventRequestDto> patchEventRequestDto)
+    public async Task<IActionResult> PatchEventController([FromRoute] Guid id, [FromBody] JsonPatchDocument<PatchEventRequestDto> patchEventRequestDto)
     {
         try
         {

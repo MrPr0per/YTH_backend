@@ -16,7 +16,7 @@ namespace YTH_backend.Controllers.Courses;
 public class CoursesController(IMediator mediator) : ControllerBase
 {
     [HttpGet("{id:guid}", Name = nameof(GetCourseController))]
-    public async Task<IActionResult> GetCourseController(Guid id)
+    public async Task<IActionResult> GetCourseController([FromRoute] Guid id)
     {
         try
         {
@@ -71,7 +71,7 @@ public class CoursesController(IMediator mediator) : ControllerBase
 
     [HttpDelete("{id:guid}")]
     [Authorize(Policy = "admin")]
-    public async Task<IActionResult> DeleteCourseController(Guid id)
+    public async Task<IActionResult> DeleteCourseController([FromRoute] Guid id)
     {
         try
         {
@@ -87,7 +87,7 @@ public class CoursesController(IMediator mediator) : ControllerBase
     
     [HttpPatch("{id:guid}")]
     [Authorize(Policy = "admin")]
-    public async Task<IActionResult> PatchCourseController(Guid id, [FromBody] JsonPatchDocument<PatchCourseRequestDto> patchCourseRequestDto)
+    public async Task<IActionResult> PatchCourseController([FromRoute] Guid id, [FromBody] JsonPatchDocument<PatchCourseRequestDto> patchCourseRequestDto)
     {
         try
         {

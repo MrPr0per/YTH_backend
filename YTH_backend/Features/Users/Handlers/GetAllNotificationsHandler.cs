@@ -5,6 +5,7 @@ using YTH_backend.DTOs.User;
 using YTH_backend.Enums;
 using YTH_backend.Features.Users.Queries;
 using YTH_backend.Infrastructure;
+using YTH_backend.Infrastructure.Exceptions;
 using YTH_backend.Models;
 using YTH_backend.Models.Infrastructure;
 using YTH_backend.Models.User;
@@ -15,9 +16,14 @@ public class GetAllNotificationsHandler(AppDbContext dbContext) : IRequestHandle
 {
     public async Task<PagedResult<GetNotificationsResponseDto>> Handle(GetAllNotificationsQuery request, CancellationToken cancellationToken)
     {
-        if (request.CurrentUserId != request.Id)
+        if (request.CurrentUserId != request.UserId)
             throw new UnauthorizedAccessException("User does not have permission to view other users notifications");
 
+        var isUserExists = await dbContext.Users.AnyAsync(u => u.Id == request.UserId, cancellationToken);
+        
+        if (!isUserExists)
+            throw new EntityNotFoundException($"User with id:{request.UserId} doesn't exist");
+        
         var take = request.Take;
         
         if (take < 0)

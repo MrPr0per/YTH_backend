@@ -42,7 +42,7 @@ public class AddCourseToUserHandler(AppDbContext dbContext) : IRequestHandler<Ad
             CourseId = request.CourseId,
         };
 
-        dbContext.UserCourseRegistrations.Add(registration);
+        await dbContext.UserCourseRegistrations.AddAsync(registration, cancellationToken);
         await dbContext.SaveChangesAsync(cancellationToken);
         
         return new AddCourseToUserResponseDto(registration.Id, registration.CreatedAt, registration.UserId, registration.CourseId);

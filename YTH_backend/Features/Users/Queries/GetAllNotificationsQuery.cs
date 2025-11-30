@@ -6,4 +6,4 @@ using YTH_backend.Models.Infrastructure;
 
 namespace YTH_backend.Features.Users.Queries;
 
-public record GetAllNotificationsQuery(Guid Id, Guid CurrentUserId, int Take, OrderType OrderType, CursorType CursorType, string OrderFieldName, Guid? CursorId) : IRequest<PagedResult<GetNotificationsResponseDto>>;
+public record GetAllNotificationsQuery(Guid UserId, Guid CurrentUserId, int Take, OrderType OrderType, CursorType CursorType, string OrderFieldName, Guid? CursorId) : IRequest<PagedResult<GetNotificationsResponseDto>>;

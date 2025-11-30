@@ -12,7 +12,7 @@ public class AdminAppointmentsController(IMediator mediator) : ControllerBase
 {
     [HttpPut]
     [Authorize(Roles = "superadmin")]
-    public async Task<IActionResult> AddAdminController(Guid id)
+    public async Task<IActionResult> AddAdminController([FromRoute] Guid id)
     {
         try
         {
@@ -33,7 +33,7 @@ public class AdminAppointmentsController(IMediator mediator) : ControllerBase
 
     [HttpDelete]
     [Authorize(Roles = "superadmin")]
-    public async Task<IActionResult> RemoveAdminController(Guid id)
+    public async Task<IActionResult> RemoveAdminController([FromRoute] Guid id)
     {
         try
         {

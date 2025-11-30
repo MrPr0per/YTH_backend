@@ -43,7 +43,7 @@ public class AddEventToUserHandler(AppDbContext dbContext) : IRequestHandler<Add
             EventId = request.EventId,
         };
 
-        dbContext.UserEventRegistrations.Add(registration);
+        await dbContext.UserEventRegistrations.AddAsync(registration, cancellationToken);
         await dbContext.SaveChangesAsync(cancellationToken);
 
         return new AddEventToUserResponseDto(registration.Id, registration.CreatedAt, registration.UserId,

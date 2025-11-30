@@ -2,7 +2,7 @@ namespace YTH_backend.Enums;
 
 public enum ExpertApplicationStatus
 {
-    NotSent,
+    Created,
     Sent,
     AcceptedForReview,
     Reviewed

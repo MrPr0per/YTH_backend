@@ -40,8 +40,8 @@ public class PostsController(IMediator mediator) : ControllerBase
         
     }
 
-    [HttpGet("{id:guid}")]
-    public async Task<IActionResult> GetPostByIdController(Guid id)
+    [HttpGet("{id:guid}", Name = nameof(GetPostByIdController))]
+    public async Task<IActionResult> GetPostByIdController([FromRoute] Guid id)
     {
         try
         {
@@ -72,12 +72,13 @@ public class PostsController(IMediator mediator) : ControllerBase
         
         var response = await mediator.Send(command);
         
-        return Ok(response);
+        return CreatedAtAction(nameof(GetPostByIdController),
+            new { id = response.Id }, response);
     }
 
     [HttpDelete("{id:guid}")]
     [Authorize(Policy = "admin")]
-    public async Task<IActionResult> DeletePostController(Guid id)
+    public async Task<IActionResult> DeletePostController([FromRoute] Guid id)
     {
         try
         {
@@ -93,7 +94,7 @@ public class PostsController(IMediator mediator) : ControllerBase
 
     [HttpPatch("{id:guid}")]
     [Authorize(Policy = "admin")]
-    public async Task<IActionResult> PatchPostController(Guid id,
+    public async Task<IActionResult> PatchPostController([FromRoute] Guid id,
         [FromBody] JsonPatchDocument<PatchPostRequestDto> patchPostRequestDto)
     {
         try

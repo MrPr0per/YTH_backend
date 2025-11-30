@@ -14,7 +14,6 @@ namespace YTH_backend.Controllers.Registrations;
 [Route("api/v0/registrations/courses")]
 public class RegistrationCoursesController(IMediator mediator) : ControllerBase
 {
-    //TODO
     [HttpGet]
     public async Task<IActionResult> GetUserCoursesController([FromQuery] string? cursor = null,
         [FromQuery] int take = 10, [FromQuery] string? order = null, [FromQuery] Guid? user = null, [FromQuery] Guid? course = null)
@@ -72,9 +71,9 @@ public class RegistrationCoursesController(IMediator mediator) : ControllerBase
         }
     }
 
-    [HttpGet("{registrationId:guid}")]
+    [HttpGet("{registrationId:guid}", Name = nameof(GetUserCourseByIdController))]
     [Authorize(Policy = "logged_in")]
-    public async Task<IActionResult> GetUserCourseByIdController(Guid registrationId)
+    public async Task<IActionResult> GetUserCourseByIdController([FromRoute] Guid registrationId)
     {
         try
         {
@@ -96,7 +95,7 @@ public class RegistrationCoursesController(IMediator mediator) : ControllerBase
 
     [HttpDelete("{registrationId:guid}")]
     [Authorize(Policy = "logged_in")]
-    public async Task<IActionResult> DeleteCourseFromUserController(Guid registrationId)
+    public async Task<IActionResult> DeleteCourseFromUserController([FromRoute] Guid registrationId)
     {
         try
         {

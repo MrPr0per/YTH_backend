@@ -46,9 +46,9 @@ public class RegistrationEventsController(IMediator mediator) : ControllerBase
         }
     }
 
-    [HttpGet("{registrationId:guid}")]
+    [HttpGet("{registrationId:guid}", Name = nameof(GetUserEventByIdController))]
     [Authorize(Policy = "logged_in")]
-    public async Task<IActionResult> GetUserEventByIdController(Guid registrationId)
+    public async Task<IActionResult> GetUserEventByIdController([FromRoute] Guid registrationId)
     {
         try
         {
@@ -70,7 +70,7 @@ public class RegistrationEventsController(IMediator mediator) : ControllerBase
     
     [HttpDelete("{registrationId:guid}")]
     [Authorize(Policy = "logged_in")]
-    public async Task<IActionResult> DeleteUserEventByIdController(Guid registrationId)
+    public async Task<IActionResult> DeleteUserEventByIdController([FromRoute] Guid registrationId)
     {
         try
         {

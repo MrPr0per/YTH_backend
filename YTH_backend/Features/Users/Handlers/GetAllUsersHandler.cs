@@ -12,9 +12,14 @@ public class GetAllUsersHandler(AppDbContext dbContext) : IRequestHandler<GetAll
 {
     public async Task<PagedResult<GetAllUsersResponseDto>> Handle(GetAllUsersQuery request, CancellationToken cancellationToken)
     {
+        var take = request.Take;
+        
+        if (take <= 0)
+            take = 10;
+        
         var query = dbContext.Users
             .ApplyOrderSettings(request.OrderType, request.OrderFieldName)
-            .ApplyCursorSettings(request.CursorType, request.Take, request.CursorId);
+            .ApplyCursorSettings(request.CursorType, take, request.CursorId);
 
         var data = await query
             .Select(u => new GetAllUsersResponseDto(
@@ -25,7 +30,7 @@ public class GetAllUsersHandler(AppDbContext dbContext) : IRequestHandler<GetAll
             .ToListAsync(cancellationToken);
 
         return new PagedResult<GetAllUsersResponseDto>(
-            request.Take,
+            take,
             request.OrderFieldName,
             request.OrderType,
             request.CursorType,

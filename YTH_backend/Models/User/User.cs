@@ -36,9 +36,7 @@ public class User
     
     public ICollection<Notification> Notifications { get; set; } = new List<Notification>();
     
-    public ICollection<ExpertApplication> ExpertApplications { get; set; } = new List<ExpertApplication>();
-    
-    public ICollection<ExpertApplicationResolution> ExpertApplicationResolutions { get; set; } = new List<ExpertApplicationResolution>();
+    public ICollection<ExpertApplication.ExpertApplication> ExpertApplications { get; set; } = new List<ExpertApplication.ExpertApplication>();
     
     public ICollection<UserEventRegistration> UserEventRegistration { get; set; } = new List<UserEventRegistration>();
     
@@ -48,5 +46,5 @@ public class User
     
     public ICollection<Post.Post> Posts { get; set; } = new List<Post.Post>();
     
-    public AcceptedForReviewExpertApplications? AcceptedForReviewExpertApplication { get; set; }
+    public ICollection<ExpertApplication.ExpertApplication> AcceptedByExpertApplications { get; set; } = new List<ExpertApplication.ExpertApplication>();
 }

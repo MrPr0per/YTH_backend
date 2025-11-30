@@ -9,7 +9,7 @@ public class UserCourseRegistration
     public Guid Id { get; set; }
     
     [Required]
-    public DateTime CreatedAt { get; set; } = DateTime.Now;
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     
     [Required]
     public Guid UserId { get; set; }

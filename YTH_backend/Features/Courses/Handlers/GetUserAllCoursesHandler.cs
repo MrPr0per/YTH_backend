@@ -49,13 +49,13 @@ public class GetUserAllCoursesHandler(AppDbContext dbContext) : IRequestHandler<
             .ApplyOrderSettings(request.OrderType, request.OrderFieldName)
             .ApplyCursorSettings(request.CursorType, take, request.CursorId);
         
-        var data = coursesQuery
+        var data = await coursesQuery
             .Select(c => new GetUserCourseByIdResponseDto(
                 c.Id,
                 c.CreatedAt,
                 c.UserId,
                 c.CourseId))
-            .ToList();
+            .ToListAsync(cancellationToken);
         
         return new PagedResult<GetUserCourseByIdResponseDto>(
             take,

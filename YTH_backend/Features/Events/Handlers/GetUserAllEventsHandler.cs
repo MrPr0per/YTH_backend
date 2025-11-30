@@ -47,15 +47,15 @@ public class GetUserAllEventsHandler(AppDbContext dbContext) : IRequestHandler<G
         
         var query = eventsQuery
             .ApplyOrderSettings(request.OrderType, request.OrderFieldName)
-            .ApplyCursorSettings(request.CursorType, request.Take, request.CursorId);
+            .ApplyCursorSettings(request.CursorType, take, request.CursorId);
 
-        var data = query
+        var data = await query
             .Select(ev => new GetUserEventByIdResponseDto(
                 ev.Id,
                 ev.CreatedAt,
                 ev.UserId,
                 ev.EventId))
-            .ToList();
+            .ToListAsync(cancellationToken);
         
         return new PagedResult<GetUserEventByIdResponseDto>(
             take,

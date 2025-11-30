@@ -24,7 +24,7 @@ namespace YTH_backend.Controllers.Users;
 public class UsersController(IMediator mediator) : ControllerBase
 {
     [HttpGet("{id:guid}")]
-    public async Task<IActionResult> GetUserController(Guid id)
+    public async Task<IActionResult> GetUserController([FromRoute] Guid id)
     {
         try
         {
@@ -48,8 +48,7 @@ public class UsersController(IMediator mediator) : ControllerBase
         var orderParams = QueryParamsParser.ParseOrderParams(order);
         var cursorParams = QueryParamsParser.ParseCursorParams(cursor);
 
-        if (take <= 0)
-            take = 10;
+        
 
         var query = new GetAllUsersQuery(take, orderParams.OrderType, cursorParams.CursorType,
             orderParams.FieldName, cursorParams.CursorId);
@@ -60,7 +59,7 @@ public class UsersController(IMediator mediator) : ControllerBase
 
     [HttpPost("{id:guid}/anonymize")]
     [Authorize(Policy = "logged_in")]
-    public async Task<IActionResult> AnonymizeUserController(Guid id)
+    public async Task<IActionResult> AnonymizeUserController([FromRoute] Guid id)
     {
         try
         {
@@ -83,7 +82,7 @@ public class UsersController(IMediator mediator) : ControllerBase
     
     [HttpPatch("{id:guid}")]
     [Authorize(Policy = "logged_in")]
-    public async Task<IActionResult> PatchUserController(Guid id,
+    public async Task<IActionResult> PatchUserController([FromRoute] Guid id,
         [FromBody] JsonPatchDocument<PatchUserRequestDto> patchUserRequestDto)
     {
         try

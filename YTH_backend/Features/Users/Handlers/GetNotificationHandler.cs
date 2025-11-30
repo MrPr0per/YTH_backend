@@ -16,10 +16,10 @@ public class GetNotificationHandler(AppDbContext dbContext) : IRequestHandler<Ge
 
         var notification = await dbContext.Notifications.FindAsync([request.NotificationId], cancellationToken);
 
-        if (notification != null)
-            return new GetNotificationsResponseDto(notification.Id,notification.Title, notification.NotificationText,
-                notification.CreatedAt, notification.IsRead, notification.UserId);
+        if (notification == null)
+            throw new EntityNotFoundException($"Notification with id:{request.NotificationId} not found");
         
-        throw new EntityNotFoundException($"Notification with id:{request.NotificationId} not found");
+        return new GetNotificationsResponseDto(notification.Id, notification.Title, notification.NotificationText,
+            notification.CreatedAt, notification.IsRead, notification.UserId);
     }
 }

@@ -16,7 +16,7 @@ namespace YTH_backend.Controllers.Users;
 public class NotificationsController(IMediator mediator) : ControllerBase
 {
     [HttpGet]
-    [Authorize(Roles = "logged_in,student,admin,superadmin")]
+    [Authorize(Policy = "logged_in")]
     public async Task<IActionResult> GetAllNotificationsController([FromRoute] Guid id, [FromQuery] string? cursor = null, [FromQuery] int take = 10, [FromQuery] string? order = null)
     {
         try
@@ -37,10 +37,6 @@ public class NotificationsController(IMediator mediator) : ControllerBase
         {
             return NotFound(new { error = ex.Message });
         }
-        catch (ArgumentException ex)
-        {
-            return BadRequest(new { error = ex.Message });
-        }
         catch (UnauthorizedAccessException)
         {
             return Forbid();
@@ -48,8 +44,8 @@ public class NotificationsController(IMediator mediator) : ControllerBase
     }
 
     [HttpGet("{notificationId:guid}")]
-    [Authorize(Roles = "logged_in,student,admin,superadmin")]
-    public async Task<IActionResult> GetNotificationController([FromRoute] Guid id, Guid notificationId)
+    [Authorize(Policy = "logged_in")]
+    public async Task<IActionResult> GetNotificationController([FromRoute] Guid id, [FromRoute] Guid notificationId)
     {
         try
         {
@@ -69,8 +65,8 @@ public class NotificationsController(IMediator mediator) : ControllerBase
     }
 
     [HttpPatch("{notificationId:guid}/markAsRead")]
-    [Authorize(Roles = "logged_in,student,admin,superadmin")]
-    public async Task<IActionResult> ReadNotification(Guid notificationId, Guid id)
+    [Authorize(Policy = "logged_in")]
+    public async Task<IActionResult> ReadNotification([FromRoute] Guid notificationId, [FromRoute] Guid id)
     {
         try
         {
