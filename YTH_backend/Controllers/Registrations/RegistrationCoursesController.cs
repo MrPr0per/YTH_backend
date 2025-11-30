@@ -16,7 +16,7 @@ public class RegistrationCoursesController(IMediator mediator) : ControllerBase
 {
     [HttpGet]
     public async Task<IActionResult> GetUserCoursesController([FromQuery] string? cursor = null,
-        [FromQuery] int take = 10, [FromQuery] string? order = null, [FromQuery] Guid? user = null, [FromQuery] Guid? course = null)
+        [FromQuery] int take = 10, [FromQuery] string? order = null, [FromQuery] Guid? user = null, [FromQuery] Guid? courseId = null)
     {
         try
         {
@@ -26,7 +26,7 @@ public class RegistrationCoursesController(IMediator mediator) : ControllerBase
             var isAdmin = User.IsInRole("admin") || User.IsInRole("superadmin");
 
             var query = new GetUserCoursesQuery(user, take, orderParams.OrderType, cursorParams.CursorType,
-                cursorParams.CursorId, orderParams.FieldName, course, currentUserId, isAdmin);
+                cursorParams.CursorId, orderParams.FieldName, courseId, currentUserId, isAdmin);
             var response = await mediator.Send(query);
             return Ok(response);
         }
