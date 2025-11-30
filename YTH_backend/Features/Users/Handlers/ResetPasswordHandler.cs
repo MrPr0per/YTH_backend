@@ -15,6 +15,9 @@ public class ResetPasswordHandler(AppDbContext dbContext) : IRequestHandler<Rese
         if (user == null)
             throw new EntityNotFoundException($"User with id {request.UserId} not found");
         
+        if (!PasswordChecker.IsPasswordStrong(request.NewPassword))
+            throw new WeakPasswordException("Password is too weak");
+        
         var newSalt = PasswordHasher.GenerateSalt();
         var newPasswordHash = PasswordHasher.HashPassword(request.NewPassword, newSalt);
         

@@ -16,7 +16,7 @@ public class RegistrationEventsController(IMediator mediator) : ControllerBase
 {
     
     [HttpPost]
-    [Authorize(Roles = "logged_in,student,admin,superadmin")]
+    [Authorize(Policy = "logged_in")]
     public async Task<IActionResult> AddEventToUserController(AddEventToUserRequestDto request)
     {
         try
@@ -47,7 +47,7 @@ public class RegistrationEventsController(IMediator mediator) : ControllerBase
     }
 
     [HttpGet("{registrationId:guid}")]
-    [Authorize(Roles = "logged_in,student,admin,superadmin")]
+    [Authorize(Policy = "logged_in")]
     public async Task<IActionResult> GetUserEventByIdController(Guid registrationId)
     {
         try
@@ -69,7 +69,7 @@ public class RegistrationEventsController(IMediator mediator) : ControllerBase
     }
     
     [HttpDelete("{registrationId:guid}")]
-    [Authorize(Roles = "logged_in,student,admin,superadmin")]
+    [Authorize(Policy = "logged_in")]
     public async Task<IActionResult> DeleteUserEventByIdController(Guid registrationId)
     {
         try
@@ -88,8 +88,31 @@ public class RegistrationEventsController(IMediator mediator) : ControllerBase
             return NotFound(new { error = ex.Message });
         }
     }
-    
-    //TODO
-    // [HttpGet]
-    // public async Task<IActionResult> GetAllUserEventsController()
+
+    [HttpGet]
+    public async Task<IActionResult> GetAllUserEventsController([FromQuery] string? cursor = null,
+        [FromQuery] int take = 10, [FromQuery] string? order = null, [FromQuery] Guid? user = null, [FromQuery] Guid? eventId = null)
+    {
+        try
+        {
+            var orderParams = QueryParamsParser.ParseOrderParams(order);
+            var cursorParams = QueryParamsParser.ParseCursorParams(cursor);
+            var currentUserId = JwtHelper.GetUserIdFromUser(User);
+            var isAdmin = User.IsInRole("admin") || User.IsInRole("superadmin");
+
+            var query = new GetUserEventsQuery(user, take, orderParams.OrderType, cursorParams.CursorType,
+                orderParams.FieldName, cursorParams.CursorId, eventId, currentUserId, isAdmin);
+
+            var response = await mediator.Send(query);
+            return Ok(response);
+        }
+        catch (EntityNotFoundException ex)
+        {
+            return NotFound(new { error = ex.Message });
+        }
+        catch (UnauthorizedAccessException ex)
+        {
+            return Forbid();
+        }
+    }
 }

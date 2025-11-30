@@ -38,7 +38,7 @@ public class LoginUserHandler(AppDbContext dbContext, JwtSettings jwtSettings, I
         if (attempts >= MaxLoginAttempts)
             throw new TooManyRequestsException($"Too many login attempts for {request.Login}. Try again later.");
         
-        var user = await dbContext.Users.FirstOrDefaultAsync(u => u.UserName == request.Login, cancellationToken);
+        var user = await dbContext.Users.FirstOrDefaultAsync(u => u.UserName == request.Login || request.Login == u.Email, cancellationToken);
         
         if (user == null)
             await InvalidLoginOrPasswordHandler(cacheKey, attempts, cancellationToken);

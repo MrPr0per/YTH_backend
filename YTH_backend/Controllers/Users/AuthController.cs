@@ -57,20 +57,24 @@ public class AuthController(IMediator mediator) : ControllerBase
         {
             var command = new CreateUserCommand(createUserRequestDto.UserName, createUserRequestDto.Password, email);
             var createUserResponseDto = await mediator.Send(command);
-            
-            Response.Cookies.Append("refreshToken",  createUserResponseDto.RefreshToken, new CookieOptions
+
+            Response.Cookies.Append("refreshToken", createUserResponseDto.RefreshToken, new CookieOptions
             {
                 HttpOnly = true,
                 Secure = true,
                 SameSite = SameSiteMode.Strict,
                 Expires = DateTime.UtcNow.AddDays(30)
             });
-            
-            return Created("", new {access_token = createUserResponseDto.AccessToken});
+
+            return Created("", new { access_token = createUserResponseDto.AccessToken });
         }
         catch (EntityAlreadyExistsException ex)
         {
             return Conflict(new { error = ex.Message });
+        }
+        catch (WeakPasswordException ex)
+        {
+            return UnprocessableEntity(new { error = ex.Message });
         }
     }
 
@@ -123,16 +127,15 @@ public class AuthController(IMediator mediator) : ControllerBase
     }
 
     [HttpPost("logout")]
-    [Authorize(Roles = "logged_in,student,admin,superadmin")]
+    [Authorize(Policy = "logged_in")]
     public async Task<IActionResult> LogoutController()
     {
-    
         await mediator.Send(new LogoutCommand());
         return NoContent();
     }
     
     [HttpPost("changePassword")]
-    [Authorize(Roles = "logged_in,student,admin,superadmin")]
+    [Authorize(Policy = "logged_in")]
     public async Task<IActionResult> ChangePasswordController([FromBody] ChangePasswordRequestDto changePasswordRequestDto)
     {
         try
@@ -141,9 +144,9 @@ public class AuthController(IMediator mediator) : ControllerBase
 
             var command = new ChangePasswordCommand(userId, changePasswordRequestDto.NewPassword,
                 changePasswordRequestDto.OldPassword);
-            
+
             await mediator.Send(command);
-            
+
             return NoContent();
         }
         catch (EntityNotFoundException ex)
@@ -153,6 +156,10 @@ public class AuthController(IMediator mediator) : ControllerBase
         catch (UnauthorizedAccessException ex)
         {
             return BadRequest(new { error = ex.Message });
+        }
+        catch (WeakPasswordException ex)
+        {
+            return UnprocessableEntity(new { error = ex.Message });
         }
     }
     
@@ -168,7 +175,7 @@ public class AuthController(IMediator mediator) : ControllerBase
         }
         catch (ArgumentException ex)
         {
-            return BadRequest(new { error = ex.Message });
+            return UnprocessableEntity(new { error = ex.Message });
         }
         catch (EntityNotFoundException ex)
         {
@@ -192,6 +199,10 @@ public class AuthController(IMediator mediator) : ControllerBase
         catch (EntityNotFoundException ex)
         {
             return BadRequest(new { error = ex.Message });
+        }
+        catch (WeakPasswordException ex)
+        {
+            return UnprocessableEntity(new { error = ex.Message });
         }
     }
 }

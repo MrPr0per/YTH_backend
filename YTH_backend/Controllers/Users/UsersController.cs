@@ -23,14 +23,6 @@ namespace YTH_backend.Controllers.Users;
 [Route("api/v0/users")]
 public class UsersController(IMediator mediator) : ControllerBase
 {
-    // [HttpGet]
-    //
-    // public async Task<IActionResult> GetPersonalDataController()
-    // {
-    //     var query = new GetPersonalDataQuery();
-    //     throw new NotImplementedException();
-    // }
-
     [HttpGet("{id:guid}")]
     public async Task<IActionResult> GetUserController(Guid id)
     {
@@ -66,36 +58,9 @@ public class UsersController(IMediator mediator) : ControllerBase
         return Ok(response);
     }
 
-    [HttpGet("{id:guid}/events")]
-    [Authorize]
-    public async Task<IActionResult> GetUserEventsController(Guid id, [FromQuery] string? cursor = null, [FromQuery] int take = 10, [FromQuery] string? order = null)
-    {
-        try
-        {
-            var orderParams = QueryParamsParser.ParseOrderParams(order);
-            var cursorParams = QueryParamsParser.ParseCursorParams(cursor);
-
-            if (take <= 0)
-                take = 10;
-
-            var query = new GetUserEventsQuery(id, take, orderParams.OrderType, cursorParams.CursorType,
-                orderParams.FieldName, cursorParams.CursorId);
-            var response = await mediator.Send(query);
-            return Ok(response);
-        }
-        catch (EntityNotFoundException ex)
-        {
-            return NotFound(new { error = ex.Message });
-        }
-        catch (ArgumentException ex)
-        {
-            return BadRequest(new { error = ex.Message });
-        }
-    }
-
     [HttpPost("{id:guid}/anonymize")]
-    [Authorize(Roles = "logged_in,student,admin,superadmin")]
-    public async Task<IActionResult> AnonimyzeUserController(Guid id)
+    [Authorize(Policy = "logged_in")]
+    public async Task<IActionResult> AnonymizeUserController(Guid id)
     {
         try
         {
@@ -116,26 +81,8 @@ public class UsersController(IMediator mediator) : ControllerBase
         }
     }
     
-    
-
-    [HttpDelete("{id:guid}/events/{eventId:guid}")]
-    [Authorize]
-    public async Task<IActionResult> DeleteEventFromUserController(Guid id, Guid eventId)
-    {
-        var command = new DeleteEventFromUserCommand(id, eventId);
-        throw new NotImplementedException();
-    }
-    
-    [HttpDelete("{id:guid}/courses/{eventId:guid}")]
-    [Authorize]
-    public async Task<IActionResult> DeleteCourseFromUserController(Guid id, Guid eventId)
-    {
-        var command = new DeleteCourseFromUserCommand(id, eventId);
-        throw new NotImplementedException();
-    }
-    
     [HttpPatch("{id:guid}")]
-    [Authorize(Roles = "logged_in,student,admin,superadmin")]
+    [Authorize(Policy = "logged_in")]
     public async Task<IActionResult> PatchUserController(Guid id,
         [FromBody] JsonPatchDocument<PatchUserRequestDto> patchUserRequestDto)
     {

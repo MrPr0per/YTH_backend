@@ -23,6 +23,9 @@ public class ChangePasswordHandler(AppDbContext dbContext) : IRequestHandler<Cha
         if (oldHash != user.PasswordHash)
             throw new UnauthorizedAccessException("Passwords do not match");
         
+        if (!PasswordChecker.IsPasswordStrong(request.NewPassword))
+            throw new WeakPasswordException("Password is too weak");
+        
         var newSalt = PasswordHasher.GenerateSalt();
         var newHash = PasswordHasher.HashPassword(request.NewPassword, newSalt);
 

@@ -7,10 +7,10 @@ using YTH_backend.Infrastructure.Exceptions;
 namespace YTH_backend.Controllers.AdminAppointments;
 
 [ApiController]
-[Route("api/v0/users/{id}")]
+[Route("api/v0/users/{id:guid}/roles/admin")]
 public class AdminAppointmentsController(IMediator mediator) : ControllerBase
 {
-    [HttpPut("roles/admin")]
+    [HttpPut]
     [Authorize(Roles = "superadmin")]
     public async Task<IActionResult> AddAdminController(Guid id)
     {
@@ -31,7 +31,7 @@ public class AdminAppointmentsController(IMediator mediator) : ControllerBase
         }
     }
 
-    [HttpDelete("roles/admin")]
+    [HttpDelete]
     [Authorize(Roles = "superadmin")]
     public async Task<IActionResult> RemoveAdminController(Guid id)
     {

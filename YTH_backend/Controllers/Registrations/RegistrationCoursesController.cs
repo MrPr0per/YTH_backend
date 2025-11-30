@@ -16,15 +16,18 @@ public class RegistrationCoursesController(IMediator mediator) : ControllerBase
 {
     //TODO
     [HttpGet]
-    public async Task<IActionResult> GetUserCoursesController(Guid id, [FromQuery] string? cursor = null, [FromQuery] int take = 10, [FromQuery] string? order = null)
+    public async Task<IActionResult> GetUserCoursesController([FromQuery] string? cursor = null,
+        [FromQuery] int take = 10, [FromQuery] string? order = null, [FromQuery] Guid? user = null, [FromQuery] Guid? course = null)
     {
         try
         {
             var orderParams = QueryParamsParser.ParseOrderParams(order);
             var cursorParams = QueryParamsParser.ParseCursorParams(cursor);
-            
-            var query = new GetUserCoursesQuery(id, take, orderParams.OrderType, cursorParams.CursorType,
-                cursorParams.CursorId, orderParams.FieldName);
+            var currentUserId = JwtHelper.GetUserIdFromUser(User);
+            var isAdmin = User.IsInRole("admin") || User.IsInRole("superadmin");
+
+            var query = new GetUserCoursesQuery(user, take, orderParams.OrderType, cursorParams.CursorType,
+                cursorParams.CursorId, orderParams.FieldName, course, currentUserId, isAdmin);
             var response = await mediator.Send(query);
             return Ok(response);
         }
@@ -32,14 +35,14 @@ public class RegistrationCoursesController(IMediator mediator) : ControllerBase
         {
             return NotFound(new { error = ex.Message });
         }
-        catch (ArgumentException ex)
+        catch (UnauthorizedAccessException ex)
         {
-            return BadRequest(new { error = ex.Message });
+            return Forbid();
         }
     }
-    
+
     [HttpPost]
-    [Authorize(Roles = "logged_in,student,admin,superadmin")]
+    [Authorize(Policy = "logged_in")]
     public async Task<IActionResult> AddCourseToUserController(AddCourseToUserRequestDto addCourseToUserRequestDto)
     {
         try
@@ -48,12 +51,12 @@ public class RegistrationCoursesController(IMediator mediator) : ControllerBase
             var command = new AddCourseToUserCommand(addCourseToUserRequestDto.Id, addCourseToUserRequestDto.CourseId,
                 currentUserId);
             var response = await mediator.Send(command);
-            
+
             return CreatedAtAction(
-                nameof(GetUserCourseByIdController), 
-                new { id = response.Id }, 
+                nameof(GetUserCourseByIdController),
+                new { id = response.Id },
                 response
-                );
+            );
         }
         catch (EntityNotFoundException ex)
         {
@@ -70,15 +73,15 @@ public class RegistrationCoursesController(IMediator mediator) : ControllerBase
     }
 
     [HttpGet("{registrationId:guid}")]
-    [Authorize(Roles = "logged_in,student,admin,superadmin")]
+    [Authorize(Policy = "logged_in")]
     public async Task<IActionResult> GetUserCourseByIdController(Guid registrationId)
     {
         try
         {
             var currentUserId = JwtHelper.GetUserIdFromUser(User);
-            var query = new  GetUserCourseByIdQuery(registrationId, currentUserId);
+            var query = new GetUserCourseByIdQuery(registrationId, currentUserId);
             var response = await mediator.Send(query);
-            
+
             return Ok(response);
         }
         catch (UnauthorizedAccessException ex)
@@ -92,7 +95,7 @@ public class RegistrationCoursesController(IMediator mediator) : ControllerBase
     }
 
     [HttpDelete("{registrationId:guid}")]
-    [Authorize(Roles = "logged_in,student,admin,superadmin")]
+    [Authorize(Policy = "logged_in")]
     public async Task<IActionResult> DeleteCourseFromUserController(Guid registrationId)
     {
         try
@@ -111,5 +114,4 @@ public class RegistrationCoursesController(IMediator mediator) : ControllerBase
             return NotFound(new { error = ex.Message });
         }
     }
-        
 }

@@ -4,4 +4,4 @@ using Microsoft.AspNetCore.JsonPatch;
 
 namespace YTH_backend.Features.Posts.Commands;
 
-public record PatchPostCommand(Guid PostId, JsonPatchDocument<PatchPostRequestDto> Patch) : IRequest;
+public record PatchPostCommand(Guid PostId, JsonPatchDocument<PatchPostRequestDto> Patch, Guid CurrentUserId) : IRequest<GetPostResponseDto>;

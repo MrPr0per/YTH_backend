@@ -15,17 +15,28 @@ public class GetAllPostHandler(AppDbContext dbContext) :  IRequestHandler<GetAll
 {
     public async Task<PagedResult<GetPostResponseDto>> Handle(GetAllPostQuery request, CancellationToken cancellationToken)
     {
+        if (request.IsMine && !request.IsAdmin)
+            throw new UnauthorizedAccessException();
+        
         var take = request.Take;
 
         if (take < 0)
             take = 10;
+
+        var query = dbContext.Posts.AsQueryable();
+
+        if (request.IsMine)
+            query = query.Where(p => p.AuthorId == request.CurrentUserId);
+        else
+            query = query.Where(p => p.PostStatus == PostStatus.Posted);
         
-        var query = dbContext.Posts
+        query = query
             .ApplyOrderSettings(request.OrderType, request.OrderFieldName)
             .ApplyCursorSettings(request.CursorType, take, request.CursorId);
         
         var data = await query
             .Select(post => new GetPostResponseDto(
+                post.Id,
                 post.AuthorId,
                 post.Title,
                 post.Description,

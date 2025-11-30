@@ -6,4 +6,4 @@ using YTH_backend.Models.Infrastructure;
 
 namespace YTH_backend.Features.Posts.Queries;
 
-public record GetAllPostQuery(int Take, OrderType OrderType, CursorType CursorType, string OrderFieldName, Guid? CursorId) : IRequest<PagedResult<GetPostResponseDto>>;
+public record GetAllPostQuery(int Take, OrderType OrderType, CursorType CursorType, string OrderFieldName, Guid? CursorId, bool IsMine, bool IsAdmin, Guid CurrentUserId) : IRequest<PagedResult<GetPostResponseDto>>;

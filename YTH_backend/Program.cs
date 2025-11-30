@@ -92,6 +92,10 @@ builder.Services
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddAuthorizationBuilder()
+    .AddPolicy("logged_in", policy => policy.RequireRole("logged_in", "student", "admin", "superadmin"))
+    .AddPolicy("admin", policy => policy.RequireRole("admin", "superadmin"));
+
 builder.Services.AddSingleton(new JwtSettings(jwtSecret));
 //TODO
 builder.Services.AddSingleton<IEmailService>(new MailKitEmailService(

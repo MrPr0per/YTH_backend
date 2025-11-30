@@ -20,7 +20,10 @@ public class CreateUserHandler(AppDbContext dbContext, JwtSettings jwtSettings) 
         
         if (await dbContext.Users.AnyAsync(u => u.Email == request.Email, cancellationToken))
             throw new EntityAlreadyExistsException($"User with email: {request.Email} is already registered");
-            
+
+        if (!PasswordChecker.IsPasswordStrong(request.Password))
+            throw new WeakPasswordException("Password is too weak");
+        
         var salt = PasswordHasher.GenerateSalt();
         var passwordHash = PasswordHasher.HashPassword(request.Password, salt);
 

@@ -6,4 +6,4 @@ using YTH_backend.Models.Infrastructure;
 
 namespace YTH_backend.Features.Courses.Queries;
 
-public record GetUserCoursesQuery(Guid UserId, int Take, OrderType OrderType, CursorType CursorType, Guid? CursorId, string OrderFieldName) : IRequest<PagedResult<GetCourseResponseDto>>;
+public record GetUserCoursesQuery(Guid? UserId, int Take, OrderType OrderType, CursorType CursorType, Guid? CursorId, string OrderFieldName, Guid? CourseId, Guid CurrentUserId, bool IsAdmin) : IRequest<PagedResult<GetUserCourseByIdResponseDto>>;

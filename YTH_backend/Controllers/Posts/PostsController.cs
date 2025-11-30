@@ -17,62 +17,100 @@ namespace YTH_backend.Controllers.Posts;
 public class PostsController(IMediator mediator) : ControllerBase
 {
     [HttpGet]
-    public async Task<IActionResult> GetAllPostsController([FromQuery] string? cursor = null, [FromQuery] int take = 10, [FromQuery] string? order = null)
+    public async Task<IActionResult> GetAllPostsController([FromQuery] string? cursor = null, [FromQuery] int take = 10,
+        [FromQuery] string? order = null, [FromQuery] bool mine = false)
     {
         try
         {
             var orderParams = QueryParamsParser.ParseOrderParams(order);
             var cursorParams = QueryParamsParser.ParseCursorParams(cursor);
+            var isAdmin = User.IsInRole("admin") || User.IsInRole("superadmin");
+            var currentUserId = JwtHelper.GetUserIdFromUser(User);
 
             var query = new GetAllPostQuery(take, orderParams.OrderType, cursorParams.CursorType, orderParams.FieldName,
-                cursorParams.CursorId);
+                cursorParams.CursorId, mine, isAdmin, currentUserId);
+            
             var response = await mediator.Send(query);
+            return Ok(response);
+        }
+        catch (UnauthorizedAccessException ex)
+        {
+            return Forbid();
+        }
+        
+    }
+
+    [HttpGet("{id:guid}")]
+    public async Task<IActionResult> GetPostByIdController(Guid id)
+    {
+        try
+        {
+            var isAdmin = User.IsInRole("admin") || User.IsInRole("superadmin");
+            var currentUserId = JwtHelper.GetUserIdFromUser(User);
+            var query = new GetPostByIdQuery(id, isAdmin, currentUserId);
+            var response = await mediator.Send(query);
+
             return Ok(response);
         }
         catch (EntityNotFoundException ex)
         {
             return NotFound(new { error = ex.Message });
         }
-        catch (ArgumentException ex)
+        catch (UnauthorizedAccessException ex)
         {
-            return BadRequest(new { error = ex.Message });
+            return Forbid();
         }
     }
 
-    [HttpGet("{id:guid}")]
-    public async Task<IActionResult> GetPostByIdController(Guid id)
-    {
-        var query = new GetPostByIdQuery(id);
-        throw new NotImplementedException();
-    }
-
     [HttpPost]
-    [Authorize(Roles = "admin,superadmin")]
+    [Authorize(Policy = "admin")]
     public async Task<IActionResult> CreatePostController([FromBody] CreatePostRequestDto createPostRequestDto)
     {
-        var userIdClaim = User.FindFirst("sub")?.Value
-                          ?? User.FindFirst(ClaimTypes.NameIdentifier)?.Value
-                          ?? throw new UnauthorizedAccessException("User ID not found in token");
-
-        var userId = Guid.Parse(userIdClaim);
+        var userId = JwtHelper.GetUserIdFromUser(User);
+        var command = new CreatePostCommand(userId, createPostRequestDto.Title, createPostRequestDto.Description,
+            createPostRequestDto.PostStatus);
         
-        var command = new CreatePostCommand(userId, createPostRequestDto.Title, createPostRequestDto.Description, createPostRequestDto.PostStatus);
-        throw new NotImplementedException();
+        var response = await mediator.Send(command);
+        
+        return Ok(response);
     }
 
     [HttpDelete("{id:guid}")]
-    [Authorize(Roles = "admin,superadmin")]
+    [Authorize(Policy = "admin")]
     public async Task<IActionResult> DeletePostController(Guid id)
     {
-        var command = new DeletePostCommand(id);
-        throw new NotImplementedException();
+        try
+        {
+            var command = new DeletePostCommand(id);
+            await mediator.Send(command);
+            return NoContent();
+        }
+        catch (EntityNotFoundException ex)
+        {
+            return NotFound(new { error = ex.Message });
+        }
     }
 
     [HttpPatch("{id:guid}")]
-    [Authorize(Roles = "admin,superadmin")]
-    public async Task<IActionResult> PatchPostController(Guid id, [FromBody] JsonPatchDocument<PatchPostRequestDto> patchPostRequestDto)
+    [Authorize(Policy = "admin")]
+    public async Task<IActionResult> PatchPostController(Guid id,
+        [FromBody] JsonPatchDocument<PatchPostRequestDto> patchPostRequestDto)
     {
-        var command = new PatchPostCommand(id, patchPostRequestDto);
-        throw new NotImplementedException();
+        try
+        {
+            var currentUserId = JwtHelper.GetUserIdFromUser(User);
+            var command = new PatchPostCommand(id, patchPostRequestDto, currentUserId);
+            var response = await mediator.Send(command);
+            
+            return Ok(response);
+        }
+        catch (EntityNotFoundException ex)
+        {
+            return NotFound(new { error = ex.Message });
+        }
+        catch (UnauthorizedAccessException ex)
+        {
+            return Forbid();
+        }
     }
 }

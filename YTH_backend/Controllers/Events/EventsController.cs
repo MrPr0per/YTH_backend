@@ -15,7 +15,7 @@ namespace YTH_backend.Controllers.Events;
 [Route("api/v0/events")]
 public class EventsController(IMediator mediator) : ControllerBase
 {
-    [HttpGet("{id:guid}", Name = "GetEventController")]
+    [HttpGet("{id:guid}", Name = nameof(GetEventController))]
     public async Task<IActionResult> GetEventController(Guid id)
     {
         try
@@ -55,7 +55,7 @@ public class EventsController(IMediator mediator) : ControllerBase
     }
 
     [HttpPost]
-    [Authorize(Roles = "admin,superadmin")]
+    [Authorize(Policy = "admin")]
     public async Task<IActionResult> AddEventController([FromBody] AddEventRequestDto addEventRequestDto)
     {
         var command = new AddEventCommand(addEventRequestDto.Name, addEventRequestDto.Description, addEventRequestDto.Type, addEventRequestDto.Date, addEventRequestDto.Address);
@@ -69,7 +69,7 @@ public class EventsController(IMediator mediator) : ControllerBase
     }
 
     [HttpDelete("{id:guid}")]
-    [Authorize(Roles = "admin,superadmin")]
+    [Authorize(Policy = "admin")]
     public async Task<IActionResult> DeleteEventController(Guid id)
     {
         try
@@ -85,7 +85,7 @@ public class EventsController(IMediator mediator) : ControllerBase
     }
     
     [HttpPatch("{id:guid}")]
-    [Authorize(Roles = "admin,superadmin")]
+    [Authorize(Policy = "admin")]
     public async Task<IActionResult> PatchEventController(Guid id, [FromBody] JsonPatchDocument<PatchEventRequestDto> patchEventRequestDto)
     {
         try

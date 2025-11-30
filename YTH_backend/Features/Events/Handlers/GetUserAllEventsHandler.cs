@@ -5,42 +5,60 @@ using YTH_backend.DTOs.Event;
 using YTH_backend.Enums;
 using YTH_backend.Features.Events.Queries;
 using YTH_backend.Infrastructure;
+using YTH_backend.Infrastructure.Exceptions;
 using YTH_backend.Models;
 using YTH_backend.Models.Infrastructure;
 
 namespace YTH_backend.Features.Events.Handlers;
 
-public class GetUserAllEventsHandler(AppDbContext dbContext) : IRequestHandler<GetUserEventsQuery, PagedResult<GetEventResponseDto>>
+public class GetUserAllEventsHandler(AppDbContext dbContext) : IRequestHandler<GetUserEventsQuery, PagedResult<GetUserEventByIdResponseDto>>
 {
-    public async Task<PagedResult<GetEventResponseDto>> Handle(GetUserEventsQuery request, CancellationToken cancellationToken)
+    public async Task<PagedResult<GetUserEventByIdResponseDto>> Handle(GetUserEventsQuery request, CancellationToken cancellationToken)
     {
-        var userExists = await dbContext.Users
-            .AnyAsync(u => u.Id == request.UserId, cancellationToken);
+        if (request.UserId != null)
+        {
+            var userExists = await dbContext.Users
+                .AnyAsync(u => u.Id == request.UserId, cancellationToken);
 
-        if (!userExists)
-            throw new KeyNotFoundException($"User with id: {request.UserId} not found");
+            if (!userExists)
+                throw new EntityNotFoundException($"User with id: {request.UserId} not found");
+            
+            if (request.UserId != request.CurrentUserId)
+                throw new UnauthorizedAccessException("You can't read other users registrations");
+        }
+        else
+        {
+            if (!request.IsAdmin)
+                throw new UnauthorizedAccessException("You can't read other users");
+        }
+        
+        var eventsQuery = dbContext.UserEventRegistrations.AsQueryable();
+        
+        if (request.EventId != null)
+            eventsQuery = eventsQuery.Where(e => e.EventId == request.EventId);
+        
+        if (request.UserId != null)
+            eventsQuery = eventsQuery.Where(e => e.UserId == request.UserId);
+        
+        var take = request.Take;
 
-        var eventsQuery = dbContext.UserEventRegistrations
-            .Where(r => r.UserId == request.UserId)
-            .Select(r => r.Event)
-            .AsQueryable();
+        if (take < 0)
+            take = 10;
         
         var query = eventsQuery
             .ApplyOrderSettings(request.OrderType, request.OrderFieldName)
             .ApplyCursorSettings(request.CursorType, request.Take, request.CursorId);
 
         var data = query
-            .Select(ev => new GetEventResponseDto(
+            .Select(ev => new GetUserEventByIdResponseDto(
                 ev.Id,
-                ev.Name,
-                ev.Description,
-                ev.Type,
-                ev.Date,
-                ev.Address))
+                ev.CreatedAt,
+                ev.UserId,
+                ev.EventId))
             .ToList();
         
-        return new PagedResult<GetEventResponseDto>(
-            request.Take,
+        return new PagedResult<GetUserEventByIdResponseDto>(
+            take,
             request.OrderFieldName,
             request.OrderType,
             request.CursorType,

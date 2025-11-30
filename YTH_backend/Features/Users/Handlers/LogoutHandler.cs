@@ -22,11 +22,7 @@ public class LogoutHandler(AppDbContext dbContext, IHttpContextAccessor httpCont
                 dbContext.Remove(token);
                 await dbContext.SaveChangesAsync(cancellationToken);
             }
-            
-            
         }
         context.Response.Cookies.Delete("refreshToken");
-        
-        
     }
 }
