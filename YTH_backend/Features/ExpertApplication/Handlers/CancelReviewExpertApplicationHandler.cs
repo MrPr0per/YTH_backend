@@ -30,6 +30,7 @@ public class CancelReviewExpertApplicationHandler(AppDbContext dbContext) : IReq
         
         //TODO мб другой статус будет
         application.Status = ExpertApplicationStatus.AcceptedForReview;
+        application.AcceptedBy = request.CurrentUserId;
         application.IsApproved = null;
         application.ResolutionMessage = null;
         

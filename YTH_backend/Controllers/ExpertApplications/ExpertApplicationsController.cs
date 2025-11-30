@@ -226,7 +226,8 @@ public class ExpertApplicationsController(IMediator mediator) : ControllerBase
     {
         try
         {
-            var command = new CancelReviewExpertApplicationCommand(id);
+            var userId = JwtHelper.GetUserIdFromUser(User);
+            var command = new CancelReviewExpertApplicationCommand(id, userId);
             await mediator.Send(command);
             return NoContent();
         }
