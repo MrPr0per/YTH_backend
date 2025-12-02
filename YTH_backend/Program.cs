@@ -32,7 +32,7 @@ builder.Services
             ValidateIssuerSigningKey = true,
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSecret)),
             // ВАЖНО: чтобы roles работали с [Authorize(Roles = "...")]
-            RoleClaimType = "roles"
+            RoleClaimType = ClaimTypes.Role
         };
 
         options.Events = new JwtBearerEvents

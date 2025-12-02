@@ -19,7 +19,7 @@ public class LogoutHandler(AppDbContext dbContext, IHttpContextAccessor httpCont
             
             if (token != null)
             {
-                dbContext.Remove(token);
+                dbContext.RefreshTokens.Remove(token);
                 await dbContext.SaveChangesAsync(cancellationToken);
             }
         }

@@ -21,7 +21,7 @@ public class SendVerificationEmailHandler(AppDbContext dbContext, IEmailService 
         if (user != null)
             throw new EntityAlreadyExistsException($"User with email:{request.Email} is already exists");
         
-        var token = JwtHelper.GenerateVerificationToken(new Dictionary<string, object>{["email"] = request.Email}, jwtSettings.Secret);
+        var token = JwtHelper.GenerateVerificationToken(new Dictionary<string, object>{["email"] = request.Email, ["id"] = Guid.NewGuid()}, jwtSettings.Secret);
         Console.WriteLine(token);
         //TODO
         //var verificationLink = $"{registrationUrl}?token={token}";

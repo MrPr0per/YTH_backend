@@ -32,6 +32,11 @@ public static class JwtHelper
             new Claim("roles", System.Text.Json.JsonSerializer.Serialize(rolesList)),
             new Claim("context", System.Text.Json.JsonSerializer.Serialize(contextData))
         };
+        
+        foreach (var role in rolesList)
+        {
+            claims.Add(new Claim(ClaimTypes.Role, role)); 
+        }
 
         var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(secretKey));
         var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
