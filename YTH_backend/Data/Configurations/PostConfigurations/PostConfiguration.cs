@@ -44,8 +44,8 @@ public class PostConfiguration : IEntityTypeConfiguration<Post>
             .HasConversion<string>()
             .HasMaxLength(50)
             .HasColumnType("varchar(50)")
-            .HasDefaultValue("Posted")
-            .HasColumnName("status");
+            .HasColumnName("status")
+            .HasDefaultValueSql("'Posted'");
         
         builder
             .Property(x => x.CreatedAt)

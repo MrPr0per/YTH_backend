@@ -13,9 +13,9 @@ var builder = WebApplication.CreateBuilder(args);
 var jwtSecret = Environment.GetEnvironmentVariable("JWT_SECRET")
                 ?? throw new InvalidOperationException("JWT_SECRET is not set.");
 
-var smtpPassword = builder.Configuration["Email:SmtpPassword"]
-                   ?? Environment.GetEnvironmentVariable("SMTP_PASSWORD")
-                   ?? throw new InvalidOperationException("SMTP_PASSWORD is not configured.");
+var smtpPassword = builder.Configuration["Email:SmtpPassword"] ?? "test";
+                   // ?? Environment.GetEnvironmentVariable("SMTP_PASSWORD")
+                   // ?? throw new InvalidOperationException("SMTP_PASSWORD is not configured.");
 
 // Add services
 builder.Services
@@ -92,6 +92,7 @@ builder.Services
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddAuthorizationBuilder()
     .AddPolicy("logged_in", policy => policy.RequireRole("logged_in", "student", "admin", "superadmin"))
     .AddPolicy("admin", policy => policy.RequireRole("admin", "superadmin"));
