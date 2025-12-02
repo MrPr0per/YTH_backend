@@ -10,8 +10,9 @@ using YTH_backend.Infrastructure.Email;
 using YTH_backend.Models.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
-var jwtSecret = Environment.GetEnvironmentVariable("JWT_SECRET")
-                ?? throw new InvalidOperationException("JWT_SECRET is not set.");
+var jwtSecret = builder.Configuration["Jwt:Secret"];
+// var jwtSecret = Environment.GetEnvironmentVariable("JWT_SECRET")
+//                 ?? throw new InvalidOperationException("JWT_SECRET is not set.");
 
 var smtpPassword = builder.Configuration["Email:SmtpPassword"] ?? "test";
                    // ?? Environment.GetEnvironmentVariable("SMTP_PASSWORD")
