@@ -152,7 +152,7 @@ public class ExpertApplicationsController(IMediator mediator) : ControllerBase
 
             var command = new AcceptForReviewExpertApplicationCommand(id, userId);
             await mediator.Send(command);
-            //TODO таймер
+         
             return NoContent();
         }
         catch (EntityNotFoundException ex)

@@ -37,7 +37,6 @@ public class PostsController(IMediator mediator) : ControllerBase
         {
             return Forbid();
         }
-        
     }
 
     [HttpGet("{id:guid}", Name = nameof(GetPostByIdController))]

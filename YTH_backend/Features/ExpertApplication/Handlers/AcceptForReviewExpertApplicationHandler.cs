@@ -14,7 +14,7 @@ public class AcceptForReviewExpertApplicationHandler(AppDbContext dbContext) : I
 {
     public async Task Handle(AcceptForReviewExpertApplicationCommand request, CancellationToken cancellationToken)
     {
-        //TODO таймер
+        
         var application = await dbContext.ExpertApplications.FindAsync([request.Id], cancellationToken);
         
         if (application == null)

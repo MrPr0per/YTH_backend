@@ -28,7 +28,7 @@ public class CancelReviewExpertApplicationHandler(AppDbContext dbContext) : IReq
         if (newApplication != null)
             throw new InvalidOperationException("User is already sent new application, you cannot cancel review");
         
-        //TODO мб другой статус будет
+        
         application.Status = ExpertApplicationStatus.AcceptedForReview;
         application.AcceptedBy = request.CurrentUserId;
         application.IsApproved = null;
