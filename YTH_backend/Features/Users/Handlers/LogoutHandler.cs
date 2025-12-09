@@ -2,6 +2,7 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using YTH_backend.Data;
 using YTH_backend.Features.Users.Commands;
+using YTH_backend.Infrastructure;
 
 namespace YTH_backend.Features.Users.Handlers;
 
@@ -23,6 +24,13 @@ public class LogoutHandler(AppDbContext dbContext, IHttpContextAccessor httpCont
                 await dbContext.SaveChangesAsync(cancellationToken);
             }
         }
+        
+        var dbRefreshToken = await dbContext.RefreshTokens.FirstOrDefaultAsync(t => t.TokenHash == JwtHelper.HashRefreshToken(refreshToken), cancellationToken);
+        
+        if (dbRefreshToken != null)
+            dbContext.RefreshTokens.Remove(dbRefreshToken);
+        
+        await dbContext.SaveChangesAsync(cancellationToken);
         context.Response.Cookies.Delete("refreshToken");
     }
 }
