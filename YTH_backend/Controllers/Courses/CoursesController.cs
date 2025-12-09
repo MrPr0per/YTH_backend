@@ -86,6 +86,7 @@ public class CoursesController(IMediator mediator) : ControllerBase
     }
     
     [HttpPatch("{id:guid}")]
+    [Consumes("application/json-patch+json")]
     [Authorize(Policy = "admin")]
     public async Task<IActionResult> PatchCourseController([FromRoute] Guid id, [FromBody] JsonPatchDocument<PatchCourseRequestDto> patchCourseRequestDto)
     {

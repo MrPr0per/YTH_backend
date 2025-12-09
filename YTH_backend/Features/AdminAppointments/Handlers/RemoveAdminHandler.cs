@@ -15,6 +15,9 @@ public class RemoveAdminHandler(AppDbContext dbContext) : IRequestHandler<Remove
         if (user == null)
             throw new EntityNotFoundException($"User with id {request.RevokedId} not found");
 
+        if (request.RevokedId == request.CurrentUserId)
+            throw new InvalidOperationException("You cannot revoke yourself");
+            
         if (user.Role != Roles.Admin && user.Role != Roles.SuperAdmin)
             throw new EntityAlreadyExistsException($"User with id {request.RevokedId} is not admin already");
         

@@ -1,7 +1,10 @@
+using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
 using YTH_backend.Models.Course;
 using YTH_backend.Models.Event;
 using YTH_backend.Models.ExpertApplication;
+using YTH_backend.Models.Infrastructure;
 using YTH_backend.Models.Post;
 using YTH_backend.Models.User;
 
@@ -22,7 +25,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
-    
+        
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
     }
 }

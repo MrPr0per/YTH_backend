@@ -142,8 +142,8 @@ public class AuthController(IMediator mediator) : ControllerBase
         {
             var userId = JwtHelper.GetUserIdFromUser(User);
 
-            var command = new ChangePasswordCommand(userId, changePasswordRequestDto.NewPassword,
-                changePasswordRequestDto.OldPassword);
+            var command = new ChangePasswordCommand(userId, changePasswordRequestDto.OldPassword,
+                changePasswordRequestDto.NewPassword);
 
             await mediator.Send(command);
 

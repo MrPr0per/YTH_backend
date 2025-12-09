@@ -2,6 +2,7 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using YTH_backend.Features.AdminAppointments.Commands;
+using YTH_backend.Infrastructure;
 using YTH_backend.Infrastructure.Exceptions;
 
 namespace YTH_backend.Controllers.AdminAppointments;
@@ -37,7 +38,8 @@ public class AdminAppointmentsController(IMediator mediator) : ControllerBase
     {
         try
         {
-            var query = new RemoveAdminCommand(id);
+            var currentUserId = JwtHelper.GetUserIdFromUser(User);
+            var query = new RemoveAdminCommand(id, currentUserId);
             await mediator.Send(query);
             
             return NoContent();
@@ -47,6 +49,10 @@ public class AdminAppointmentsController(IMediator mediator) : ControllerBase
             return NotFound(new { error = ex.Message });
         }
         catch (EntityAlreadyExistsException ex)
+        {
+            return Conflict(new { error = ex.Message });
+        }
+        catch (InvalidOperationException ex)
         {
             return Conflict(new { error = ex.Message });
         }
