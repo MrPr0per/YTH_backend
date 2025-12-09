@@ -13,13 +13,13 @@ public static class QueryParamsParser
         var split = query.Split(':');
         
         if (split.Length != 2)
-            throw new ArgumentException("Cursor query must be in format '<type>:<id>'", nameof(query));
+            throw new ArgumentException("Cursor query must be in format '<type>:<id>'");
         
         if (!Guid.TryParse(split[1], out var id))
-            throw new ArgumentException("Cursor query must have a valid GUID", nameof(query));
+            throw new ArgumentException("Cursor query must have a valid GUID");
             
         if (!Enum.TryParse<CursorType>(split[0], true, out var cursorType))
-            throw new ArgumentException("Invalid cursor type", nameof(query));
+            throw new ArgumentException("Invalid cursor type");
         
         return new CursorParams(cursorType, id);
     }
@@ -30,17 +30,16 @@ public static class QueryParamsParser
             return new OrderParams();
         
         var split = query.Split(':');
-        
+
         if (split.Length != 2)
-            throw new ArgumentException("Order query must be in format '<type>:<fieldName>'", nameof(query));
-        
+            throw new ArgumentException("Order query must be in format '<type>:<fieldName>'");
         var fieldName = split[1];
         
         if (string.IsNullOrWhiteSpace(fieldName))
-            throw new ArgumentException("Field name must not be empty", nameof(query));
+            throw new ArgumentException("Field name must not be empty");
         
         if (!Enum.TryParse<OrderType>(split[0], true, out var orderType))
-            throw new ArgumentException("Invalid order type", nameof(query));
+            throw new ArgumentException("Invalid order type");
         
         return new OrderParams(orderType, fieldName);
     }

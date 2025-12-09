@@ -92,7 +92,11 @@ builder.Services
     });
 
 builder.Services.AddControllers()
-    .AddNewtonsoftJson();
+    .AddNewtonsoftJson(options =>
+    {
+        options.SerializerSettings.Converters.Add(new Newtonsoft.Json.Converters.StringEnumConverter());
+        // options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+    });
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
@@ -106,7 +110,7 @@ builder.Services.AddSwaggerGen(c =>
         Scheme = "Bearer",
         BearerFormat = "JWT",
         In = ParameterLocation.Header,
-        Description = "Введите JWT в формате: {ваш_токен}"
+        Description = "Введите JWT"
     });
 
     c.AddSecurityRequirement(new OpenApiSecurityRequirement
@@ -120,6 +124,7 @@ builder.Services.AddSwaggerGen(c =>
         }
     });
 });
+
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddAuthorizationBuilder()
     .AddPolicy("logged_in", policy => policy.RequireRole("logged_in", "student", "admin", "superadmin"))

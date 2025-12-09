@@ -297,7 +297,7 @@ public class ExpertApplicationsController(IMediator mediator) : ControllerBase
         }
     }
 
-    [HttpGet("{ig:guid}/history")]
+    [HttpGet("{id:guid}/history")]
     [Authorize(Policy = "logged_in")]
     public async Task<IActionResult> GetApplicationHistoryController([FromRoute] Guid id,
         [FromQuery] string? cursor = null,

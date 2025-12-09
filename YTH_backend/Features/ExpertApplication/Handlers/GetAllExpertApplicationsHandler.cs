@@ -18,11 +18,19 @@ public class GetAllExpertApplicationsHandler(AppDbContext dbContext)
         if (request is { IsAdmin: false, CreatedBy: not null } && request.CurrentUserId != request.CreatedBy ||
             request is { IsAdmin: true, Status: ExpertApplicationStatus.Created })
             throw new UnauthorizedAccessException();
+        
+        var createdBy = request.CreatedBy;
+        
+        if (!request.IsAdmin && createdBy == null)
+            createdBy = request.CurrentUserId;
 
         var query = dbContext.ExpertApplications.AsQueryable();
+        
+        if (request.IsAdmin && request.Status == null)
+            query = query.Where(x => x.Status != ExpertApplicationStatus.Created);
 
-        if (request.CreatedBy != null)
-            query = query.Where(x => x.UserId == request.CreatedBy);
+        if (createdBy != null)
+            query = query.Where(x => x.UserId == createdBy);
 
         if (request.Status != null)
             query = query.Where(x => x.Status == request.Status);

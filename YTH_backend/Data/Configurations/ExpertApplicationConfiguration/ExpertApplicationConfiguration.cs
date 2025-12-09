@@ -74,7 +74,7 @@ public class ExpertApplicationConfiguration : IEntityTypeConfiguration<ExpertApp
         builder.HasCheckConstraint(
             "CK_expert_applications_status_fields_consistency",
             @"(
-                   (status IN ('NotSent','Sent') AND accepted_by IS NULL AND is_approved IS NULL AND resolution_message IS NULL)
+                   (status IN ('Created','Sent') AND accepted_by IS NULL AND is_approved IS NULL AND resolution_message IS NULL)
                    OR
                    (status = 'AcceptedForReview' AND accepted_by IS NOT NULL AND is_approved IS NULL AND resolution_message IS NULL)
                    OR
