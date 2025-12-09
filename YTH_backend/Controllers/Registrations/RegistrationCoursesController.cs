@@ -11,7 +11,7 @@ using YTH_backend.Infrastructure.Exceptions;
 namespace YTH_backend.Controllers.Registrations;
 
 [ApiController]
-[Route("api/v0/registrations/courses")]
+[Route("api/v0/coursesRegistrations")]
 public class RegistrationCoursesController(IMediator mediator) : ControllerBase
 {
     [HttpGet]
@@ -51,9 +51,9 @@ public class RegistrationCoursesController(IMediator mediator) : ControllerBase
                 currentUserId);
             var response = await mediator.Send(command);
 
-            return CreatedAtAction(
+            return CreatedAtRoute(
                 nameof(GetUserCourseByIdController),
-                new { id = response.Id },
+                new { registrationId = response.Id },
                 response
             );
         }

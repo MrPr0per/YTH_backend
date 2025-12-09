@@ -11,7 +11,7 @@ using YTH_backend.Infrastructure.Exceptions;
 namespace YTH_backend.Controllers.Registrations;
 
 [ApiController]
-[Route("api/v0/registrations/events")]
+[Route("api/v0/eventsRegistrations")]
 public class RegistrationEventsController(IMediator mediator) : ControllerBase
 {
     
@@ -26,7 +26,7 @@ public class RegistrationEventsController(IMediator mediator) : ControllerBase
             var command = new AddEventToUserCommand(request.UserId, request.EventId, currentUserId);
             var response = await mediator.Send(command);
             
-            return CreatedAtAction(
+            return CreatedAtRoute(
                 nameof(GetUserEventByIdController),
                 new { id = response.Id},
                 response
@@ -46,14 +46,14 @@ public class RegistrationEventsController(IMediator mediator) : ControllerBase
         }
     }
 
-    [HttpGet("{registrationId:guid}", Name = nameof(GetUserEventByIdController))]
+    [HttpGet("{id:guid}", Name = nameof(GetUserEventByIdController))]
     [Authorize(Policy = "logged_in")]
-    public async Task<IActionResult> GetUserEventByIdController([FromRoute] Guid registrationId)
+    public async Task<IActionResult> GetUserEventByIdController([FromRoute] Guid id)
     {
         try
         {
             var currentUserId = JwtHelper.GetUserIdFromUser(User);
-            var query = new GetUserEventByIdQuery(registrationId, currentUserId);
+            var query = new GetUserEventByIdQuery(id, currentUserId);
             var response = await mediator.Send(query);
 
             return Ok(response);

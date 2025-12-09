@@ -81,13 +81,18 @@ public class PostsController(IMediator mediator) : ControllerBase
     {
         try
         {
-            var command = new DeletePostCommand(id);
+            var currentUserId = JwtHelper.GetUserIdFromUser(User);
+            var command = new DeletePostCommand(id, currentUserId);
             await mediator.Send(command);
             return NoContent();
         }
         catch (EntityNotFoundException ex)
         {
             return NotFound(new { error = ex.Message });
+        }
+        catch (UnauthorizedAccessException ex)
+        {
+            return Forbid();
         }
     }
 

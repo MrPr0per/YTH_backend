@@ -26,7 +26,7 @@ public class AddEventToUserHandler(AppDbContext dbContext) : IRequestHandler<Add
         var eventExists = await dbContext.Events
             .AnyAsync(e => e.Id == request.EventId, cancellationToken);
 
-        if (eventExists)
+        if (!eventExists)
             throw new EntityNotFoundException($"Event with id: {request.EventId} not found");
 
         var alreadyRegistered = await dbContext.UserEventRegistrations

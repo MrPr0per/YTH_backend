@@ -1,4 +1,5 @@
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using YTH_backend.Data;
 using YTH_backend.DTOs.User;
 using YTH_backend.Features.Users.Commands;
@@ -14,13 +15,25 @@ public class PatchUserHandler(AppDbContext dbContext) : IRequestHandler<PatchUse
         
         if (user == null)
             throw new EntityNotFoundException($"User with id {request.Id} not found");
+        
+        if (request.CurrentUserId != user.Id)
+            throw new UnauthorizedAccessException();
 
+        
+        
         var dto = new PatchUserRequestDto(user.UserName);
         
         request.PatchDocument.ApplyTo(dto);
         
         if (dto.UserName is not null)
+        {
+            var userWithSameName = await dbContext.Users.FirstOrDefaultAsync(x => x.UserName == dto.UserName, cancellationToken);
+            
+            if (userWithSameName is not null)
+                throw new EntityAlreadyExistsException("User with the same name already exists");
+            
             user.UserName = dto.UserName;
+        }
         
         await dbContext.SaveChangesAsync(cancellationToken);
     }

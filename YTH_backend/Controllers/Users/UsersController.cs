@@ -87,14 +87,23 @@ public class UsersController(IMediator mediator) : ControllerBase
     {
         try
         {
-            var command = new PatchUserCommand(id, patchUserRequestDto);
+            var userId = JwtHelper.GetUserIdFromUser(User);
+            var command = new PatchUserCommand(id, userId, patchUserRequestDto);
             await mediator.Send(command);
-            
+
             return NoContent();
         }
         catch (EntityNotFoundException ex)
         {
             return NotFound(new { error = ex.Message });
+        }
+        catch (UnauthorizedAccessException ex)
+        {
+            return Forbid();
+        }
+        catch (EntityAlreadyExistsException ex)
+        {
+            return Conflict(new { error = ex.Message });
         }
     }
 }

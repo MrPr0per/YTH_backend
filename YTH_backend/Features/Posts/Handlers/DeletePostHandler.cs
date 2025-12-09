@@ -13,6 +13,9 @@ public class DeletePostHandler(AppDbContext dbContext) : IRequestHandler<DeleteP
         
         if (post == null)
             throw new EntityNotFoundException($"Post with id:{request.PostId} not found");
+
+        if (post.AuthorId != request.CurrentUserId)
+            throw new UnauthorizedAccessException();
         
         dbContext.Posts.Remove(post);
         await dbContext.SaveChangesAsync(cancellationToken);
