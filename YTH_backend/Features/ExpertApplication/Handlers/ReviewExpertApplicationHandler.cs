@@ -22,7 +22,7 @@ public class ReviewExpertApplicationHandler(AppDbContext dbContext) : IRequestHa
         if (application.Status != ExpertApplicationStatus.AcceptedForReview)
             throw new InvalidOperationException("Expert application is not reviewing");
         
-        if (application.UserId != request.CurrentUserId)
+        if (application.AcceptedBy != request.CurrentUserId)
             throw new UnauthorizedAccessException("User does not have permission to review other admins applications");
         
         application.Status = ExpertApplicationStatus.Reviewed;
@@ -35,8 +35,8 @@ public class ReviewExpertApplicationHandler(AppDbContext dbContext) : IRequestHa
             UserId = application.UserId,
             Title = "Ваша заявка на экспертность была рассмотрена",
             NotificationText = request.IsApproved
-                ? "Вы получили статус эксперта!"
-                : "Вам было отказано в статусе эксперта"
+                ? $"Вы получили статус эксперта! Комментарий администратора: {request.Message}"
+                : $"Вам было отказано в статусе эксперта. Комментарий администратора: {request.Message}"
         };
 
         await dbContext.Notifications.AddAsync(notification, cancellationToken);

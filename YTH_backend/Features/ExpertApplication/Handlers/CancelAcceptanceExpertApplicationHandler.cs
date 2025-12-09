@@ -20,7 +20,7 @@ public class CancelAcceptanceExpertApplicationHandler(AppDbContext dbContext) : 
         if (application.Status != ExpertApplicationStatus.AcceptedForReview)
             throw new InvalidOperationException("Expert application is not AcceptedForReview or reviewing by other admin");
         
-        if (application.UserId != request.CurrentUserId)
+        if (application.AcceptedBy != request.CurrentUserId)
             throw new UnauthorizedAccessException("User does not have permission to cancel other admins applications");
         
         application.Status = ExpertApplicationStatus.Sent;

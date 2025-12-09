@@ -29,7 +29,9 @@ public class GetAllNotificationsHandler(AppDbContext dbContext) : IRequestHandle
         if (take < 0)
             take = 10;
         
+        
         var query = dbContext.Notifications
+            .Where(x => x.UserId == request.UserId)
             .ApplyOrderSettings(request.OrderType, request.OrderFieldName)
             .ApplyCursorSettings(request.CursorType, take, request.CursorId);
         
