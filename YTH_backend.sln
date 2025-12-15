@@ -2,6 +2,8 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YTH_backend", "YTH_backend\YTH_backend.csproj", "{1656ECCD-EA87-47BB-BBCA-19A3C11D8AE6}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YTH_backend.Tests", "YTH_backend.Tests\YTH_backend.Tests.csproj", "{58B880C5-4E4A-4095-80E5-0625F49B7976}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -12,5 +14,9 @@ Global
 		{1656ECCD-EA87-47BB-BBCA-19A3C11D8AE6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1656ECCD-EA87-47BB-BBCA-19A3C11D8AE6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1656ECCD-EA87-47BB-BBCA-19A3C11D8AE6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{58B880C5-4E4A-4095-80E5-0625F49B7976}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{58B880C5-4E4A-4095-80E5-0625F49B7976}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{58B880C5-4E4A-4095-80E5-0625F49B7976}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{58B880C5-4E4A-4095-80E5-0625F49B7976}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
