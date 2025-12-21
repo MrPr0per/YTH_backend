@@ -27,8 +27,8 @@ public class ForgotPasswordHandler(AppDbContext dbContext, JwtSettings jwtSettin
             ["id"] = user.Id
         };
         
-        var registrationUrl = configuration["RegistrationUrl"]
-                              ?? throw new InvalidOperationException("RegistrationUrl is not configured");
+        var registrationUrl = configuration["App:ResetPasswordUrl"]
+                              ?? throw new InvalidOperationException("ResetPasswordUrl is not configured");
         
         var token = JwtHelper.GenerateVerificationToken(contextData, jwtSettings.Secret);
         var verificationLink =

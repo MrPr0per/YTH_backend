@@ -23,7 +23,7 @@ public class SendVerificationEmailHandler(AppDbContext dbContext, IEmailService 
         
         var token = JwtHelper.GenerateVerificationToken(new Dictionary<string, object>{["email"] = request.Email, ["id"] = Guid.NewGuid()}, jwtSettings.Secret);
         
-        var registrationUrl = configuration["RegistrationUrl"]
+        var registrationUrl = configuration["App:RegistrationUrl"]
                               ?? throw new InvalidOperationException("RegistrationUrl is not configured");
         
         var verificationLink =
