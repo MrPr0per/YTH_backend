@@ -18,9 +18,14 @@ public class Program
         // var jwtSecret = Environment.GetEnvironmentVariable("JWT_SECRET")
         //                 ?? throw new InvalidOperationException("JWT_SECRET is not set.");
 
-        var smtpPassword = builder.Configuration["Email:SmtpPassword"] ?? "test";
+        //var smtpPassword = builder.Configuration["Email:SmtpPassword"] ?? "test";
         // ?? Environment.GetEnvironmentVariable("SMTP_PASSWORD")
         // ?? throw new InvalidOperationException("SMTP_PASSWORD is not configured.");
+        
+        var ycKeyId = builder.Configuration["Email:YcKeyId"]
+                      ?? throw new InvalidOperationException("yc access key isn't set");
+        var ycSecretKey = builder.Configuration["Email:YcSecretKey"]
+                          ?? throw new InvalidOperationException("yc secret key isn't set");
 
         // Add services
         builder.Services
@@ -134,14 +139,12 @@ public class Program
             .AddPolicy("admin", policy => policy.RequireRole("admin", "superadmin"));
 
         builder.Services.AddSingleton(new JwtSettings(jwtSecret));
-        //TODO
-        builder.Services.AddSingleton<IEmailService>(new MailKitEmailService(
-            smtpHost: "smtp.example.com",
-            smtpPort: 587,
-            smtpUser: "user@example.com",
-            smtpPassword: smtpPassword,
-            fromEmail: "no-reply@example.com",
-            fromName: "MyApp"
+        
+        builder.Services.AddSingleton<IEmailService>(new AwsSesEmailService(
+            smtpHost: "https://postbox.cloud.yandex.net",
+            ycAccessKey: ycKeyId,
+            ycSecretKey: ycSecretKey,
+            fromEmail: "no-reply@yth.run.place"
         ));
 
         if (builder.Environment.IsDevelopment())

@@ -9,7 +9,7 @@ using YTH_backend.Models.Infrastructure;
 
 namespace YTH_backend.Features.Users.Handlers;
 
-public class ForgotPasswordHandler(AppDbContext dbContext, JwtSettings jwtSettings) : IRequestHandler<ForgotPasswordCommand>
+public class ForgotPasswordHandler(AppDbContext dbContext, JwtSettings jwtSettings, IConfiguration configuration, IEmailService emailService) : IRequestHandler<ForgotPasswordCommand>
 {
     public async Task Handle(ForgotPasswordCommand request, CancellationToken cancellationToken)
     {
@@ -21,20 +21,34 @@ public class ForgotPasswordHandler(AppDbContext dbContext, JwtSettings jwtSettin
         if (user == null)
             throw new EntityNotFoundException($"User with email:{request.Email} doesn't exists");
         
-        
         var contextData = new Dictionary<string, object>
         {
             ["email"] = user.Email,
             ["id"] = user.Id
         };
         
+        var registrationUrl = configuration["RegistrationUrl"]
+                              ?? throw new InvalidOperationException("RegistrationUrl is not configured");
+        
         var token = JwtHelper.GenerateVerificationToken(contextData, jwtSettings.Secret);
-        //TODO
-        //var verificationLink = $"{registrationUrl}?token={token}";
-        // await emailService.SendEmailAsync(
-        //     request.Email,
-        //     "Смена пароля",
-        //     $"<p>Перейдите по ссылке для смены пароля: <a href='{verificationLink}'>{verificationLink}</a></p>"
-        // );
+        var verificationLink =
+            $"{registrationUrl}?token={Uri.EscapeDataString(token)}";
+        
+        await emailService.SendEmailAsync(
+            to: request.Email,
+            subject: "Смена пароля",
+            htmlBody: $"""
+                           <p>Здравствуйте!</p>
+                           <p>
+                               Для смены пароля перейдите по ссылке:
+                           </p>
+                           <p>
+                               <a href="{verificationLink}">
+                                   Сменить пароль
+                               </a>
+                           </p>
+                           <p>Если вы не запрашивали смену пароля — просто проигнорируйте это письмо.</p>
+                       """
+        );
     }
 }

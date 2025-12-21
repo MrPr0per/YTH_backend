@@ -10,7 +10,7 @@ using YTH_backend.Models.Infrastructure;
 
 namespace YTH_backend.Features.Users.Handlers;
 
-public class SendVerificationEmailHandler(AppDbContext dbContext, IEmailService emailService, JwtSettings jwtSettings) : IRequestHandler<SendVerificationEmailCommand>
+public class SendVerificationEmailHandler(AppDbContext dbContext, IEmailService emailService, JwtSettings jwtSettings, IConfiguration configuration) : IRequestHandler<SendVerificationEmailCommand>
 {
     public async Task Handle(SendVerificationEmailCommand request, CancellationToken cancellationToken)
     {
@@ -22,13 +22,28 @@ public class SendVerificationEmailHandler(AppDbContext dbContext, IEmailService 
             throw new EntityAlreadyExistsException($"User with email:{request.Email} is already exists");
         
         var token = JwtHelper.GenerateVerificationToken(new Dictionary<string, object>{["email"] = request.Email, ["id"] = Guid.NewGuid()}, jwtSettings.Secret);
-        Console.WriteLine(token);
-        //TODO
-        //var verificationLink = $"{registrationUrl}?token={token}";
-        // await emailService.SendEmailAsync(
-        //     request.Email,
-        //     "Подтверждение регистрации",
-        //     $"<p>Перейдите по ссылке для завершения регистрации: <a href='{verificationLink}'>{verificationLink}</a></p>"
-        // );
+        
+        var registrationUrl = configuration["RegistrationUrl"]
+                              ?? throw new InvalidOperationException("RegistrationUrl is not configured");
+        
+        var verificationLink =
+            $"{registrationUrl}?token={Uri.EscapeDataString(token)}";
+
+        await emailService.SendEmailAsync(
+            to: request.Email,
+            subject: "Подтверждение регистрации",
+            htmlBody: $"""
+                           <p>Здравствуйте!</p>
+                           <p>
+                               Для завершения регистрации перейдите по ссылке:
+                           </p>
+                           <p>
+                               <a href="{verificationLink}">
+                                   Подтвердить регистрацию
+                               </a>
+                           </p>
+                           <p>Если вы не запрашивали регистрацию — просто проигнорируйте это письмо.</p>
+                       """
+        );
     }
 }
