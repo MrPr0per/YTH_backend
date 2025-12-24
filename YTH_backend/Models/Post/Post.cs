@@ -33,6 +33,9 @@ public class Post
     [Required] 
     public PostStatus PostStatus { get; set; } = PostStatus.Posted;
     
+    [MaxLength(512)]
+    public string? ImageUrl { get; set; }
+    
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     
     // public ICollection<PostTag> Tags { get; set; } = new List<PostTag>();

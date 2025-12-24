@@ -67,7 +67,7 @@ public class PostsController(IMediator mediator) : ControllerBase
     {
         var userId = JwtHelper.GetUserIdFromUser(User);
         var command = new CreatePostCommand(userId, createPostRequestDto.Title, createPostRequestDto.Description,
-            createPostRequestDto.PostStatus);
+            createPostRequestDto.PostStatus, createPostRequestDto.ImageBase64);
         
         var response = await mediator.Send(command);
         

@@ -19,6 +19,6 @@ public class GetPostHandler(AppDbContext dbContext) : IRequestHandler<GetPostByI
         if (post.PostStatus == PostStatus.Hidden && (!request.IsAdmin || request.CurrentUserId != post.AuthorId))
             throw new UnauthorizedAccessException();
         
-        return new GetPostResponseDto(post.Id, post.AuthorId, post.Title, post.Description, post.PostStatus, post.CreatedAt);
+        return new GetPostResponseDto(post.Id, post.AuthorId, post.Title, post.Description, post.PostStatus, post.CreatedAt, post.ImageUrl);
     }
 }

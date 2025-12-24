@@ -32,7 +32,10 @@ public class Event
     public EventTypes Type { get; set; }
     
     [MaxLength(512)]
-    public string? Address { get; set; } = null!;
+    public string? Address { get; set; }
+    
+    [MaxLength(512)]
+    public string? ImageUrl { get; set; }
 
     public ICollection<UserEventRegistration> UserEventRegistration { get; set; } = new List<UserEventRegistration>();
     

@@ -41,7 +41,8 @@ public class GetAllPostHandler(AppDbContext dbContext) :  IRequestHandler<GetAll
                 post.Title,
                 post.Description,
                 post.PostStatus,
-                post.CreatedAt
+                post.CreatedAt,
+                post.ImageUrl
             ))
             .ToListAsync(cancellationToken);
 

@@ -7,6 +7,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using YTH_backend.Data;
 using YTH_backend.Infrastructure.Email;
+using YTH_backend.Infrastructure.Object_storage;
 using YTH_backend.Models.Infrastructure;
 
 public class Program
@@ -21,12 +22,18 @@ public class Program
         //var smtpPassword = builder.Configuration["Email:SmtpPassword"] ?? "test";
         // ?? Environment.GetEnvironmentVariable("SMTP_PASSWORD")
         // ?? throw new InvalidOperationException("SMTP_PASSWORD is not configured.");
-        
-        var ycKeyId = builder.Configuration["Email:YcKeyId"]
-                      ?? throw new InvalidOperationException("yc access key isn't set");
-        var ycSecretKey = builder.Configuration["Email:YcSecretKey"]
-                          ?? throw new InvalidOperationException("yc secret key isn't set");
 
+        var postboxAccessKey = builder.Configuration["Email:AccessKey"]
+                               ?? throw new InvalidOperationException("postbox yc access key isn't set");
+        var postboxSecretKey = builder.Configuration["Email:SecretKey"]
+                               ?? throw new InvalidOperationException("postbox yc secret key isn't set");
+
+        var objectStorageSecretKey = builder.Configuration["ObjectStorage:SecretKey"]
+                                     ?? throw new InvalidOperationException("object storage yc access key isn't set");
+        var objectStorageAccessKey = builder.Configuration["ObjectStorage:AccessKey"]
+                                     ?? throw new InvalidOperationException("object storage yc access key isn't set");
+        var objectStorageBucket = builder.Configuration["ObjectStorage:Bucket"]
+                                  ?? throw new InvalidOperationException("object storage yc bucket isn't set");
         // Add services
         builder.Services
             .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -139,13 +146,21 @@ public class Program
             .AddPolicy("admin", policy => policy.RequireRole("admin", "superadmin"));
 
         builder.Services.AddSingleton(new JwtSettings(jwtSecret));
-        
+
         builder.Services.AddSingleton<IEmailService>(new AwsSesEmailService(
             smtpHost: "https://postbox.cloud.yandex.net",
-            ycAccessKey: ycKeyId,
-            ycSecretKey: ycSecretKey,
+            ycAccessKey: postboxAccessKey,
+            ycSecretKey: postboxSecretKey,
             fromEmail: "no-reply@yth.run.place"
         ));
+
+        builder.Services.AddSingleton<IStorageService>(new YandexStorageService(
+            accessKey: objectStorageAccessKey,
+            secretKey: objectStorageSecretKey,
+            bucket: objectStorageBucket
+        ));
+
+        builder.Services.AddSingleton<ImageAdder>();
 
         if (builder.Environment.IsDevelopment())
         {

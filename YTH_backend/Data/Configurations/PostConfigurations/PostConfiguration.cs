@@ -57,6 +57,12 @@ public class PostConfiguration : IEntityTypeConfiguration<Post>
             .Property(x => x.AuthorId)
             .HasColumnName("author_id");
         
+        builder
+            .Property(x => x.ImageUrl)
+            .HasMaxLength(512)
+            .HasColumnType("varchar(512)")
+            .HasColumnName("image_url");
+        
         // builder
         //     .Property(x => x.CategoryId)
         //     .HasColumnName("category_id");

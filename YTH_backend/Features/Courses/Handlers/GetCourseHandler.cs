@@ -21,6 +21,7 @@ public class GetCourseHandler(AppDbContext dbContext) : IRequestHandler<GetCours
             course.Name,
             course.Description,
             course.Link,
-            course.CreatedAt);
+            course.CreatedAt,
+            course.ImageUrl);
     }
 }

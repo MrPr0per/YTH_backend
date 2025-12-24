@@ -53,6 +53,12 @@ public class CourseConfiguration : IEntityTypeConfiguration<Course>
             .HasColumnType("varchar(512)")
             .HasColumnName("link");
         
+        builder
+            .Property(x => x.ImageUrl)
+            .HasMaxLength(512)
+            .HasColumnType("varchar(512)")
+            .HasColumnName("image_url");
+        
         // builder
         //     .Property(x => x.CategoryId)
         //     .HasColumnName("category_id");

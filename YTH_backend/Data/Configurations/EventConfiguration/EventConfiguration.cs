@@ -73,6 +73,12 @@ public class EventConfiguration : IEntityTypeConfiguration<Event>
             .HasColumnType("timestamp with time zone")
             .HasColumnName("date");
         
+        builder
+            .Property(x => x.ImageUrl)
+            .HasMaxLength(512)
+            .HasColumnType("varchar(512)")
+            .HasColumnName("image_url");
+        
         // builder
         //     .HasMany(x => x.Tags)
         //     .WithMany(x => x.Events)

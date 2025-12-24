@@ -32,7 +32,8 @@ public class GetAllEventsHandler(AppDbContext dbContext) : IRequestHandler<GetAl
                 ev.Description,
                 ev.Type,
                 ev.Date,
-                ev.Address))
+                ev.Address,
+                ev.ImageUrl))
             .ToListAsync(cancellationToken);
 
         return new PagedResult<GetEventResponseDto>(

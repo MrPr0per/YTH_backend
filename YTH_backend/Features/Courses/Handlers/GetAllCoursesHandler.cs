@@ -30,7 +30,8 @@ public class GetAllCoursesHandler(AppDbContext dbContext) : IRequestHandler<GetA
                 c.Name,
                 c.Description,
                 c.Link,
-                c.CreatedAt))
+                c.CreatedAt,
+                c.ImageUrl))
             .ToListAsync(cancellationToken);
         
         return new PagedResult<GetCourseResponseDto>(

@@ -30,6 +30,9 @@ public class Course
     [MaxLength(512)]
     public string? Link { get; set; }
     
+    [MaxLength(512)]
+    public string? ImageUrl { get; set; }
+    
     // public ICollection<CourseTag> CourseTags { get; set; } = new List<CourseTag>();
     
     public ICollection<UserCourseRegistration> UserCourseRegistration { get; set; } = new List<UserCourseRegistration>();

@@ -59,7 +59,7 @@ public class CoursesController(IMediator mediator) : ControllerBase
     [Authorize(Policy = "admin")]
     public async Task<IActionResult> AddCourseController([FromBody] AddCourseRequestDto addCourseRequestDto)
     {
-        var command = new AddCourseCommand(addCourseRequestDto.Name, addCourseRequestDto.Description, addCourseRequestDto.Link);
+        var command = new AddCourseCommand(addCourseRequestDto.Name, addCourseRequestDto.Description, addCourseRequestDto.Link, addCourseRequestDto.ImageBase64);
         var response = await mediator.Send(command);
         
         return CreatedAtAction(

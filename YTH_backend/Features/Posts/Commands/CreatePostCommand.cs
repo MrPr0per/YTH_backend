@@ -4,4 +4,4 @@ using YTH_backend.Enums;
 
 namespace YTH_backend.Features.Posts.Commands;
 
-public record CreatePostCommand(Guid AuthorId, string Title, string Description, PostStatus PostStatus) : IRequest<CreatePostResponseDto>;
+public record CreatePostCommand(Guid AuthorId, string Title, string Description, PostStatus PostStatus, string? ImageBase64) : IRequest<CreatePostResponseDto>;

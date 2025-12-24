@@ -21,6 +21,7 @@ public class GetEventHandler(AppDbContext dbContext) : IRequestHandler<GetEventQ
             ev.Description,
             ev.Type,
             ev.Date,
-            ev.Address);
+            ev.Address,
+            ev.ImageUrl);
     }
 }

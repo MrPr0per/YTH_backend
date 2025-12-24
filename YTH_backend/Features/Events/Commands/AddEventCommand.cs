@@ -4,4 +4,4 @@ using YTH_backend.Enums;
 
 namespace YTH_backend.Features.Events.Commands;
 
-public record AddEventCommand(string Name, string Description, EventTypes Type, DateTime Date, string? Address) : IRequest<AddEventResponseDto>;
+public record AddEventCommand(string Name, string Description, EventTypes Type, DateTime Date, string? Address, string? ImageBase64) : IRequest<AddEventResponseDto>;
