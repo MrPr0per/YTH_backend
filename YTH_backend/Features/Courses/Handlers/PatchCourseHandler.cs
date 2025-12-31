@@ -16,7 +16,7 @@ public class PatchCourseHandler(AppDbContext dbContext, ImageAdder imageAdder, I
         if (course == null)
             throw new EntityNotFoundException($"Course with id {request.CourseId} not found");
         
-        var dto = new PatchCourseRequestDto(course.Name, course.Description, course.Link, course.ImageUrl);
+        var dto = new PatchCourseRequestDto(course.Name, course.Description, course.Link, course.ImageUrl, course.Price);
         
         request.Patch.ApplyTo(dto);
         
@@ -25,6 +25,9 @@ public class PatchCourseHandler(AppDbContext dbContext, ImageAdder imageAdder, I
         if (dto.Description is not null)
             course.Description = dto.Description;
         course.Link = dto.Link;
+        if (dto.Price is not null)
+            course.Price = dto.Price.Value;
+        
         if (Base64Helper.IsBase64String(dto.ImageBase64!) || dto.ImageBase64 is null)
         {
             if (course.ImageUrl is not null)

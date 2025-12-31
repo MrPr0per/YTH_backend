@@ -69,6 +69,13 @@ public class CourseConfiguration : IEntityTypeConfiguration<Course>
             .HasColumnType("timestamp with time zone")
             .HasDefaultValueSql("now()")
             .HasColumnName("created_at");
+        
+        builder
+            .Property(x => x.Price)
+            .IsRequired()
+            .HasDefaultValue(0m)
+            .HasColumnType("numeric(18,2)")
+            .HasColumnName("price");
 
         // builder
         //     .HasMany(c => c.CourseTags)

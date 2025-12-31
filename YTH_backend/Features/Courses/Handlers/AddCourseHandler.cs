@@ -25,11 +25,12 @@ public class AddCourseHandler(AppDbContext dbContext, ImageAdder imageAdder) : I
             Description = request.Description,
             Link = request.Link,
             ImageUrl = imageUrl,
+            Price = request.Price
         };
         
         await dbContext.Courses.AddAsync(newCourse, cancellationToken);
         await dbContext.SaveChangesAsync(cancellationToken);
         
-        return new AddCourseResponseDto(newCourse.Id, newCourse.Name, newCourse.Description, newCourse.Link, newCourse.CreatedAt, newCourse.ImageUrl);
+        return new AddCourseResponseDto(newCourse.Id, newCourse.Name, newCourse.Description, newCourse.Link, newCourse.CreatedAt, newCourse.ImageUrl, newCourse.Price);
     }
 }

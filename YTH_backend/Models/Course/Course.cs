@@ -32,6 +32,9 @@ public class Course
     
     [MaxLength(512)]
     public string? ImageUrl { get; set; }
+
+    [Required] 
+    public decimal Price { get; set; } = 0m;
     
     // public ICollection<CourseTag> CourseTags { get; set; } = new List<CourseTag>();
     
