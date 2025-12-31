@@ -59,14 +59,22 @@ public class CoursesController(IMediator mediator) : ControllerBase
     [Authorize(Policy = "admin")]
     public async Task<IActionResult> AddCourseController([FromBody] AddCourseRequestDto addCourseRequestDto)
     {
-        var command = new AddCourseCommand(addCourseRequestDto.Name, addCourseRequestDto.Description, addCourseRequestDto.Link, addCourseRequestDto.ImageBase64, addCourseRequestDto.Price);
-        var response = await mediator.Send(command);
-        
-        return CreatedAtAction(
-            nameof(GetCourseController),  
-            new { id = response.Id },     
-            response                       
-        );
+        try
+        {
+            var command = new AddCourseCommand(addCourseRequestDto.Name, addCourseRequestDto.Description,
+                addCourseRequestDto.Link, addCourseRequestDto.ImageBase64, addCourseRequestDto.Price);
+            var response = await mediator.Send(command);
+
+            return CreatedAtAction(
+                nameof(GetCourseController),
+                new { id = response.Id },
+                response
+            );
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(new { error = ex.Message });
+        }
     }
 
     [HttpDelete("{id:guid}")]
@@ -99,6 +107,10 @@ public class CoursesController(IMediator mediator) : ControllerBase
         catch (EntityNotFoundException e)
         {
             return NotFound(new { error = e.Message });
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(new { error = ex.Message });
         }
     }
 }

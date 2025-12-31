@@ -16,9 +16,14 @@ public class PatchCourseHandler(AppDbContext dbContext, ImageAdder imageAdder, I
         if (course == null)
             throw new EntityNotFoundException($"Course with id {request.CourseId} not found");
         
+        
+        
         var dto = new PatchCourseRequestDto(course.Name, course.Description, course.Link, course.ImageUrl, course.Price);
         
         request.Patch.ApplyTo(dto);
+        
+        if (dto.Price < 0)
+            throw new InvalidOperationException("Price must be greater than or equal to 0");
         
         if (dto.Name is not null)
             course.Name = dto.Name;

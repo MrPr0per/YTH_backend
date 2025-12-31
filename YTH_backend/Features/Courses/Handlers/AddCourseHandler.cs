@@ -14,6 +14,9 @@ public class AddCourseHandler(AppDbContext dbContext, ImageAdder imageAdder) : I
         var imageUrl = null as string;
         var courseId = Guid.NewGuid();
         
+        if (request.Price < 0)
+            throw new InvalidOperationException("Price must be greater than or equal to 0");
+        
         if (request.ImageBase64 != null)
             imageUrl = await imageAdder.AddImageToObjectStorage(request.ImageBase64,
                 $"course_{courseId}_{DateTime.UtcNow:yyyyMMddHHmmss}", true);
