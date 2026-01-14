@@ -58,14 +58,23 @@ public class EventsController(IMediator mediator) : ControllerBase
     [Authorize(Policy = "admin")]
     public async Task<IActionResult> AddEventController([FromBody] AddEventRequestDto addEventRequestDto)
     {
-        var command = new AddEventCommand(addEventRequestDto.Name, addEventRequestDto.Description, addEventRequestDto.Type, addEventRequestDto.Date, addEventRequestDto.Address, addEventRequestDto.ImageBase64);
-        var response = await mediator.Send(command);
-        
-        return CreatedAtAction(
-            nameof(GetEventController),  
-            new { id = response.Id },     
-            response                       
-        );
+        try
+        {
+            var command = new AddEventCommand(addEventRequestDto.Name, addEventRequestDto.Description,
+                addEventRequestDto.Type, addEventRequestDto.Date, addEventRequestDto.Address,
+                addEventRequestDto.ImageBase64);
+            var response = await mediator.Send(command);
+
+            return CreatedAtAction(
+                nameof(GetEventController),
+                new { id = response.Id },
+                response
+            );
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(new { error = ex.Message });
+        }
     }
 
     [HttpDelete("{id:guid}")]
