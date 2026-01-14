@@ -161,22 +161,23 @@ public class Program
         ));
 
         builder.Services.AddSingleton<ImageAdder>();
+        builder.Services.AddDistributedMemoryCache();
 
-        if (builder.Environment.IsDevelopment())
-        {
-            builder.Services.AddDistributedMemoryCache(); // ← локальный, в памяти
-        }
-        else
-        {
-            builder.Services.AddStackExchangeRedisCache(options =>
-            {
-                var redisConn = Environment.GetEnvironmentVariable("REDIS_CONNECTION")
-                                ?? throw new InvalidOperationException("REDIS_CONNECTION is not set.");
-
-                options.Configuration = redisConn;
-                options.InstanceName = "yth_login_";
-            });
-        }
+        // if (builder.Environment.IsDevelopment())
+        // {
+        //     builder.Services.AddDistributedMemoryCache(); // ← локальный, в памяти
+        // }
+        // else
+        // {
+        //     builder.Services.AddStackExchangeRedisCache(options =>
+        //     {
+        //         var redisConn = Environment.GetEnvironmentVariable("REDIS_CONNECTION")
+        //                         ?? throw new InvalidOperationException("REDIS_CONNECTION is not set.");
+        //
+        //         options.Configuration = redisConn;
+        //         options.InstanceName = "yth_login_";
+        //     });
+        // }
 
         // DbContext
         builder.Services.AddDbContext<AppDbContext>(options =>
@@ -197,7 +198,7 @@ public class Program
             var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
             db.Database.Migrate();
         }
-
+        
         if (app.Environment.IsDevelopment())
         {
             app.UseSwagger();
