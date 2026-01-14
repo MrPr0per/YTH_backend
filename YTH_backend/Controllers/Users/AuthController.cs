@@ -79,7 +79,6 @@ public class AuthController(IMediator mediator) : ControllerBase
     }
 
     [HttpPost("refresh")]
-    [Authorize]
     public async Task<IActionResult> RefreshTokenController()
     {
         try
