@@ -1,15 +1,17 @@
 using NUnit.Framework;
 using Testcontainers.PostgreSql;
+using YTH_backend.Tests.Common.Clients;
 
-namespace YTH_backend.Tests;
+namespace YTH_backend.Tests.Infrastructure;
 
 /// <summary>
-/// Статический класс, создающий ApiFactory c тестовой бдшкой 
+/// Статический класс, создающий клиента для апишки c тестовой бдшкой 
 /// </summary>
 [SetUpFixture]
-public class PostgresTestcontainerFixture
+public class ClientCreatingFixture
 {
-    public static HttpClient Client { get; private set; } = null!;
+    public static ApiClient ApiClient { get; private set; } = null!;
+    public static HttpClient HttpClient { get; private set; } = null!;
     public static ApiFactory Factory { get; private set; } = null!;
     private static PostgreSqlContainer? container;
 
@@ -26,13 +28,14 @@ public class PostgresTestcontainerFixture
         await container.StartAsync();
 
         Factory = new ApiFactory(container.GetConnectionString());
-        Client = Factory.CreateClient();
+        HttpClient = Factory.CreateClient();
+        ApiClient = new ApiClient(HttpClient);
     }
 
     [OneTimeTearDown]
     public async Task GlobalTeardown()
     {
-        Client.Dispose();
+        HttpClient.Dispose();
         await Factory.DisposeAsync();
         if (container != null)
             await container.DisposeAsync();

@@ -2,8 +2,9 @@ using System.Net;
 using System.Net.Http.Json;
 using NUnit.Framework;
 using YTH_backend.DTOs.User;
+using YTH_backend.Tests.Infrastructure;
 
-namespace YTH_backend.Tests.Tests;
+namespace YTH_backend.Tests.Tests.Auth;
 
 [TestFixture]
 public class AuthTests
@@ -13,7 +14,7 @@ public class AuthTests
     [OneTimeSetUp]
     public async Task OneTimeSetUp()
     {
-        client = PostgresTestcontainerFixture.Factory.CreateClient();
+        client = ClientCreatingFixture.Factory.CreateClient();
 
         // создаём пользователя через debug endpoint
         var response = await client.PostAsJsonAsync(

@@ -1,7 +1,7 @@
 using System.IdentityModel.Tokens.Jwt;
 using NUnit.Framework;
 
-namespace YTH_backend.Tests.Tests;
+namespace YTH_backend.Tests.Common.Assertions;
 
 public static class JwtAssertions
 {
