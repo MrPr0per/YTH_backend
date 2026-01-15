@@ -12,7 +12,7 @@ public class DebugAddUserTests
     [Test]
     public async Task AddUser_Success_ReturnsAccessToken()
     {
-        var response = await ClientCreatingFixture.ApiClient.Debug.AddUser(DebugUserFactory.Create());
+        var response = await ClientCreatingFixture.ApiClient.Debug.AddUser(DebugUserDtoFactory.Create());
         Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK));
         var token = await response.Content.ReadAsStringAsync();
         Assert.That(token, Is.Not.Empty);
@@ -22,8 +22,8 @@ public class DebugAddUserTests
     public async Task AddUser_DuplicateUsername_Returns409()
     {
         var username = $"dup_{Guid.NewGuid():N}";
-        var first = DebugUserFactory.Create(username: username);
-        var second = DebugUserFactory.Create(username: username);
+        var first = DebugUserDtoFactory.Create(username: username);
+        var second = DebugUserDtoFactory.Create(username: username);
 
         await ClientCreatingFixture.ApiClient.Debug.AddUser(first);
         var response = await ClientCreatingFixture.ApiClient.Debug.AddUser(second);
@@ -35,8 +35,8 @@ public class DebugAddUserTests
     public async Task AddUser_DuplicateEmail_Returns409()
     {
         var email = $"dup_{Guid.NewGuid():N}@test.com";
-        var first = DebugUserFactory.Create(email: email);
-        var second = DebugUserFactory.Create(email: email);
+        var first = DebugUserDtoFactory.Create(email: email);
+        var second = DebugUserDtoFactory.Create(email: email);
 
         await ClientCreatingFixture.ApiClient.Debug.AddUser(first);
         var response = await ClientCreatingFixture.ApiClient.Debug.AddUser(second);
@@ -47,7 +47,7 @@ public class DebugAddUserTests
     [Test]
     public async Task AddUser_ReturnsValidJwt()
     {
-        var response = await ClientCreatingFixture.ApiClient.Debug.AddUser(DebugUserFactory.Create());
+        var response = await ClientCreatingFixture.ApiClient.Debug.AddUser(DebugUserDtoFactory.Create());
         var token = await response.Content.ReadAsStringAsync();
         JwtAssertions.IsValidBaseClaims(token);
     }
@@ -57,7 +57,7 @@ public class DebugAddUserTests
     [TestCase("superadmin")]
     public async Task AddUser_RoleIsPresentInJwt(string role)
     {
-        var response = await ClientCreatingFixture.ApiClient.Debug.AddUser(DebugUserFactory.Create(role: role));
+        var response = await ClientCreatingFixture.ApiClient.Debug.AddUser(DebugUserDtoFactory.Create(role: role));
         var token = await response.Content.ReadAsStringAsync();
         JwtAssertions.HasRole(token, role);
     }
@@ -67,7 +67,7 @@ public class DebugAddUserTests
     [TestCase("expert")]
     public async Task AddUser_InvalidRole_DefaultsToStudent_Returns200(string invalidRole)
     {
-        var response = await ClientCreatingFixture.ApiClient.Debug.AddUser(DebugUserFactory.Create(role: invalidRole));
+        var response = await ClientCreatingFixture.ApiClient.Debug.AddUser(DebugUserDtoFactory.Create(role: invalidRole));
         var token = await response.Content.ReadAsStringAsync();
         JwtAssertions.HasRole(token, "student");
     }

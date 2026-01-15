@@ -7,6 +7,13 @@ public static class JwtAssertions
 {
     private static readonly JwtSecurityTokenHandler Handler = new();
 
+    public static void CheckToken(string jwt, string email, string role)
+    {
+        IsValidBaseClaims(jwt);
+        HasEmailInContext(jwt, email);
+        HasRole(jwt, role);
+    }
+
     public static void HasRole(string jwt, string role)
     {
         var rolesJson = Handler.ReadJwtToken(jwt).Claims.First(c => c.Type == "roles").Value;

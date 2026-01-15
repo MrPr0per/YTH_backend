@@ -25,7 +25,7 @@ public class SendVerificationEmailForRegistrationTests
     public async Task AlreadyRegisteredEmail_Returns409()
     {
         var email = $"dup_{Guid.NewGuid():N}@test.com";
-        await ClientCreatingFixture.ApiClient.Debug.AddUser(DebugUserFactory.Create(email: email));
+        await ClientCreatingFixture.ApiClient.Debug.AddUser(DebugUserDtoFactory.Create(email: email));
         var response = await Post(email);
         Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.Conflict));
     }

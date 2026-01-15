@@ -28,25 +28,16 @@ public class RegisterTests
         var emailToken = await emailTokenResponse.Content.ReadAsStringAsync();
 
         return await ClientCreatingFixture.ApiClient.Auth.Register(
-            RegisterFactory.Create(username, password),
+            RegisterDtoFactory.Create(username, password),
             emailToken
         );
-    }
-
-    private static async Task<string> ReadToken(HttpResponseMessage response)
-    {
-        var responseJson = await response.Content.ReadFromJsonAsync<Dictionary<string, string>>();
-        Assert.That(responseJson, Is.Not.Null);
-        Assert.That(responseJson, Has.Count.EqualTo(1));
-        Assert.That(responseJson, Contains.Key("access_token"));
-        return responseJson!["access_token"];
     }
 
     [Test]
     public async Task ValidData_Returns201AndAccessToken()
     {
         var response = await Register();
-        var token = await ReadToken(response);
+        var token = await AccessTokenReader.Read(response);
         Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.Created));
         Assert.That(token, Is.Not.Empty);
     }
@@ -61,7 +52,7 @@ public class RegisterTests
     [Test]
     public async Task Jwt_HasLoggedInAndStudentRoles()
     {
-        var token = await ReadToken(await Register());
+        var token = await AccessTokenReader.Read(await Register());
         JwtAssertions.HasRole(token, "logged_in");
         JwtAssertions.HasRole(token, "student");
     }
@@ -70,7 +61,7 @@ public class RegisterTests
     public async Task Jwt_ContainsEmailFromTokenContext()
     {
         var email = ElementaryFactory.CreateEmail();
-        var token = await ReadToken(await Register(email));
+        var token = await AccessTokenReader.Read(await Register(email));
         JwtAssertions.HasEmailInContext(token, email);
     }
 
@@ -87,7 +78,7 @@ public class RegisterTests
     public async Task MissingConfirmedEmailRole_Returns401()
     {
         var response = await ClientCreatingFixture.ApiClient.Auth.Register(
-            RegisterFactory.Create(),
+            RegisterDtoFactory.Create(),
             accessToken: "invalid-or-missing-token"
         );
         Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.Unauthorized));
@@ -97,10 +88,10 @@ public class RegisterTests
     public async Task MissingAccessInToken_Returns403()
     {
         var validTokenWithoutAccess =
-            await ClientCreatingFixture.ApiClient.Debug.AddUser(DebugUserFactory.Create(role: "student"))
+            await ClientCreatingFixture.ApiClient.Debug.AddUser(DebugUserDtoFactory.Create(role: "student"))
                 .Result.Content.ReadAsStringAsync();
         var response = await ClientCreatingFixture.ApiClient.Auth.Register(
-            RegisterFactory.Create(),
+            RegisterDtoFactory.Create(),
             accessToken: validTokenWithoutAccess
         );
         Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.Forbidden));
