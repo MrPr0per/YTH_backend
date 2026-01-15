@@ -4,8 +4,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using YTH_backend.Data;
 
-namespace YTH_backend.Tests;
+namespace YTH_backend.Tests.Infrastructure;
 
+/// <summary>
+/// Фабрика для создания клиента для апишки, описанной в Program
+/// </summary>
 public class ApiFactory(string connectionString) : WebApplicationFactory<Program>
 {
     protected override void ConfigureWebHost(IWebHostBuilder builder)
