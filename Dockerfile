@@ -3,12 +3,12 @@ FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 WORKDIR /src
 
 # копируем csproj и восстанавливаем зависимости (кеширование слоёв)
-COPY ["YTH_backend.csproj", "./"]
-RUN dotnet restore "YTH_backend.csproj"
+COPY ["YTH_backend/YTH_backend.csproj", "./"]
+RUN dotnet restore "YTH_backend/YTH_backend.csproj"
 
 # копируем всё и билдим/publish
 COPY . .
-RUN dotnet publish "YTH_backend.csproj" -c Release -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "YTH_backend/YTH_backend.csproj" -c Release -o /app/publish /p:UseAppHost=false
 
 # ---- runtime stage ----
 FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS runtime
