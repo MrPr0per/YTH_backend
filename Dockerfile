@@ -3,7 +3,7 @@ FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 WORKDIR /src
 
 # копируем csproj и восстанавливаем зависимости (кеширование слоёв)
-COPY ["YTH_backend/YTH_backend.csproj", "./"]
+COPY ["YTH_backend/YTH_backend.csproj", "YTH_backend/"]
 RUN dotnet restore "YTH_backend/YTH_backend.csproj"
 
 # копируем всё и билдим/publish
