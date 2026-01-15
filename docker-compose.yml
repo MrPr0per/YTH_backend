@@ -1,16 +1,11 @@
 version: "3.8"
 services:
-  postgres:
-    image: postgres:15
-    restart: always
+  backend:
+    build:
+      context: ./backend
+    expose:
+      - "80"
     environment:
-      POSTGRES_USER: ${POSTGRES_USER:-postgres}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
-      POSTGRES_DB: ${POSTGRES_DB:-yth_db}
-    volumes:
-      - pgdata:/var/lib/postgresql/data
-    ports:
-      - "5432:5432"
-  
-volumes:
-  pgdata:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ConnectionStrings__DefaultConnection=Host=rc1b-32ovpk86blnmbjk8.mdb.yandexcloud.net;Port=6432;Database=db1;Username=user1;Password=123123123;Ssl Mode=Require;
+    restart: unless-stopped
