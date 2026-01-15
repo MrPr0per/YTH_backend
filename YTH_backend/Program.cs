@@ -196,6 +196,11 @@ public class Program
         using (var scope = app.Services.CreateScope())
         {
             var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+            var pending = db.Database.GetPendingMigrations().ToList();
+            Console.WriteLine("Pending migrations: " + string.Join(", ", pending));
+
+            var applied = db.Database.GetAppliedMigrations().ToList();
+            Console.WriteLine("Applied migrations: " + string.Join(", ", applied));
             db.Database.Migrate();
         }
         
