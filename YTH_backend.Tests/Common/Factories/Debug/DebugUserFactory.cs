@@ -7,16 +7,16 @@ public static class DebugUserFactory
     /// <param name="username">по умолчанию - user_{guid:N}</param>
     /// <param name="email">по умолчанию - email_{guid:N}@test.com</param>
     /// <param name="role"></param>
-    public static AddUserDebugDto Valid(
+    public static AddUserDebugDto Create(
         string? username = null,
         string? email = null,
         string role = "student"
     )
     {
         return new AddUserDebugDto(
-            Username: username ?? $"user_{Guid.NewGuid():N}",
-            Password: $"password_{Guid.NewGuid():N}",
-            Email: email ?? $"email_{Guid.NewGuid():N}@test.com",
+            Username: username ?? ElementaryFactory.CreateUsername(),
+            Password: ElementaryFactory.CreatePassword(),
+            Email: email ?? ElementaryFactory.CreateEmail(),
             Role: role
         );
     }

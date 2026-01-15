@@ -1,8 +1,9 @@
 using NUnit.Framework;
 using Testcontainers.PostgreSql;
 using YTH_backend.Tests.Common.Clients;
+using YTH_backend.Tests.Infrastructure;
 
-namespace YTH_backend.Tests.Infrastructure;
+namespace YTH_backend.Tests.Tests;
 
 /// <summary>
 /// Статический класс, создающий клиента для апишки c тестовой бдшкой 

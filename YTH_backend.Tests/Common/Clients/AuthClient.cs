@@ -8,8 +8,8 @@ public class AuthClient(HttpClient client, string apiPrefix, string resourcePref
     public Task<HttpResponseMessage> SendVerificationEmailForRegistration(SendVerificationEmailRequestDto args) =>
         PostAsync("sendVerificationEmailForRegistration", args);
 
-    public Task<HttpResponseMessage> Register(CreateUserRequestDto args) =>
-        PostAsync("register", args);
+    public Task<HttpResponseMessage> Register(CreateUserRequestDto args, string accessToken) =>
+        PostAsync("register", args, accessToken);
 
     public Task<HttpResponseMessage> Login(LoginUserRequestDto args) =>
         PostAsync("login", args);
