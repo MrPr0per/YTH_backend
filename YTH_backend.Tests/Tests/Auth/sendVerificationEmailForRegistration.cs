@@ -1,35 +1,25 @@
 using System.Net;
 using NUnit.Framework;
 using YTH_backend.DTOs.User;
+using YTH_backend.Tests.Common.Assertions;
 using YTH_backend.Tests.Common.Factories.Debug;
+using YTH_backend.Tests.Common.ValidationCases;
+using YTH_backend.Tests.Infrastructure;
 
 namespace YTH_backend.Tests.Tests.Auth;
 
 [TestFixture]
 public class SendVerificationEmailForRegistrationTests
 {
-    private Task<HttpResponseMessage> Post(string email) =>
+    private static Task<HttpResponseMessage> Post(string email) =>
         ClientCreatingFixture.ApiClient.Auth.SendVerificationEmailForRegistration(
             new SendVerificationEmailRequestDto(email)
         );
 
-    [Test]
-    public async Task ValidEmail_Returns204()
-    {
-        var email = $"email_{Guid.NewGuid():N}@test.com";
-        var response = await Post(email);
-        Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.NoContent));
-    }
+    [TestCaseSource(typeof(EmailValidationCases), nameof(EmailValidationCases.All))]
+    public async Task EmailValidationTests(ValidationCase<string> validationCase) =>
+        await ValidationAssertion.Run(validationCase, Post);
 
-    [TestCase("")]
-    [TestCase("not-an-email")]
-    [TestCase("email@")]
-    [TestCase("@test.com")]
-    public async Task InvalidEmail_Returns400(string email)
-    {
-        var response = await Post(email);
-        Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.BadRequest));
-    }
 
     [Test]
     public async Task AlreadyRegisteredEmail_Returns409()

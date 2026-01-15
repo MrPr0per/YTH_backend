@@ -6,6 +6,8 @@ using YTH_backend.Tests.Common.Assertions;
 using YTH_backend.Tests.Common.Factories;
 using YTH_backend.Tests.Common.Factories.Auth;
 using YTH_backend.Tests.Common.Factories.Debug;
+using YTH_backend.Tests.Common.ValidationCases;
+using YTH_backend.Tests.Infrastructure;
 
 namespace YTH_backend.Tests.Tests.Auth;
 
@@ -95,7 +97,7 @@ public class RegisterTests
     public async Task MissingAccessInToken_Returns403()
     {
         var validTokenWithoutAccess =
-            await ClientCreatingFixture.ApiClient.Debug.AddUser(DebugUserFactory.Create())
+            await ClientCreatingFixture.ApiClient.Debug.AddUser(DebugUserFactory.Create(role: "student"))
                 .Result.Content.ReadAsStringAsync();
         var response = await ClientCreatingFixture.ApiClient.Auth.Register(
             RegisterFactory.Create(),
@@ -104,25 +106,15 @@ public class RegisterTests
         Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.Forbidden));
     }
 
+    [TestCaseSource(typeof(EmailValidationCases), nameof(EmailValidationCases.All))]
+    public async Task EmailValidationTests(ValidationCase<string> validationCase) =>
+        await ValidationAssertion.Run(validationCase, e => Register(email: e));
 
-    [TestCase("")]
-    [TestCase("ab")]
-    [TestCase("inv@lid")]
-    [TestCase("███好奇心█")]
-    public async Task InvalidUsername_Returns422(string username)
-    {
-        var response = await Register(username: username);
-        Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.UnprocessableEntity));
-    }
+    [TestCaseSource(typeof(UsernameValidationCases), nameof(UsernameValidationCases.All))]
+    public async Task UsernameValidationTests(ValidationCase<string> validationCase) =>
+        await ValidationAssertion.Run(validationCase, u => Register(username: u));
 
-    [TestCase("")]
-    [TestCase("ab")]
-    [TestCase("123")]
-    [TestCase("password")]
-    [TestCase("password123A")]
-    public async Task WeakPassword_Returns422(string weakPassword)
-    {
-        var response = await Register(password: weakPassword);
-        Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.UnprocessableEntity));
-    }
+    [TestCaseSource(typeof(PasswordSValidationCases), nameof(PasswordSValidationCases.All))]
+    public async Task PasswordValidationTests(ValidationCase<string> validationCase) =>
+        await ValidationAssertion.Run(validationCase, p => Register(password: p));
 }
